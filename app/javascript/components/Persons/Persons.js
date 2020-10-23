@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const Projects = () => {
-  const [projects, setProjects] = useState([])
+const Persons = () => {
+  const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios.get('/api/v1/projects.json')
+    axios.get('/api/v1/persons.json')
       .then(resp => {
-        setProjects(resp.data.data)
+        setPersons(resp.data.data)
       })
       .catch(resp => console.log(resp))
-  }, [projects.length])
+  }, [persons.length])
 
-  const list = projects.map(item => {
+  const list = persons.map(item => {
     return (
       <li key={item.id}>
-        <a href={`/projects/${item.id}`}>{item.attributes.title}</a>
+        <a href="">{item.attributes.first_name} {item.attributes.last_name}</a>
       </li>
     )
   })
@@ -23,7 +23,7 @@ const Projects = () => {
   return (
     <div>
       <div className="header">
-        <h1>Projects</h1>
+        <h1>Persons</h1>
       </div>
       <ul>
         {list}
@@ -32,4 +32,4 @@ const Projects = () => {
   )
 }
 
-export default Projects
+export default Persons
