@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
+import AddCastMembersForm from '../ProjectEdit/AddCastMembersForm'
 
 const Project = (props) => {
   const [project, setProject] = useState({})
@@ -40,6 +41,10 @@ const Project = (props) => {
       .catch(resp => console.log(resp))
   }, [])
 
+  const handleCastMemberSaved = (actor) => {
+    setCast([...cast, actor])
+  }
+
   return (
     <Fragment>
       {
@@ -57,6 +62,7 @@ const Project = (props) => {
               )
             })}
           </ul>
+          <AddCastMembersForm projectId={project.data.id} onCastMemberSaved={handleCastMemberSaved} />
         </div>
       }
     </Fragment>

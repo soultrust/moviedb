@@ -5,10 +5,9 @@ const Projects = () => {
   const [projects, setProjects] = useState([])
 
   useEffect(() => {
-    console.log('got it')
     axios.get('/api/v1/projects')
-      .then(resp => {
-        setProjects(resp.data)
+      .then((resp) => {
+        setProjects(resp.data.data)
       })
       .catch(resp => console.log(resp))
   }, [projects.length])

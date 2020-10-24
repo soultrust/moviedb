@@ -23,11 +23,14 @@ class AddCastMembersForm extends Component {
         project_id: null,
         person_id: null,
         role_type: 1
-      }
+      },
+      first_name: null,
+      last_name: null
     }
   }
 
   componentDidMount() {
+    console.log('sprops: ', this.props)
     this.setState({ role: { ...this.state.role, project_id: this.props.projectId } })
   }
 
@@ -52,20 +55,42 @@ class AddCastMembersForm extends Component {
   }
 
   renderSuggestion = suggestion => (
-    <span onClick={() => { this.handleSelection(suggestion.id) }}>
+    <span onClick={() => {
+      this.handleSelection({
+        id: suggestion.id,
+        first_name: suggestion.attributes.first_name,
+        last_name: suggestion.attributes.last_name
+      })
+    }}>
       {suggestion.attributes.first_name} {suggestion.attributes.last_name}
     </span>
   )
 
-  handleSelection = (personId) => {
-    this.setState({ role: { ...this.state.role, person_id: personId } })
+  handleSelection = (person) => {
+    this.setState({
+      role: { ...this.state.role, person_id: person.id },
+      first_name: person.first_name,
+      last_name: person.last_name
+    })
   }
 
   handleSubmit = (e) => {
     e.preventDefault()
 
+    const csrfToken = document.querySelector('[name=csrf-token]').content
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
+
     axios.post('/api/v1/roles', this.state.role)
-      .then(resp => console.log('role save: ', resp))
+      .then(resp => {
+        const { id, attributes } = resp.data.data;
+        const memberObj = {
+          id,
+          first_name: this.state.first_name,
+          last_name: this.state.last_name,
+          character_name: attributes.character_name
+        }
+        this.props.onCastMemberSaved(memberObj)
+      })
       .catch(resp => console.log(resp))
   }
 
