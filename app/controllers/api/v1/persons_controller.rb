@@ -4,8 +4,18 @@ module Api
       protect_from_forgery with: :null_session
 
       def index
-        persons = Person.all
-
+        if params[:keywords].present?
+          keywords = params[:keywords]
+          person_search_term = PersonSearchTerm.new(keywords)
+          persons = Person.where(
+            person_search_term.where_clause,
+            person_search_term.where_args
+          )
+          .order(person_search_term.order)
+          .limit(30)
+        else
+          persons = Person.all.limit(50)
+        end
         render json: PersonSerializer.new(persons).serialized_json
       end
 

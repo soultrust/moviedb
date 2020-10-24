@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import AddProjectMembersForm from './AddProjectMembersForm'
+import AddCastMembersForm from './AddCastMembersForm'
 
 class Project extends Component {
   state = {
@@ -27,7 +27,7 @@ class Project extends Component {
               <h1>{this.state.project.attributes.title}</h1>
               <a href={`/projects/${this.state.project.id}`}>&lt;-- Read-Only View</a>
             </div>
-            <AddProjectMembersForm />
+            <AddCastMembersForm projectId={this.state.project.id} />
           </Fragment>
         }
       </Fragment>

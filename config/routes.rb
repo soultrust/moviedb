@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :projects
       resources :persons  #, only: [:create, :destroy]
+      resources :roles
     end
   end
 
