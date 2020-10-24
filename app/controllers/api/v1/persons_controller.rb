@@ -16,14 +16,14 @@ module Api
         else
           persons = Person.all.limit(50)
         end
-        render json: PersonSerializer.new(persons).serialized_json
+        render json: PersonSerializer.new(persons).serializable_hash
       end
 
       def create
         person = Person.new(person_params)
 
         if person.save
-          render json: PersonSerializer.new(person).serialized_json
+          render json: PersonSerializer.new(person).serializable_hash
         else
           render json: { error: person.errors.messages }, status: 422
         end

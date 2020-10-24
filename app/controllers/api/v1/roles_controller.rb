@@ -6,19 +6,19 @@ module Api
       def index
         roles = Role.all
 
-        render json: RoleSerializer.new(roles).serialized_json
+        render json: RoleSerializer.new(roles).serializable_hash
       end
 
       def show
         role = Role.find(params[:id])
-        render json: RoleSerializer.new(role).serialized_json
+        render json: RoleSerializer.new(role).serializable_hash
       end
 
       def create
         role = Role.new(role_params)
 
         if role.save
-          render json: RoleSerializer.new(role).serialized_json
+          render json: RoleSerializer.new(role).serializable_hash
         else
           render json: { error: role.errors.messages }, status: 422
         end
@@ -28,7 +28,7 @@ module Api
         role = Role.find(params[:id])
 
         if role.update(role_params)
-          render json: roleSerializer.new(role).serialized_json
+          render json: roleSerializer.new(role).serializable_hash
         else
           render json: { error: role.errors.messages }, status: 422
         end
