@@ -6,30 +6,34 @@ const Project = (props) => {
   const [loaded, setLoaded] = useState(false)
   const [cast, setCast] = useState([])
 
+  const extractActors = (projectResult) => {
+    const actorObjects = projectResult.filter(inc => {
+      return inc.type === 'role' && inc.attributes.role_type === 'actor'
+    })
+    const persons = projectResult.filter(inc => {
+      return inc.type === 'person'
+    })
+    const actors = actorObjects.map(actor => {
+      const person = persons.find(p => {
+        return +p.id === actor.attributes.person_id
+      })
+      return {
+        id: person.id,
+        first_name: person.attributes.first_name,
+        last_name: person.attributes.last_name,
+        character_name: actor.attributes.character_name
+      }
+    })
+    setCast(actors)
+  }
+
   useEffect(() => {
     const projectId = props.match.params.id
     const url = `/api/v1/projects/${projectId}`
 
     axios.get(url)
       .then(resp => {
-        const actorObjects = resp.data.included.filter(inc => {
-          return inc.type === 'role' && inc.attributes.role_type === 'actor'
-        })
-        const persons = resp.data.included.filter(inc => {
-          return inc.type === 'person'
-        })
-        const actors = actorObjects.map(actor => {
-          const person = persons.find(p => {
-            return +p.id === actor.attributes.person_id
-          })
-          return {
-            id: person.id,
-            first_name: person.attributes.first_name,
-            last_name: person.attributes.last_name,
-            character_name: actor.attributes.character_name
-          }
-        })
-        setCast(actors)
+        extractActors(resp.data.included)
         setProject(resp.data)
         setLoaded(true)
       })
@@ -47,7 +51,9 @@ const Project = (props) => {
           <ul>
             {cast.map(actor => {
               return (
-                <li key={actor.id}>{actor.first_name} {actor.last_name}: {actor.character_name}</li>
+                <li key={actor.id}>
+                  {actor.first_name} {actor.last_name}: {actor.character_name}
+                </li>
               )
             })}
           </ul>
