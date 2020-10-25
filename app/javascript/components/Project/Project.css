@@ -1,12 +1,25 @@
-ul {
+ul.generic {
   list-style-type: none;
   padding-left: 0;
 }
 
-li {
+ul.generic li {
   padding: .4rem 0;
 }
 
-li:hover {
-  background-color: #ccc;
+ul.generic li:hover {
+  background-color: #efefef;
+}
+
+form {
+  display: flex;
+  max-width: 50%;
+}
+
+.IntegrationAutosuggest-root-1 {
+  margin-right: .8rem;
+}
+
+.MuiFormControl-root.MuiTextField-root {
+  margin-right: .8rem;
 }

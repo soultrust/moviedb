@@ -57,10 +57,10 @@ const Project = (props) => {
       {
         loaded &&
         <div>
-          <Typography variant="h4">{project.data.attributes.title}</Typography>
-          <a href={`/projects/${project.data.id}/edit`}>edit</a>
+          <Typography variant="h4">{project.data.attributes.title}</Typography><br /><br />
+          <a href={`/projects/${project.data.id}/edit`} style={{display: 'none'}}>edit</a>
           <Typography variant="h5">Cast</Typography>
-          <ul>
+          <ul class="generic">
             {cast.map(actor => {
               return (
                 <li key={actor.id}>

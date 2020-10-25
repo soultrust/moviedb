@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Link } from 'react-router-dom'
 import Projects from './Projects/Projects'
 import Project from './Project/Project'
 import ProjectEdit from './ProjectEdit/ProjectEdit'
@@ -22,7 +22,9 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container>
-        <Typography className="title">Soultrust Film Database</Typography>
+        <Link to="/" className="title">
+          <Typography>Soultrust Film Database</Typography>
+        </Link>
         <Switch>
           <Route exact path="/" component={Projects} />
           <Route exact path="/projects/:id/edit" component={ProjectEdit} />

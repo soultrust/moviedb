@@ -1,7 +1,14 @@
-.MuiContainer-root .title {
+.title {
   text-transform: uppercase;
   border-bottom: 2px solid #000;
   margin-bottom: 50px;
+  display: block;
+  color: #000;
+  text-decoration: none;
+}
+
+.title .MuiTypography-root {
+  text-decoration: none;
 }
 
 body {

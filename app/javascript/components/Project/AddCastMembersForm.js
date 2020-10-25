@@ -10,9 +10,6 @@ const getSuggestions = value => {
       .catch(resp => console.log(resp))
   })
 }
-
-const getSuggestionValue = suggestion => `${suggestion.attributes.first_name} ${suggestion.attributes.last_name}`;
-
 class AddCastMembersForm extends Component {
   constructor() {
     super()
@@ -107,16 +104,8 @@ class AddCastMembersForm extends Component {
   }
 
   render() {
-    const { value, suggestions } = this.state
-    const inputProps = {
-      placeholder: 'Search for members',
-      value,
-      onChange: this.onChange
-    }
-
     return (
       <Fragment>
-        <Typography variant="h6">Add Cast Members</Typography>
         <form onSubmit={this.handleSubmit}>
           <IntegrationAutosuggest onCastMemberSelected={this.handleSelection} />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />

@@ -146,7 +146,7 @@ class IntegrationAutosuggest extends React.Component {
           {...autosuggestProps}
           inputProps={{
             classes,
-            label: 'Search Members',
+            label: 'Search for cast members to add',
             value: this.state.value,
             onChange: this.handleChange(),
           }}
