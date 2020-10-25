@@ -4,17 +4,35 @@ import Projects from './Projects/Projects'
 import Project from './Project/Project'
 import ProjectEdit from './ProjectEdit/ProjectEdit'
 import Persons from './Persons/Persons'
+import { Container, ThemeProvider, Typography } from '@material-ui/core'
+import { createMuiTheme } from '@material-ui/core/styles'
+import classes from './App.css'
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      'Lato',
+      'Arial',
+      'sans-serif'
+    ].join(','),
+  },
+})
 
 const App = () => {
   return (
-    <Switch>
-      <Route exact path="/" component={Projects} />
-      <Route exact path="/projects/:id/edit" component={ProjectEdit} />
-      <Route exact path="/projects/:id" component={Project} />
-      <Route exact path="/projects/" component={Projects} />
-      <Route exact path="/persons" component={Persons} />
-      {/* <Route exact path="/persons/:id" component={Person} /> */}
-    </Switch>
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Typography className="title">Soultrust Film Database</Typography>
+        <Switch>
+          <Route exact path="/" component={Projects} />
+          <Route exact path="/projects/:id/edit" component={ProjectEdit} />
+          <Route exact path="/projects/:id" component={Project} />
+          <Route exact path="/projects/" component={Projects} />
+          <Route exact path="/persons" component={Persons} />
+          {/* <Route exact path="/persons/:id" component={Person} /> */}
+        </Switch>
+      </Container>
+    </ThemeProvider>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
-import Autosuggest from 'react-autosuggest'
 import axios from 'axios'
+import { Button, TextField, Typography } from '@material-ui/core'
+import IntegrationAutosuggest from './IntegrationAutosuggest'
 
 const getSuggestions = value => {
   return new Promise(resolve => {
@@ -30,12 +31,10 @@ class AddCastMembersForm extends Component {
   }
 
   componentDidMount() {
-    console.log('sprops: ', this.props)
     this.setState({ role: { ...this.state.role, project_id: this.props.projectId } })
   }
 
   onChange = (event, { newValue }) => {
-    console.log('new value: ', newValue)
     this.setState({
       value: newValue
     })
@@ -83,6 +82,7 @@ class AddCastMembersForm extends Component {
     axios.post('/api/v1/roles', this.state.role)
       .then(resp => {
         const { id, attributes } = resp.data.data;
+        console.log(resp.data.data)
         const memberObj = {
           id,
           first_name: this.state.first_name,
@@ -90,12 +90,20 @@ class AddCastMembersForm extends Component {
           character_name: attributes.character_name
         }
         this.props.onCastMemberSaved(memberObj)
+        this.setState({
+          role: { ...this.state.role, character_name: '' }
+        })
+        document.dispatchEvent(new Event('memberAddedToProject'))
       })
       .catch(resp => console.log(resp))
   }
 
   handleCharacterNameChange = (e) => {
     this.setState({ role: { ...this.state.role, character_name: e.target.value } })
+  }
+
+  handleCastMemberSelected = () => {
+    console.log('handle cast member selected')
   }
 
   render() {
@@ -108,18 +116,11 @@ class AddCastMembersForm extends Component {
 
     return (
       <Fragment>
-        <h2>Add Cast Members</h2>
+        <Typography variant="h6">Add Cast Members</Typography>
         <form onSubmit={this.handleSubmit}>
-          <Autosuggest
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-            getSuggestionValue={getSuggestionValue}
-            renderSuggestion={this.renderSuggestion}
-            inputProps={inputProps}
-          />
-          <input type="text" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-          <button type="submit">Add</button>
+          <IntegrationAutosuggest onCastMemberSelected={this.handleSelection} />
+          <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
+          <Button variant="outlined" size="small" type="submit">Add</Button>
         </form>
       </Fragment>
     )

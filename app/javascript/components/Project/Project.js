@@ -1,27 +1,34 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 import AddCastMembersForm from './AddCastMembersForm'
+import { Typography } from '@material-ui/core'
+import classes from './Project.css'
 
 const Project = (props) => {
   const [project, setProject] = useState({})
   const [loaded, setLoaded] = useState(false)
   const [cast, setCast] = useState([])
 
-  const extractActors = (projectResult) => {
-    const actorObjects = projectResult.filter(inc => {
+  const extractActors = (projectInclResult) => {
+
+    // Filter actors
+    const actorObjects = projectInclResult.filter(inc => {
       return inc.type === 'role' && inc.attributes.role_type === 'actor'
     })
-    const persons = projectResult.filter(inc => {
+
+    // Filter persons
+    const personObjects = projectInclResult.filter(inc => {
       return inc.type === 'person'
     })
-    const actors = actorObjects.map(actor => {
-      const person = persons.find(p => {
-        return +p.id === actor.attributes.person_id
+
+    const actors = actorObjects.map((actor) => {
+      const member = personObjects.find(person => {
+        return +actor.attributes.person_id === +person.id
       })
       return {
-        id: person.id,
-        first_name: person.attributes.first_name,
-        last_name: person.attributes.last_name,
+        id: actor.id,
+        first_name: member.attributes.first_name,
+        last_name: member.attributes.last_name,
         character_name: actor.attributes.character_name
       }
     })
@@ -50,9 +57,9 @@ const Project = (props) => {
       {
         loaded &&
         <div>
-          <h1>{project.data.attributes.title}</h1>
+          <Typography variant="h4">{project.data.attributes.title}</Typography>
           <a href={`/projects/${project.data.id}/edit`}>edit</a>
-          <h2>Cast</h2>
+          <Typography variant="h5">Cast</Typography>
           <ul>
             {cast.map(actor => {
               return (
