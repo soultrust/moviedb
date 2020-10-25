@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
-import AddCastMembersForm from '../ProjectEdit/AddCastMembersForm'
+import AddCastMembersForm from './AddCastMembersForm'
 
 const Project = (props) => {
   const [project, setProject] = useState({})
