@@ -1,13 +1,30 @@
-Role.delete_all
-Person.delete_all
-Project.delete_all
+# Role.delete_all
+# Person.delete_all
+# Project.delete_all
+
+ActiveRecord::Base.establish_connection
+ActiveRecord::Base.connection.tables.each do |table|
+  next if table == 'schema_migrations'
+
+  # MySQL and PostgreSQL
+  ActiveRecord::Base.connection.execute("TRUNCATE #{table} CASCADE")
+
+  # SQLite
+  # ActiveRecord::Base.connection.execute("DELETE FROM #{table}")
+end
 
 projects = Project.create([
   {
     title: 'Blade Runner'
   },
   {
+    title: 'Blade Runner 2049'
+  },
+  {
     title: 'Star Wars'
+  },
+  {
+    title: 'Guardians of the Galaxy'
   }
 ])
 
@@ -19,6 +36,14 @@ Person.create([
   {
     first_name: 'Ridley',
     last_name: 'Scott'
+  },
+  {
+    first_name: 'Ryan',
+    last_name: 'Gosling'
+  },
+  {
+    first_name: 'Dave',
+    last_name: 'Bautista'
   }
 ])
 

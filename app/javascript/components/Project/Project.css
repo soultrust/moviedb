@@ -1,14 +1,32 @@
-ul.generic {
+ul.list-actors {
   list-style-type: none;
   padding-left: 0;
+  width: 50%;
+  max-width: 50%;
 }
 
-ul.generic li {
+ul.list-actors li {
   padding: .4rem 0;
+  display: flex;
 }
 
-ul.generic li:hover {
+ul.list-actors li:hover {
   background-color: #efefef;
+}
+
+ul.list-actors .name-actor {
+  width: 15rem;
+  margin-right: .8rem;
+  flex-grow: 1;
+}
+
+ul.list-actors .name-character {
+  margin-right: .8rem;
+  width: 11rem;
+}
+
+ul.list-actors .spacer {
+  width: 4rem;
 }
 
 form {
@@ -16,10 +34,12 @@ form {
   max-width: 50%;
 }
 
-.IntegrationAutosuggest-root-1 {
+form > .IntegrationAutosuggest-root-1 {
   margin-right: .8rem;
+  width: 15rem;
 }
 
-.MuiFormControl-root.MuiTextField-root {
+form > .MuiFormControl-root.MuiTextField-root {
   margin-right: .8rem;
+  width: 11rem;
 }

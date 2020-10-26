@@ -60,11 +60,13 @@ const Project = (props) => {
           <Typography variant="h4">{project.data.attributes.title}</Typography><br /><br />
           <a href={`/projects/${project.data.id}/edit`} style={{display: 'none'}}>edit</a>
           <Typography variant="h5">Cast</Typography>
-          <ul class="generic">
+          <ul class="list-actors">
             {cast.map(actor => {
               return (
                 <li key={actor.id}>
-                  {actor.first_name} {actor.last_name}: {actor.character_name}
+                  <div className="name-actor">{actor.first_name} {actor.last_name}</div>
+                  <div className="name-character">{actor.character_name}</div>
+                  <div className="spacer"></div>
                 </li>
               )
             })}
