@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { Button, TextField, Typography } from '@material-ui/core'
-import IntegrationAutosuggest from './IntegrationAutosuggest'
+import NnAutosuggest from '../Forms/NnAutosuggest'
 
 const getSuggestions = value => {
   return new Promise(resolve => {
@@ -23,7 +23,8 @@ class AddCastMembersForm extends Component {
         role_type: 1
       },
       first_name: null,
-      last_name: null
+      last_name: null,
+      actor_name: ''
     }
   }
 
@@ -89,9 +90,9 @@ class AddCastMembersForm extends Component {
         }
         this.props.onCastMemberSaved(memberObj)
         this.setState({
-          role: { ...this.state.role, character_name: '' }
+          role: { ...this.state.role, character_name: '' },
+          actor_name: ''
         })
-        document.dispatchEvent(new Event('memberAddedToProject'))
       })
       .catch(resp => console.log(resp))
   }
@@ -111,11 +112,29 @@ class AddCastMembersForm extends Component {
     return `${first_name} ${last_name}`;
   }
 
+  handleChange = () => (event, { newValue }) => {
+    this.setState({
+      actor_name: newValue
+    })
+  }
+
+  createSuggestionLabel = (suggestion) => {
+    return `${suggestion.attributes.first_name} ${suggestion.attributes.last_name}`
+  }
+
   render() {
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
-          <IntegrationAutosuggest onItemSelected={this.handleCastMemberSelection} url="/api/v1/persons" getSuggestionValue={this.getSuggestionValue} />
+          <NnAutosuggest
+            value={this.state.actor_name}
+            onChange={this.handleChange}
+            label="Search for cast members to add"
+            onItemSelected={this.handleCastMemberSelection}
+            url="/api/v1/persons"
+            getSuggestionValue={this.getSuggestionValue}
+            createSuggestionLabel={this.createSuggestionLabel}
+          />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
           <Button variant="outlined" size="small" type="submit">Add</Button>
         </form>
