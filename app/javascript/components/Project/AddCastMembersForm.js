@@ -107,7 +107,7 @@ class AddCastMembersForm extends Component {
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
-          <IntegrationAutosuggest onCastMemberSelected={this.handleSelection} />
+          <IntegrationAutosuggest onCastMemberSelected={this.handleSelection} url="/api/v1/persons" />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
           <Button variant="outlined" size="small" type="submit">Add</Button>
         </form>

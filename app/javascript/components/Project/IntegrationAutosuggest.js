@@ -54,14 +54,6 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   );
 }
 
-const getSuggestions = value => {
-  return new Promise(resolve => {
-    axios.get(`/api/v1/persons?keywords=${value}`)
-      .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
-      .catch(resp => console.log(resp))
-  })
-}
-
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -99,6 +91,14 @@ class IntegrationAutosuggest extends React.Component {
     })
   }
 
+  getSuggestions = value => {
+    return new Promise(resolve => {
+      axios.get(`${this.props.url}?keywords=${value}`)
+        .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
+        .catch(resp => console.log(resp))
+    })
+  }
+
   getSuggestionValue = (suggestion) => {
     const { first_name, last_name } = suggestion.attributes
 
@@ -112,7 +112,7 @@ class IntegrationAutosuggest extends React.Component {
 
   handleSuggestionsFetchRequested = async ({ value }) => {
     this.setState({
-      suggestions: await getSuggestions(value),
+      suggestions: await this.getSuggestions(value),
     });
   };
 
