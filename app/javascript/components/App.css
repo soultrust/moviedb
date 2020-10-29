@@ -14,3 +14,42 @@
 body {
   font-family: 'Lato';
 }
+
+.layout-2-col {
+  display: flex;
+  align-items: flex-start;
+}
+
+.header .section-title {
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.recently-saved {
+  padding-top: .6rem;
+  flex-basis: 400px;
+}
+
+.recently-saved .recently-saved-title {
+  margin-bottom: 2rem;
+}
+
+.record-detail .record-detail-title {
+  margin-bottom: 2.2rem;
+}
+
+ul.generic {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: -.5rem;
+}
+
+ul.generic li:hover {
+  background-color: #efefef;
+}
+
+ul.generic a {
+  display: block;
+  padding: .2rem 10% .3rem .5rem;
+  text-decoration: none;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 import AddCastMembersForm from './AddCastMembersForm'
 import { Typography } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 import classes from './Project.css'
 
 const Project = (props) => {
@@ -46,7 +47,7 @@ const Project = (props) => {
         setLoaded(true)
       })
       .catch(resp => console.log(resp))
-  }, [])
+  }, [props.match.params.id])
 
   const handleCastMemberSaved = (actor) => {
     setCast([...cast, actor])
@@ -56,9 +57,8 @@ const Project = (props) => {
     <Fragment>
       {
         loaded &&
-        <div>
-          <Typography variant="h4">{project.data.attributes.title}</Typography><br /><br />
-          <a href={`/projects/${project.data.id}/edit`} style={{display: 'none'}}>edit</a>
+        <Fragment>
+          <Typography variant="h4" className="record-detail-title">{project.data.attributes.title}</Typography>
           <Typography variant="h5">Cast</Typography>
           <ul className="list-actors">
             {cast.map(actor => {
@@ -71,8 +71,8 @@ const Project = (props) => {
               )
             })}
           </ul>
-          <AddCastMembersForm projectId={project.data.id} onCastMemberSaved={handleCastMemberSaved} />
-        </div>
+          <Link to={`/projects/${project.data.id}/edit`}>edit</Link>
+        </Fragment>
       }
     </Fragment>
   )

@@ -1,33 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
+import ProjectNew from '../ProjectNew/ProjectNew'
+import Project from '../Project/Project'
+import ProjectEdit from '../ProjectEdit/ProjectEdit'
+import ProjectList from '../ProjectList/ProjectList'
+import { Typography } from '@material-ui/core'
 
 const Projects = () => {
-  const [projects, setProjects] = useState([])
-
-  useEffect(() => {
-    axios.get('/api/v1/projects')
-      .then((resp) => {
-        setProjects(resp.data.data)
-      })
-      .catch(resp => console.log(resp))
-  }, [projects.length])
-
-  const list = projects.map(item => {
-    return (
-      <li key={item.id}>
-        <a href={`/projects/${item.id}`}>{item.attributes.title}</a>
-      </li>
-    )
-  })
-
   return (
     <div>
       <div className="header">
-        <h1>Projects</h1>
+        <Typography variant="h5" className="section-title">Projects</Typography>
       </div>
-      <ul>
-        {list}
-      </ul>
+      <div className="layout-2-col">
+        <ProjectList />
+        <div className="record-detail">
+        <Switch>
+          <Route exact path="/" component={ProjectNew} />
+          <Route exact path="/projects/:id" component={Project} />
+          <Route exact path="/projects/:id/edit" component={ProjectEdit} />
+        </Switch>
+        </div>
+      </div>
     </div>
   )
 }
