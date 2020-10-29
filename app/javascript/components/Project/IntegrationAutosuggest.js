@@ -86,23 +86,26 @@ class IntegrationAutosuggest extends React.Component {
   };
 
   componentDidMount() {
-    document.addEventListener('memberAddedToProject', () => {
-      this.setState({ value: '' })
-    })
+    // document.addEventListener('memberAddedToProject', () => {
+    //   this.setState({ value: '' })
+    // })
   }
 
   getSuggestions = value => {
     return new Promise(resolve => {
       axios.get(`${this.props.url}?keywords=${value}`)
-        .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
+        .then(resp => {
+          !resp || resp.data.error ? resolve([]) : resolve(resp.data.data)
+        })
         .catch(resp => console.log(resp))
     })
   }
 
   getSuggestionValue = (suggestion) => {
+    console.log('get suggestion value: ', suggestion)
     const { first_name, last_name } = suggestion.attributes
 
-    this.props.onCastMemberSelected({
+    this.props.onItemSelected({
       id: suggestion.id,
       first_name,
       last_name
