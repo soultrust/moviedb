@@ -85,12 +85,6 @@ class IntegrationAutosuggest extends React.Component {
     value: ''
   };
 
-  componentDidMount() {
-    // document.addEventListener('memberAddedToProject', () => {
-    //   this.setState({ value: '' })
-    // })
-  }
-
   getSuggestions = value => {
     return new Promise(resolve => {
       axios.get(`${this.props.url}?keywords=${value}`)
@@ -99,18 +93,6 @@ class IntegrationAutosuggest extends React.Component {
         })
         .catch(resp => console.log(resp))
     })
-  }
-
-  getSuggestionValue = (suggestion) => {
-    console.log('get suggestion value: ', suggestion)
-    const { first_name, last_name } = suggestion.attributes
-
-    this.props.onItemSelected({
-      id: suggestion.id,
-      first_name,
-      last_name
-    })
-    return `${first_name} ${last_name}`;
   }
 
   handleSuggestionsFetchRequested = async ({ value }) => {
@@ -139,7 +121,7 @@ class IntegrationAutosuggest extends React.Component {
       suggestions: this.state.suggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
-      getSuggestionValue: this.getSuggestionValue,
+      getSuggestionValue: this.props.getSuggestionValue,
       renderSuggestion,
     };
 

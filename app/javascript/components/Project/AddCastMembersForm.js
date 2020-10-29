@@ -63,6 +63,7 @@ class AddCastMembersForm extends Component {
   )
 
   handleCastMemberSelection = (person) => {
+    console.log('handle cast member selected: ', person)
     this.setState({
       role: { ...this.state.role, person_id: person.id },
       first_name: person.first_name,
@@ -99,11 +100,22 @@ class AddCastMembersForm extends Component {
     this.setState({ role: { ...this.state.role, character_name: e.target.value } })
   }
 
+  getSuggestionValue = (suggestion) => {
+    const { first_name, last_name } = suggestion.attributes
+
+    this.setState({
+      role: { ...this.state.role, person_id: suggestion.id },
+      first_name,
+      last_name
+    })
+    return `${first_name} ${last_name}`;
+  }
+
   render() {
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
-          <IntegrationAutosuggest onItemSelected={this.handleCastMemberSelection} url="/api/v1/persons" />
+          <IntegrationAutosuggest onItemSelected={this.handleCastMemberSelection} url="/api/v1/persons" getSuggestionValue={this.getSuggestionValue} />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
           <Button variant="outlined" size="small" type="submit">Add</Button>
         </form>
