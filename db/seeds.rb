@@ -25,6 +25,9 @@ projects = Project.create([
   },
   {
     title: 'Guardians of the Galaxy'
+  },
+  {
+    title: 'Queen\'s Gambit'
   }
 ])
 
@@ -44,10 +47,18 @@ Person.create([
   {
     first_name: 'Dave',
     last_name: 'Bautista'
+  },
+  {
+    first_name: 'Anya',
+    last_name: 'Taylor-Joy'
+  },
+  {
+    first_name: 'Akira',
+    last_name: 'Kurosawa'
   }
 ])
 
-500.times do |i|
+300.times do |i|
   Person.create!(
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name

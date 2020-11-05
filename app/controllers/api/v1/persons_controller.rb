@@ -29,6 +29,25 @@ module Api
         end
       end
 
+      def show
+        person = Person.find(params[:id])
+        render json: PersonSerializer.new(person).serializable_hash
+      end
+
+      def edit
+        @person = Person.find(params[:id])
+      end
+
+      def update
+        person = Person.find(params[:id])
+
+        if person.update(person_params)
+          render json: PersonSerializer.new(person).serializable_hash
+        else
+          render json: { error: person.errors.messages }, status: 422
+        end
+      end
+
       def destroy
         person = Person.find_by(params[:id])
 

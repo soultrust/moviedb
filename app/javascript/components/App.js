@@ -28,7 +28,7 @@ const App = () => {
         <Switch>
           <Route exact path="/" component={Projects} />
           <Route path="/projects/" component={Projects} />
-          <Route exact path="/persons" component={Persons} />
+          <Route path="/persons" component={Persons} />
           {/* <Route exact path="/persons/:id" component={Person} /> */}
         </Switch>
       </Container>

@@ -5,7 +5,7 @@ module Api
       # accepts_nested_attributes_for :person
 
       def index
-        projects = Project.all.limit(25)
+        projects = Project.order(created_at: :desc).limit(25)
 
         render json: ProjectSerializer.new(projects).serializable_hash
       end
