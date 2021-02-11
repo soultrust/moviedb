@@ -48,7 +48,7 @@ module Api
       private
 
       def project_params
-        params.require(:project).permit(:title)
+        params.require(:data).require(:attributes).permit(:title)
       end
 
       def options
