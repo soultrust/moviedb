@@ -28,6 +28,12 @@ projects = Project.create([
   },
   {
     title: 'Queen\'s Gambit'
+  },
+  {
+    title: 'The Next Three Days'
+  },
+  {
+    title: 'Homefront'
   }
 ])
 
@@ -55,6 +61,13 @@ Person.create([
   {
     first_name: 'Akira',
     last_name: 'Kurosawa'
+  },
+  {
+    first_name: 'Winona',
+    last_name: 'Ryder'
+  },
+  {
+
   }
 ])
 
