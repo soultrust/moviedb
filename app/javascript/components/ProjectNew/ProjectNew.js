@@ -28,7 +28,7 @@ const ProjectNew = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    axios.post('/api/v1/projects/', project)
+    axios.post('/api/v1/projects', project)
       .then(resp => {
         console.log('resp: ', resp)
         extractActors(resp.data.included)
