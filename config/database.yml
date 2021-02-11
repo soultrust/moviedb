@@ -79,7 +79,4 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: soultrust_films_production
-  username: soultrust_films
-  password: <%= ENV['SOULTRUST_FILMS_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
