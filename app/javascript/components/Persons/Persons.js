@@ -4,13 +4,14 @@ import axios from 'axios'
 import PersonEdit from '../PersonEdit/PersonEdit'
 import PersonList from '../PersonList/PersonList'
 import Person from '../Person/Person'
+import { Typography } from '@material-ui/core'
 
 const Persons = () => {
   const [persons, setPersons] = useState([])
   const history = useHistory()
 
   useEffect(() => {
-    axios.get('/api/v1/persons.json')
+    axios.get('/api/v1/persons')
       .then(resp => {
         setPersons(resp.data.data)
       })
@@ -38,9 +39,6 @@ const Persons = () => {
 
   return (
     <div>
-      <div className="header">
-        <h1>People</h1>
-      </div>
       <div className="layout-2-col">
         <Switch>
           <Route exact path="/persons" component={props => <PersonList {...props} persons={persons} />} />

@@ -12,9 +12,9 @@ module Api
             person_search_term.where_args
           )
           .order(person_search_term.order)
-          .limit(30)
+          .limit(20)
         else
-          persons = Person.all.limit(50)
+          persons = Person.all.limit(20)
         end
         render json: PersonSerializer.new(persons).serializable_hash
       end
@@ -61,7 +61,7 @@ module Api
       private
 
       def person_params
-        params.require(:person).permit(:first_name, :last_name)
+        params.require(:data).require(:attributes).permit(:full_name, :notes)
       end
     end
   end

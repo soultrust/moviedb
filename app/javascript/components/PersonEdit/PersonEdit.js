@@ -16,43 +16,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const GroupEdit = (props) => {
-  const classes = useStyles()
+const PersonEdit = (props) => {
   const history = useHistory()
-  const [group, setGroup] = useState({
-    attributes: {
-      name: '',
-      notes: null
-    }
+  const [person, setPerson] = useState({
+    full_name: '',
+    notes: null
   })
 
-  const [artists, setArtists] = useState([])
-  const [albums, setAlbums] = useState([])
   const editMode = !!props.location.pathname.match(/edit$/)
-  const groupId = props.match.params.id
-
-  const separateAlbumsAndArtists = (included) => {
-    const albums = []
-    const artists = []
-
-    included.forEach(record => {
-      if (record.type === 'artist') {
-        artists.push(record)
-      } else {
-        albums.push(record)
-      }
-    })
-    setAlbums(albums)
-    setArtists(artists)
-  }
+  const personId = props.match.params.id
 
   useEffect(() => {
     if (editMode) {
-      axios.get(`/api/v1/groups/${groupId}`)
+      axios.get(`/api/v1/persons/${groupId}`)
         .then((resp) => {
-          separateAlbumsAndArtists(resp.data.included)
-
-          setGroup(resp.data.data)
+          console.log(resp.data.data.attributes);
+          setPerson(resp.data.data.attributes)
         })
         .catch(resp => console.log(resp))
     }
@@ -65,17 +44,13 @@ const GroupEdit = (props) => {
     axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
 
     const payload = {
-      group: {
-        ...group,
-        roles_attributes: artists.map(artist => {
-          return { artist_id: artist.id }
-        }),
-        album_ids: albums.map(album => album.id) // title removed
+      data: {
+        attributes: person
       }
     }
 
     if (editMode) {
-      axios.put(`/api/v1/groups/${groupId}`, payload)
+      axios.put(`/api/v1/persons/${personId}`, payload)
         .then(resp => {
           props.onGroupUpdated(resp.data.data)
         })
@@ -84,7 +59,7 @@ const GroupEdit = (props) => {
         })
       return false
     }
-    axios.post('/api/v1/groups', payload)
+    axios.post('/api/v1/persons', payload)
       .then(resp => {
         props.onGroupUpdated(resp.data.data)
       })
@@ -92,41 +67,14 @@ const GroupEdit = (props) => {
   }
 
   const handleNameChange = (e) => {
-    setGroup({ attributes: { ...group.attributes, name: e.target.value } })
+    setPerson({ full_name: e.target.value })
   }
-
-  const handleDateChange = (date) => {
-    setGroup({ ...group, release_date: date })
-  }
-
-  const handleReleaseDateAccuracyChange = (e) => {
-    setGroup({ ...group, release_date_accuracy: e.target.value })
-  }
-
-  const handleArtistAdded = (addedArtist) => {
-    setArtists([...artists, addedArtist])
-  }
-
-  const artistList = artists.map(artist => {
-    return <li key={artist.id}>{artist.attributes.first_name} {artist.attributes.last_name}</li>
-  })
-
-  const handleAlbumAdded = (addedAlbum) => {
-    setAlbums([...albums, addedAlbum])
-  }
-
-  const albumList = albums.map(album => {
-    return <li key={album.id}>{album.attributes.title}</li>
-  })
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Typography variant="h4">{ editMode ? group.attributes.name : 'Add a Person' }</Typography><br />
-      <TextField label="First Name" onChange={handleNameChange} value={group.attributes.name} /><br /><br />
-      <Typography variant="h6">Groups</Typography>
-      <ul className="generic">
-        {artistList}
-      </ul>
+    <form onSubmit={handleSubmit} class="form-person-edit">
+      <Typography variant="h4">{ editMode ? person.full_name : 'Add a Person' }</Typography><br />
+      <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
+
       {/* <AddArtistToGroup onItemAdded={handleArtistAdded} /><br /><br /> */}
 
       {/* <AddAlbumToGroup
@@ -135,10 +83,10 @@ const GroupEdit = (props) => {
         label="Search for Albums"
       /><br /><br /> */}
       <Button variant="outlined" size="small" type="submit" style={{ display: 'block' }}>
-        Add Group
+        Add Person
       </Button>
     </form>
   )
 }
 
-export default GroupEdit
+export default PersonEdit

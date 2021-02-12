@@ -1,4 +1,4 @@
 class PersonSerializer
   include JSONAPI::Serializer
-  attributes :first_name, :last_name
+  attributes :full_name
 end

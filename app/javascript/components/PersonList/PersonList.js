@@ -6,13 +6,14 @@ const PersonList = (props) => {
   const list = props.persons.map(item => {
     return (
       <li key={item.id}>
-        <Link to={`/persons/${item.id}`}>{item.attributes.first_name} {item.attributes.last_name}</Link>
+        <Link to={`/persons/${item.id}`}>{item.attributes.full_name}</Link>
       </li>
     )
   })
 
   return (
-    <div>
+    <div class="people-list">
+      <Typography variant="h5" className="section-title">People</Typography>
       <ul className="generic">
         {list}
       </ul>

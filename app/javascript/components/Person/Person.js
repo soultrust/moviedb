@@ -37,8 +37,8 @@ const Person = (props) => {
   useEffect(() => {
     axios.get(`/api/v1/persons/${personId}`)
       .then((resp) => {
-        // separateAlbumsAndArtists(resp.data.included)
-        setPerson(resp.data.data)
+        console.log(resp.data.data)
+        setPerson(resp.data.data.attributes)
       })
       .catch(resp => console.log(resp))
   }, [props.match.params.id])
@@ -53,15 +53,9 @@ const Person = (props) => {
 
   return (
     <div>
-      <Typography variant="h4">{person.attributes.first_name} {person.attributes.last_name}</Typography><br />
-      <Typography variant="h6">Members</Typography>
-      <ul className="generic">
-        {artistList}
-      </ul>
-      <Typography variant="h6">Albums</Typography>
-      <ul className="generic">
-        {albumList}
-      </ul>
+      <Typography variant="h4">{person.full_name}</Typography><br />
+
+
       <Link to={`/persons/${personId}/edit`}>edit</Link>
     </div>
   )

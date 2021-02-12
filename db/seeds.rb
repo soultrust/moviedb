@@ -37,44 +37,9 @@ projects = Project.create([
   }
 ])
 
-Person.create([
-  {
-    first_name: 'Harrison',
-    last_name: 'Ford'
-  },
-  {
-    first_name: 'Ridley',
-    last_name: 'Scott'
-  },
-  {
-    first_name: 'Ryan',
-    last_name: 'Gosling'
-  },
-  {
-    first_name: 'Dave',
-    last_name: 'Bautista'
-  },
-  {
-    first_name: 'Anya',
-    last_name: 'Taylor-Joy'
-  },
-  {
-    first_name: 'Akira',
-    last_name: 'Kurosawa'
-  },
-  {
-    first_name: 'Winona',
-    last_name: 'Ryder'
-  },
-  {
-
-  }
-])
-
-300.times do |i|
+120.times do |i|
   Person.create!(
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name
+    full_name: Faker::Name.name
   )
   Project.create!(
     title: Faker::Movie.title
