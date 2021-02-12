@@ -52,7 +52,7 @@ const PersonEdit = (props) => {
     if (editMode) {
       axios.put(`/api/v1/persons/${personId}`, payload)
         .then(resp => {
-          props.onGroupUpdated(resp.data.data)
+          alert('person has been created/edited!')
         })
         .catch(resp => {
           console.log(resp)
@@ -71,7 +71,7 @@ const PersonEdit = (props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} class="form-person-edit">
+    <form onSubmit={handleSubmit} className="form-person-edit">
       <Typography variant="h4">{ editMode ? person.full_name : 'Add a Person' }</Typography><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
 

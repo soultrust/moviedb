@@ -12,7 +12,7 @@ const PersonList = (props) => {
   })
 
   return (
-    <div class="people-list">
+    <div className="people-list">
       <Typography variant="h5" className="section-title">People</Typography>
       <ul className="generic">
         {list}

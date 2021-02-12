@@ -20,7 +20,7 @@ const theme = createMuiTheme({
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme} classes="hello">
+    <ThemeProvider theme={theme}>
       <Container className="test">
         <Link to="/" className="title">
           <Typography>Soultrust Movie DB</Typography>
