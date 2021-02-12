@@ -22,6 +22,7 @@ body {
 .layout-2-col .section-title {
   text-transform: uppercase;
   margin-bottom: 2rem;
+  margin-right: 2rem;
 }
 
 .recently-saved {
