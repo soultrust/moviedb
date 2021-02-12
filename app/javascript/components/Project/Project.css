@@ -28,18 +28,3 @@ ul.list-actors .name-character {
 ul.list-actors .spacer {
   width: 4rem;
 }
-
-/* form {
-  display: flex;
-  max-width: 50%;
-}
-
-form > .IntegrationAutosuggest-root-1 {
-  margin-right: .8rem;
-  width: 15rem;
-}
-
-form > .MuiFormControl-root.MuiTextField-root {
-  margin-right: .8rem;
-  width: 11rem;
-} */

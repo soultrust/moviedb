@@ -17,16 +17,14 @@ body {
 
 .layout-2-col {
   display: flex;
-  align-items: flex-start;
 }
 
-.header .section-title {
+.layout-2-col .section-title {
   text-transform: uppercase;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .recently-saved {
-  padding-top: .6rem;
   flex-basis: 400px;
 }
 
@@ -42,6 +40,7 @@ ul.generic {
   list-style-type: none;
   padding-left: 0;
   margin-left: -.5rem;
+  margin-top: 0;
 }
 
 ul.generic li:hover {
@@ -52,4 +51,11 @@ ul.generic a {
   display: block;
   padding: .2rem 10% .3rem .5rem;
   text-decoration: none;
+}
+
+.record-detail {
+  flex: 1;
+  padding: 3rem;
+  border: 1px solid #000;
+  border-radius: 9px;
 }

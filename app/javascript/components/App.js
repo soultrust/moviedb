@@ -23,7 +23,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Container>
         <Link to="/" className="title">
-          <Typography>Soultrust Film Database</Typography>
+          <Typography>Soultrust Movie DB</Typography>
         </Link>
         <Switch>
           <Route exact path="/" component={Projects} />

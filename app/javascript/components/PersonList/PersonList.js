@@ -13,9 +13,6 @@ const PersonList = (props) => {
 
   return (
     <div>
-      <div className="header">
-        <h1>Persons</h1>
-      </div>
       <ul className="generic">
         {list}
       </ul>

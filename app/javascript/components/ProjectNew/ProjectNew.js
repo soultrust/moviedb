@@ -47,7 +47,7 @@ const ProjectNew = (props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} class="form-project-new">
       <Typography variant="h4" className="record-detail-title">Add a Project</Typography>
       <TextField label="Title" onChange={handleTitleChange} value={project.data.attributes.title} />
       <Button variant="outlined" size="small" type="submit" style={{ display: 'block' }}>

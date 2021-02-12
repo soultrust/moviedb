@@ -24,7 +24,6 @@ const GroupList = () => {
 
   return (
     <div className="recently-saved">
-      <Typography variant="h6" className="recently-saved-title">Recently Saved projects</Typography>
       <ul className="generic">
         {list}
       </ul>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 import AddCastMembersForm from '../Project/AddCastMembersForm'
 import { Link } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 
 const ProjectEdit = (props) => {
   const [loaded, setLoaded] = useState(false)
@@ -14,12 +14,13 @@ const ProjectEdit = (props) => {
   //   cast: []
   // }
   const [project, setProject] = useState({
-    data: {
-      id: '',
-      attributes: {
-        title: ''
-      }
-    }
+    // data: {
+    //   id: '',
+    //   attributes: {
+    //     title: ''
+    //   }
+    // }
+    title: ''
   })
 
   useEffect(() => {
@@ -27,22 +28,50 @@ const ProjectEdit = (props) => {
 
     axios.get(url)
       .then(resp => {
-        console.log(resp.data)
-        setProject(resp.data)
+        console.log(resp.data.data)
+
+        // const transformedResult = {
+        //   id: resp.data.data.id,
+        //   title: resp.data.data.attributes.title
+        // }
+        setProject(resp.data.data.attributes)
         setLoaded(true)
       })
       .catch(resp => console.log(resp))
   }, [])
 
+  const handleTitleChange = (e) => {
+    setProject({
+      title: e.target.value
+    })
+  }
+
+  const saveTitle = (e) => {
+    e.preventDefault()
+
+    axios
+      .put(`/api/v1/projects/${projectId}`, {
+        data: {
+          attributes: project
+        }
+      })
+      .then(resp => console.log(resp))
+  }
+
   return (
     <Fragment>
       { loaded &&
         <Fragment>
-          <div>
-            <Typography variant="h4">{project.data.attributes.title}</Typography><br /><br />
-            <Link to={`/projects/${project.data.id}`}>&lt;-- Read-Only View</Link>
-          </div>
-          <AddCastMembersForm projectId={project.data.id} />
+          <Link to={`/projects/${projectId}`}>&lt;-- Read-Only View</Link>
+          <form onSubmit={saveTitle} class="form-project-edit">
+            <TextField
+              label="Title"
+              onChange={handleTitleChange}
+              value={project.title}
+            />
+            <button>submit title</button>
+          </form>
+          <AddCastMembersForm projectId={projectId} />
         </Fragment>
       }
     </Fragment>

@@ -8,12 +8,12 @@ import { Typography } from '@material-ui/core'
 
 const Projects = () => {
   return (
-    <div>
-      <div className="header">
-        <Typography variant="h5" className="section-title">Projects</Typography>
-      </div>
-      <div className="layout-2-col">
-        <ProjectList />
+
+    <div className="layout-2-col">
+        <div>
+          <Typography variant="h5" className="section-title">Recently Saved</Typography>
+          <ProjectList />
+        </div>
         <div className="record-detail">
         <Switch>
           <Route exact path="/" component={ProjectNew} />
@@ -22,7 +22,7 @@ const Projects = () => {
         </Switch>
         </div>
       </div>
-    </div>
+
   )
 }
 
