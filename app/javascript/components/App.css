@@ -23,7 +23,7 @@ body {
 .layout-2-col .section-title {
   text-transform: uppercase;
   margin-bottom: 2rem;
-  margin-right: 2rem;
+  margin-right: 3rem;
 }
 
 .recently-saved {
@@ -36,6 +36,8 @@ body {
 
 .record-detail .record-detail-title {
   margin-bottom: 2.2rem;
+  text-transform: uppercase;
+  font-size: 1.2rem;
 }
 
 ul.generic {
@@ -58,7 +60,7 @@ ul.generic a {
 
 .record-detail {
   flex: 1;
-  padding: 3rem;
+  padding: 2rem;
   border: 1px solid #000;
   border-radius: 9px;
 }
