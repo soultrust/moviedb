@@ -22,8 +22,7 @@ class AddCastMembersForm extends Component {
         person_id: null,
         role_type: 1
       },
-      first_name: null,
-      last_name: null,
+      full_name: null,
       actor_name: ''
     }
   }
@@ -55,11 +54,10 @@ class AddCastMembersForm extends Component {
     <span onClick={() => {
       this.handleSelection({
         id: suggestion.id,
-        first_name: suggestion.attributes.first_name,
-        last_name: suggestion.attributes.last_name
+        full_name: suggestion.attributes.full_name
       })
     }}>
-      {suggestion.attributes.first_name} {suggestion.attributes.last_name}
+      {suggestion.attributes.full_name}
     </span>
   )
 
@@ -67,8 +65,7 @@ class AddCastMembersForm extends Component {
     console.log('handle cast member selected: ', person)
     this.setState({
       role: { ...this.state.role, person_id: person.id },
-      first_name: person.first_name,
-      last_name: person.last_name
+      full_name: person.full_name
     })
   }
 
@@ -84,8 +81,7 @@ class AddCastMembersForm extends Component {
         console.log(resp.data.data)
         const memberObj = {
           id,
-          first_name: this.state.first_name,
-          last_name: this.state.last_name,
+          full_name: this.state.full_name,
           character_name: attributes.character_name
         }
         this.props.onCastMemberSaved(memberObj)
@@ -102,14 +98,13 @@ class AddCastMembersForm extends Component {
   }
 
   getSuggestionValue = (suggestion) => {
-    const { first_name, last_name } = suggestion.attributes
+    const { full_name } = suggestion.attributes
 
     this.setState({
       role: { ...this.state.role, person_id: suggestion.id },
-      first_name,
-      last_name
+      full_name
     })
-    return `${first_name} ${last_name}`;
+    return `${full_name}`;
   }
 
   handleChange = () => (event, { newValue }) => {
@@ -119,24 +114,26 @@ class AddCastMembersForm extends Component {
   }
 
   createSuggestionLabel = (suggestion) => {
-    return `${suggestion.attributes.first_name} ${suggestion.attributes.last_name}`
+    return `${suggestion.attributes.full_name}`
   }
 
   render() {
     return (
       <Fragment>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className="form-project-members">
+          <h3>Add Cast Members</h3>
           <NnAutosuggest
             value={this.state.actor_name}
             onChange={this.handleChange}
-            label="Search for cast members to add"
+            label="Cast Member"
             onItemSelected={this.handleCastMemberSelection}
             url="/api/v1/persons"
             getSuggestionValue={this.getSuggestionValue}
             createSuggestionLabel={this.createSuggestionLabel}
-          />
+          /><br />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-          <Button variant="outlined" size="small" type="submit">Add</Button>
+          <br />
+          <Button variant="outlined" className="btn-add" size="small" type="submit">Add</Button>
         </form>
       </Fragment>
     )

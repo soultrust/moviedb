@@ -18,6 +18,13 @@ body {
 .layout-2-col {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+}
+
+.layout-2-col::after {
+  display: block;
+  content: '';
+
 }
 
 .layout-2-col .section-title {
@@ -27,7 +34,8 @@ body {
 }
 
 .recently-saved {
-  flex-basis: 400px;
+  /* max-height: 30rem;
+  overflow-y: auto; */
 }
 
 .recently-saved .recently-saved-title {
@@ -63,6 +71,7 @@ ul.generic a {
   padding: 2rem;
   border: 1px solid #000;
   border-radius: 9px;
+  min-width: 22rem;
 }
 
 .form-person-edit {
@@ -71,4 +80,24 @@ ul.generic a {
 
 .MuiContainer-root.MuiContainer-maxWidthLg {
   width: max-content;
+}
+
+.form-project-members {
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 2rem;
+}
+
+.form-project-edit {
+  display: flex;
+  flex-flow: column;
+}
+
+.form-project-edit .title .MuiInput-input {
+  font-size: 2rem;
+}
+
+.btn-add,
+.btn-add-title {
+  align-self: flex-start;
 }

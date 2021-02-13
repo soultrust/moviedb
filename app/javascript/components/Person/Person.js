@@ -13,26 +13,6 @@ const Person = (props) => {
   const [artists, setArtists] = useState([])
   const [albums, setAlbums] = useState([])
 
-  // const extractArtists = (included) => {
-  //   return included.filter(record => {
-  //     return record.type === 'artist'
-  //   })
-  // }
-
-  // const separateAlbumsAndArtists = (included) => {
-  //   const albums = []
-  //   const artists = []
-
-  //   included.forEach(record => {
-  //     if (record.type === 'artist') {
-  //       artists.push(record)
-  //     } else {
-  //       albums.push(record)
-  //     }
-  //   })
-  //   setAlbums(albums)
-  //   setArtists(artists)
-  // }
 
   useEffect(() => {
     axios.get(`/api/v1/persons/${personId}`)
@@ -44,7 +24,7 @@ const Person = (props) => {
   }, [props.match.params.id])
 
   const artistList = artists.map(artist => {
-    return <li key={artist.id}>{artist.attributes.first_name} {artist.attributes.last_name}</li>
+    return <li key={artist.id}>{artist.attributes.full_name}</li>
   })
 
   const albumList = albums.map(album => {

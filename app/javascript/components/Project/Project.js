@@ -28,8 +28,7 @@ const Project = (props) => {
       })
       return {
         id: actor.id,
-        first_name: member.attributes.first_name,
-        last_name: member.attributes.last_name,
+        full_name: member.attributes.full_name,
         character_name: actor.attributes.character_name
       }
     })
@@ -64,7 +63,7 @@ const Project = (props) => {
             {cast.map(actor => {
               return (
                 <li key={actor.id}>
-                  <div className="name-actor">{actor.first_name} {actor.last_name}</div>
+                  <div className="name-actor">{actor.full_name}</div>
                   <div className="name-character">{actor.character_name}</div>
                   <div className="spacer"></div>
                 </li>

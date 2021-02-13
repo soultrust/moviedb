@@ -10,7 +10,7 @@ const Projects = () => {
   return (
 
     <div className="layout-2-col">
-        <div>
+        <div className="list-container">
           <Typography variant="h5" className="section-title">Recently Saved</Typography>
           <ProjectList />
         </div>

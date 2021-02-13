@@ -12,13 +12,10 @@ class PersonSearchTerm
   private
 
   def build_for_name_search(search_term)
-    @where_clause << case_insensitive_search(:first_name)
-    @where_args[:first_name] = starts_with(search_term)
+    @where_clause << case_insensitive_search(:full_name)
+    @where_args[:full_name] = starts_with(search_term)
 
-    @where_clause << " OR #{ case_insensitive_search(:last_name)}"
-    @where_args[:last_name] = starts_with(search_term)
-
-    @order = "last_name asc"
+    @order = "full_name asc"
   end
 
   def starts_with(search_term)
