@@ -9,6 +9,10 @@ body {
   align-items: center;
 }
 
+body > div {
+  margin-bottom: 20%;
+}
+
 .title {
   text-transform: uppercase;
   border-bottom: 2px solid #000;
