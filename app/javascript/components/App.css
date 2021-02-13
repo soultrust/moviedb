@@ -3,6 +3,12 @@ html, body {
   margin: 0;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .title {
   text-transform: uppercase;
   border-bottom: 2px solid #000;
