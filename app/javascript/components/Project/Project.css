@@ -1,8 +1,6 @@
 ul.list-actors {
   list-style-type: none;
   padding-left: 0;
-  width: 50%;
-  max-width: 50%;
 }
 
 ul.list-actors li {
@@ -15,14 +13,12 @@ ul.list-actors li:hover {
 }
 
 ul.list-actors .name-actor {
-  width: 15rem;
   margin-right: .8rem;
   flex-grow: 1;
 }
 
 ul.list-actors .name-character {
   margin-right: .8rem;
-  width: 11rem;
 }
 
 ul.list-actors .spacer {

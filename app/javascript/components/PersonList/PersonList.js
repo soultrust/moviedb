@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
@@ -12,12 +12,12 @@ const PersonList = (props) => {
   })
 
   return (
-    <div className="people-list">
+    <Fragment>
       <Typography variant="h5" className="section-title">People</Typography>
       <ul className="generic">
         {list}
       </ul>
-    </div>
+    </Fragment>
   )
 }
 

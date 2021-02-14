@@ -40,15 +40,19 @@ const Persons = () => {
   return (
     <div>
       <div className="layout-2-col">
-        <Switch>
-          <Route exact path="/persons" component={props => <PersonList {...props} persons={persons} />} />
-          <Route path="/persons/:id" component={props => <PersonList {...props} persons={persons} />} />
-        </Switch>
-        <Switch>
-          <Route exact path="/persons" component={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />
-          <Route exact path="/persons/:id/edit" render={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />
-          <Route exact path="/persons/:id" render={routeProps => <Person {...routeProps} />} />
-        </Switch>
+        <div className="list-col">
+          <Switch>
+            <Route exact path="/persons" component={props => <PersonList {...props} persons={persons} />} />
+            <Route path="/persons/:id" component={props => <PersonList {...props} persons={persons} />} />
+          </Switch>
+        </div>
+        <div className="main">
+          <Switch>
+            <Route exact path="/persons" component={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />
+            <Route exact path="/persons/:id/edit" render={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />
+            <Route exact path="/persons/:id" render={routeProps => <Person {...routeProps} />} />
+          </Switch>
+        </div>
       </div>
     </div>
   )

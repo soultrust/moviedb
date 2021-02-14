@@ -23,12 +23,12 @@ const PersonEdit = (props) => {
     notes: null
   })
 
-  const editMode = !!props.location.pathname.match(/edit$/)
+  // const editMode = !!props.location.pathname.match(/edit$/)
   const personId = props.match.params.id
 
   useEffect(() => {
-    if (editMode) {
-      axios.get(`/api/v1/persons/${groupId}`)
+    if (personId) {
+      axios.get(`/api/v1/persons/${personId}`)
         .then((resp) => {
           console.log(resp.data.data.attributes);
           setPerson(resp.data.data.attributes)
@@ -49,7 +49,7 @@ const PersonEdit = (props) => {
       }
     }
 
-    if (editMode) {
+    if (personId) {
       axios.put(`/api/v1/persons/${personId}`, payload)
         .then(resp => {
           alert('person has been created/edited!')
@@ -61,7 +61,7 @@ const PersonEdit = (props) => {
     }
     axios.post('/api/v1/persons', payload)
       .then(resp => {
-        props.onGroupUpdated(resp.data.data)
+        props.onPersonUpdated(resp.data.data)
       })
       .catch(resp => console.log(resp))
   }
@@ -72,7 +72,7 @@ const PersonEdit = (props) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-person-edit">
-      <Typography variant="h4">{ editMode ? person.full_name : 'Add a Person' }</Typography><br />
+      <Typography variant="h4">{ personId ? person.full_name : 'Add a Person' }</Typography><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
 
       {/* <AddArtistToGroup onItemAdded={handleArtistAdded} /><br /><br /> */}
