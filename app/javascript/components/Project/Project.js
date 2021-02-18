@@ -57,7 +57,7 @@ const Project = (props) => {
       {
         loaded &&
         <Fragment>
-          <Typography variant="h4" className="record-detail-title">{project.data.attributes.title}</Typography>
+          <h2 className="record-detail-title">{project.data.attributes.title}</h2>
           <Typography variant="h5">Cast</Typography>
           <ul className="list-actors">
             {cast.map(actor => {
@@ -65,7 +65,6 @@ const Project = (props) => {
                 <li key={actor.id}>
                   <div className="name-actor">{actor.full_name}</div>
                   <div className="name-character">{actor.character_name}</div>
-                  <div className="spacer"></div>
                 </li>
               )
             })}

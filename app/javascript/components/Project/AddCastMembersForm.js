@@ -122,18 +122,19 @@ class AddCastMembersForm extends Component {
       <Fragment>
         <form onSubmit={this.handleSubmit} className="form-project-members">
           <h3>Add Cast Members</h3>
-          <NnAutosuggest
-            value={this.state.actor_name}
-            onChange={this.handleChange}
-            label="Cast Member"
-            onItemSelected={this.handleCastMemberSelection}
-            url="/api/v1/persons"
-            getSuggestionValue={this.getSuggestionValue}
-            createSuggestionLabel={this.createSuggestionLabel}
-          /><br />
-          <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-          <br />
-          <Button variant="outlined" className="btn-add" size="small" type="submit">Add</Button>
+          <div className="add-cast-member">
+            <NnAutosuggest
+              value={this.state.actor_name}
+              onChange={this.handleChange}
+              label="Cast Member"
+              onItemSelected={this.handleCastMemberSelection}
+              url="/api/v1/persons"
+              getSuggestionValue={this.getSuggestionValue}
+              createSuggestionLabel={this.createSuggestionLabel}
+            />
+            <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
+            <Button variant="outlined" className="btn-add" size="small" type="submit">Add</Button>
+          </div>
         </form>
       </Fragment>
     )
