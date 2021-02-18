@@ -7,8 +7,8 @@ body {
 body {
   display: flex;
   justify-content: center;
-  align-items: center;
   font-family: 'Lato';
+  padding-top: 15%;
 }
 
 body > div {
