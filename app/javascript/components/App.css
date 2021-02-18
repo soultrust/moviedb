@@ -47,8 +47,7 @@ body > div {
 }
 
 .recently-saved {
-  /* max-height: 30rem;
-  overflow-y: auto; */
+  margin-right: 1.5rem;
 }
 
 .recently-saved .recently-saved-title {
