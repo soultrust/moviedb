@@ -7,13 +7,13 @@ import { Button, TextField } from '@material-ui/core'
 
 const ProjectEdit = (props) => {
   const [loaded, setLoaded] = useState(false)
-  const projectId = props.match.params.id
   const [project, setProject] = useState({
     title: ''
   })
   const [existingCast, setExistingCast] = useState([])
   const [castToBeSaved, setCastToBeSaved] = useState([])
   const history = useHistory()
+  const projectId = props.match && props.match.params.id
 
   const extractActors = (projectInclResult) => {
     console.log('projectInclResult: ', projectInclResult)
@@ -89,6 +89,7 @@ const ProjectEdit = (props) => {
           }
         })
         .then(resp => {
+          props.projectUpdated(resp.data.data)
           history.push(`/projects/${projectId}`)
         })
         return
@@ -101,6 +102,7 @@ const ProjectEdit = (props) => {
           }
         })
         .then(resp => {
+          props.projectUpdated(resp.data.data)
           history.push(`/projects/${resp.data.data.id}`)
         })
   }

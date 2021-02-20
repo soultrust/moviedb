@@ -5,7 +5,6 @@ module Api
 
       def index
         projects = Project.order(created_at: :desc).limit(20)
-
         render json: ProjectSerializer.new(projects).serializable_hash
       end
 
@@ -15,10 +14,7 @@ module Api
       end
 
       def create
-        project = Project.new(
-          title: project_params[:attributes][:title],
-          roles_attributes: project_params[:roles_attributes]
-        )
+        project = Project.new(project_params)
 
         if project.save
           render json: ProjectSerializer.new(project).serializable_hash
