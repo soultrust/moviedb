@@ -16,7 +16,7 @@ const Projects = () => {
         </div>
         <div className="record-detail">
         <Switch>
-          <Route exact path="/" component={ProjectNew} />
+          <Route exact path="/" component={ProjectEdit} />
           <Route exact path="/projects/:id" component={Project} />
           <Route exact path="/projects/:id/edit" component={ProjectEdit} />
         </Switch>

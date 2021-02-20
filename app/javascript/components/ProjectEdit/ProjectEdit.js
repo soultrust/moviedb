@@ -42,6 +42,10 @@ const ProjectEdit = (props) => {
   }
 
   useEffect(() => {
+    if (!projectId) {
+      setLoaded(true)
+      return
+    }
     const url = `/api/v1/projects/${projectId}`
 
     axios.get(url)
@@ -76,16 +80,29 @@ const ProjectEdit = (props) => {
       })
     }
 
-    axios
-      .put(`/api/v1/projects/${projectId}`, {
-        data: {
-          attributes: project,
-          roles_attributes: castPreSave
-        }
-      })
-      .then(resp => {
-        history.push(`/projects/${projectId}`)
-      })
+    if (projectId) {
+      axios
+        .put(`/api/v1/projects/${projectId}`, {
+          data: {
+            attributes: project,
+            roles_attributes: castPreSave
+          }
+        })
+        .then(resp => {
+          history.push(`/projects/${projectId}`)
+        })
+        return
+      }
+      axios
+        .post('/api/v1/projects/', {
+          data: {
+            attributes: project,
+            roles_attributes: castPreSave
+          }
+        })
+        .then(resp => {
+          history.push(`/projects/${resp.data.data.id}`)
+        })
   }
 
   const handleCastMemberSaved = (actor) => {
