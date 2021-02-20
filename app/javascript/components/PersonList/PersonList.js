@@ -13,7 +13,6 @@ const PersonList = (props) => {
 
   return (
     <Fragment>
-      <Typography variant="h5" className="section-title">People</Typography>
       <ul className="generic">
         {list}
       </ul>

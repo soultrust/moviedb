@@ -4,7 +4,7 @@ import axios from 'axios'
 import PersonEdit from '../PersonEdit/PersonEdit'
 import PersonList from '../PersonList/PersonList'
 import Person from '../Person/Person'
-import { Typography } from '@material-ui/core'
+import Nav from '../Nav/Nav'
 
 const Persons = () => {
   const [persons, setPersons] = useState([])
@@ -41,10 +41,9 @@ const Persons = () => {
     <div>
       <div className="layout-2-col">
         <div className="list-col">
-          <Switch>
-            <Route exact path="/persons" component={props => <PersonList {...props} persons={persons} />} />
-            <Route path="/persons/:id" component={props => <PersonList {...props} persons={persons} />} />
-          </Switch>
+          <Nav />
+          <h3>Recently Saved</h3>
+          <PersonList persons={persons} />
         </div>
         <div className="main">
           <Switch>
