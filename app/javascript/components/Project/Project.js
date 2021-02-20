@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
-import AddCastMembersForm from './AddCastMembersForm'
+import AddCastMembersForm from '../ProjectEdit/AddCastMembersForm'
 import { Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import classes from './Project.css'
@@ -47,10 +47,6 @@ const Project = (props) => {
       })
       .catch(resp => console.log(resp))
   }, [props.match.params.id])
-
-  const handleCastMemberSaved = (actor) => {
-    setCast([...cast, actor])
-  }
 
   return (
     <Fragment>

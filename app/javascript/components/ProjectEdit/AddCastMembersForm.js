@@ -20,10 +20,8 @@ class AddCastMembersForm extends Component {
         character_name: '',
         project_id: null,
         person_id: null,
-        role_type: 1
-      },
-      full_name: null,
-      actor_name: ''
+        full_name: ''
+      }
     }
   }
 
@@ -69,28 +67,17 @@ class AddCastMembersForm extends Component {
     })
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault()
-
-    const csrfToken = document.querySelector('[name=csrf-token]').content
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
-
-    axios.post('/api/v1/roles', this.state.role)
-      .then(resp => {
-        const { id, attributes } = resp.data.data;
-        console.log(resp.data.data)
-        const memberObj = {
-          id,
-          full_name: this.state.full_name,
-          character_name: attributes.character_name
-        }
-        this.props.onCastMemberSaved(memberObj)
-        this.setState({
-          role: { ...this.state.role, character_name: '' },
-          actor_name: ''
-        })
-      })
-      .catch(resp => console.log(resp))
+  handleSubmit = () => {
+    this.props.onCastMemberSaved(this.state.role)
+    console.log('submitted')
+    this.setState({
+      role: {
+        character_name: '',
+        project_id: null,
+        person_id: null,
+        full_name: ''
+      }
+    })
   }
 
   handleCharacterNameChange = (e) => {
@@ -108,8 +95,10 @@ class AddCastMembersForm extends Component {
   }
 
   handleChange = () => (event, { newValue }) => {
-    this.setState({
-      actor_name: newValue
+    this.setState(state => {
+      return {
+        role: { ...state.role, full_name: newValue }
+      }
     })
   }
 
@@ -120,22 +109,20 @@ class AddCastMembersForm extends Component {
   render() {
     return (
       <Fragment>
-        <form onSubmit={this.handleSubmit} className="form-project-members">
-          <h3>Add Cast Members</h3>
-          <div className="add-cast-member">
-            <NnAutosuggest
-              value={this.state.actor_name}
-              onChange={this.handleChange}
-              label="Cast Member"
-              onItemSelected={this.handleCastMemberSelection}
-              url="/api/v1/persons"
-              getSuggestionValue={this.getSuggestionValue}
-              createSuggestionLabel={this.createSuggestionLabel}
-            />
-            <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-            <Button variant="outlined" className="btn-add" size="small" type="submit">Add</Button>
-          </div>
-        </form>
+        <h3>Add Cast Members</h3>
+        <div className="add-cast-member">
+          <NnAutosuggest
+            value={this.state.role.full_name}
+            onChange={this.handleChange}
+            label="Cast Member"
+            onItemSelected={this.handleCastMemberSelection}
+            url="/api/v1/persons"
+            getSuggestionValue={this.getSuggestionValue}
+            createSuggestionLabel={this.createSuggestionLabel}
+          />
+          <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
+        <Button onClick={this.handleSubmit} variant="outlined" className="btn-add" size="small">Add</Button>
+        </div>
       </Fragment>
     )
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
-import AddCastMembersForm from '../Project/AddCastMembersForm'
+import AddCastMembersForm from '../ProjectEdit/AddCastMembersForm'
 import { Button, TextField, Typography } from '@material-ui/core'
 
 const ProjectNew = (props) => {

@@ -2,7 +2,6 @@ module Api
   module V1
     class ProjectsController < ApplicationController
       protect_from_forgery with: :null_session
-      # accepts_nested_attributes_for :person
 
       def index
         projects = Project.order(created_at: :desc).limit(20)
@@ -16,7 +15,10 @@ module Api
       end
 
       def create
-        project = Project.new(project_params)
+        project = Project.new(
+          title: project_params[:attributes][:title],
+          roles_attributes: project_params[:roles_attributes]
+        )
 
         if project.save
           render json: ProjectSerializer.new(project).serializable_hash
@@ -48,7 +50,11 @@ module Api
       private
 
       def project_params
-        params.require(:data).require(:attributes).permit(:title)
+        params.require(:data)
+          .permit(
+            attributes: [:title, :notes],
+            roles_attributes: [:project_id, :person_id, :role_type, :character_name]
+          )
       end
 
       def options
