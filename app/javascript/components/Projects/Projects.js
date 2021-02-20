@@ -5,10 +5,11 @@ import axios from 'axios'
 
 import Project from '../Project/Project'
 import ProjectEdit from '../ProjectEdit/ProjectEdit'
+import ProjectList from '../ProjectList/ProjectList'
 
 const Projects = () => {
   const [projects, setProjects] = useState([])
-  const [updatedProjectId, setUpdatedProjectId] = useState()
+  const [updatedProjectId, setUpdatedProjectId] = useState('')
 
   useEffect(() => {
     axios.get('/api/v1/projects')
@@ -45,9 +46,10 @@ const Projects = () => {
     <div className="layout-2-col">
       <div className="list-container">
         <Typography variant="h5" className="section-title">Recently Saved</Typography>
-        <ul className="generic">
+        {/* <ul className="generic">
           {list}
-        </ul>
+        </ul> */}
+        <ProjectList projects={projects} updatedProjectId={updatedProjectId} />
       </div>
       <div className="record-detail">
       <Switch>

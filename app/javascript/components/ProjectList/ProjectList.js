@@ -3,20 +3,27 @@ import axios from 'axios'
 import { Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
-const GroupList = () => {
+const ProjectList = (props) => {
   const [projects, setProjects] = useState([])
 
   useEffect(() => {
-    axios.get('/api/v1/projects')
-      .then((resp) => {
-        setProjects(resp.data.data)
-      })
-      .catch(resp => console.log(resp))
-  }, [])
+    setProjects(props.projects)
+
+
+
+    setTimeout(() => {
+      const highlighted = document.querySelector('.line-item-highlight')
+      if (highlighted) {
+        highlighted.classList.remove('line-item-highlight')
+      }
+    }, 5000)
+    // console.log('hello');
+  }, [props.projects])
 
   const list = projects.map(item => {
+
     return (
-      <li key={item.id}>
+      <li key={item.id} className={item.id === props.updatedProjectId ? 'line-item-highlight':null}>
         <Link to={`/projects/${item.id}`}>{item.attributes.title}</Link>
       </li>
     )
@@ -31,4 +38,4 @@ const GroupList = () => {
   )
 }
 
-export default GroupList
+export default ProjectList
