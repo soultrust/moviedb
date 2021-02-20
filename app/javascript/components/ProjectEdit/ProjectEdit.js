@@ -112,11 +112,23 @@ const ProjectEdit = (props) => {
   }
 
   const existingCastList = existingCast.map(member => {
-    return <li key={member.person_id + '-' + member.character_name}>{member.full_name} -- {member.character_name}</li>
+    return (
+      <li key={member.person_id + '-' + member.character_name}>
+        <span>{member.full_name}</span>
+        <span>{member.character_name}</span>
+        <Button variant="outlined" className="btn-add-title" size="small">X</Button>
+      </li>
+    )
   })
 
   const castToSavedList = castToBeSaved.map(member => {
-    return <li key={member.person_id + '-' + member.character_name}>{member.full_name} -- {member.character_name}</li>
+    return (
+      <li key={member.person_id + '-' + member.character_name}>
+        <span>{member.full_name}</span>
+        <span>{member.character_name}</span>
+        <Button variant="outlined" className="btn-add-title" size="small">X</Button>
+      </li>
+    )
   })
 
   return (
@@ -131,7 +143,7 @@ const ProjectEdit = (props) => {
               className="title"
             /><br />
             <AddCastMembersForm projectId={projectId} onCastMemberSaved={handleCastMemberSaved} />
-            <ul>
+            <ul className="cast-list">
               {existingCastList}
               {castToSavedList}
             </ul>
