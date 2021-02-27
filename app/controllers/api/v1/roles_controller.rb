@@ -35,9 +35,7 @@ module Api
       end
 
       def destroy
-        role = Role.find(params[:id])
-
-        if role.destroy
+        if Role.where(id: params[:id].split(',')).destroy_all
           head :no_content
         else
           render json: { error: role.errors.messages }, status: 422

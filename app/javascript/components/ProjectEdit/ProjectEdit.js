@@ -12,6 +12,8 @@ const ProjectEdit = (props) => {
   })
   const [existingCast, setExistingCast] = useState([])
   const [castToBeSaved, setCastToBeSaved] = useState([])
+  const [castToBeDeleted, setCastToBeDeleted] = useState([])
+
   const history = useHistory()
   const projectId = props.match && props.match.params.id
 
@@ -33,6 +35,7 @@ const ProjectEdit = (props) => {
         return +actor.attributes.person_id === +person.id
       })
       return {
+        role_id: actor.id,
         person_id: actor.attributes.person_id,
         full_name: member.attributes.full_name,
         character_name: actor.attributes.character_name
@@ -80,6 +83,14 @@ const ProjectEdit = (props) => {
       })
     }
 
+    if (castToBeDeleted.length) {
+      axios
+        .delete(`/api/v1/roles/${castToBeDeleted.join(',')}`)
+        .then(resp => {
+          console.log(resp)
+        })
+    }
+
     if (projectId) {
       axios
         .put(`/api/v1/projects/${projectId}`, {
@@ -91,32 +102,55 @@ const ProjectEdit = (props) => {
         .then(resp => {
           props.projectUpdated(resp.data.data)
           history.push(`/projects/${projectId}`)
-        })
-        return
-      }
-      axios
-        .post('/api/v1/projects/', {
-          data: {
-            attributes: project,
-            roles_attributes: castPreSave
-          }
-        })
-        .then(resp => {
-          props.projectUpdated(resp.data.data)
-          history.push(`/projects/${resp.data.data.id}`)
-        })
+        });
+      return;
+    }
+    axios
+      .post('/api/v1/projects/', {
+        data: {
+          attributes: project,
+          roles_attributes: castPreSave
+        }
+      })
+      .then(resp => {
+        props.projectUpdated(resp.data.data)
+        history.push(`/projects/${resp.data.data.id}`)
+      })
   }
 
   const handleCastMemberSaved = (actor) => {
     setCastToBeSaved([...castToBeSaved, actor])
   }
 
+  const removeFromList = (roleId, list) => {
+    console.log(roleId, list)
+    if (list === 'existing') {
+      const castToBeDeletedNew = castToBeDeleted.concat(roleId);
+      setCastToBeDeleted(castToBeDeletedNew);
+
+      const existingCastNew = existingCast.filter(actor => {
+        console.log(actor)
+        return roleId !== actor.role_id
+      })
+
+      setExistingCast(existingCastNew)
+    }
+  }
+
+  const removeFromExistingCastList = (roleId) => removeFromList(roleId, 'existing');
+
   const existingCastList = existingCast.map(member => {
     return (
       <li key={member.person_id + '-' + member.character_name}>
         <span>{member.full_name}</span>
         <span>{member.character_name}</span>
-        <Button variant="outlined" className="btn-add-title" size="small">X</Button>
+        <Button
+          variant="outlined"
+          className="btn-add-title"
+          size="small"
+          onClick={() => removeFromExistingCastList(member.role_id)}>
+            X
+        </Button>
       </li>
     )
   })
