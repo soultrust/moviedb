@@ -5,8 +5,11 @@ const Nav = () => {
   return (
     <nav className="nav-main">
       <NavLink
+        exact
         to="/"
-        isActive={({ path }) => ['/', '/projects'].includes(path)}
+        isActive={(match, loc) => {
+          return loc && loc.pathname.includes('projects') || match;
+        }}
       >
         Projects
       </NavLink>
