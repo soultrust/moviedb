@@ -5,6 +5,19 @@ module Api
 
       def index
         projects = Project.order(created_at: :desc).limit(20)
+
+        if params[:keywords].present?
+          keywords = params[:keywords]
+          project_search_term = ProjectSearchTerm.new(keywords)
+          projects = Project.where(
+            project_search_term.where_clause,
+            project_search_term.where_args
+          )
+          .order(project_search_term.order)
+          .limit(20)
+        else
+          projects = Project.all.limit(20)
+        end
         render json: ProjectSerializer.new(projects).serializable_hash
       end
 

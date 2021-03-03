@@ -2,8 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 import { Button, TextField, Typography } from '@material-ui/core'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles'
-// import AddArtistToGroup from './AddArtistToGroup'
-// import AddAlbumToGroup from './AddAlbumToGroup'
+import AddProjectsSubForm from './AddProjectsSubForm';
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,9 +20,8 @@ const PersonEdit = (props) => {
   const [person, setPerson] = useState({
     full_name: '',
     notes: null
-  })
-
-  // const editMode = !!props.location.pathname.match(/edit$/)
+  });
+  const [projectsToBeSaved, setProjectsToBeSaved] = useState([]);
   const personId = props.match.params.id
 
   useEffect(() => {
@@ -35,7 +33,7 @@ const PersonEdit = (props) => {
         })
         .catch(resp => console.log(resp))
     }
-  }, [])
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -63,25 +61,36 @@ const PersonEdit = (props) => {
       .then(resp => {
         props.onPersonUpdated(resp.data.data)
       })
-      .catch(resp => console.log(resp))
+      .catch(resp => console.log(resp));
   }
 
   const handleNameChange = (e) => {
-    setPerson({ full_name: e.target.value })
+    setPerson({ full_name: e.target.value });
   }
+
+  const handleProjectAdded = (role) => {
+    console.log(role)
+    setProjectsToBeSaved([...projectsToBeSaved, role]);
+  }
+
+  const projectsToSaveList = projectsToBeSaved.map(project => {
+    return (
+      <li key={project.person_id + '-' + project.character_name}>
+        <span>{project.title}</span>
+        <span>{project.character_name}</span>
+        <Button variant="outlined" className="btn-add-title" size="small">X</Button>
+      </li>
+    )
+  });
 
   return (
     <form onSubmit={handleSubmit} className="form-person-edit">
       <Typography variant="h4">{ personId ? person.full_name : 'Add a Person' }</Typography><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
-
-      {/* <AddArtistToGroup onItemAdded={handleArtistAdded} /><br /><br /> */}
-
-      {/* <AddAlbumToGroup
-        onItemAdded={handleAlbumAdded}
-        url="/api/v1/albums"
-        label="Search for Albums"
-      /><br /><br /> */}
+      <AddProjectsSubForm onProjectAdded={handleProjectAdded} />
+      <ul className="cast-list">
+        {projectsToSaveList}
+      </ul>
       <Button variant="outlined" size="small" type="submit" style={{ display: 'block' }}>
         Add Person
       </Button>
