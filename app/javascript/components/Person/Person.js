@@ -7,35 +7,44 @@ const Person = (props) => {
   const personId = props.match.params.id
   const [person, setPerson] = useState({
     attributes: {
-      name: ''
+      full_name: ''
     }
   })
-  const [artists, setArtists] = useState([])
-  const [albums, setAlbums] = useState([])
+  const [projects, setProjects] = useState([]);
 
+  const sortIncluded = (personInclResult) => {
+    const projs = [];
+
+    personInclResult.forEach(inc => {
+      if (inc.type === 'project') {
+        const obj = {
+          id: inc.id,
+          attributes: inc.attributes
+        };
+        projs.push(obj)
+      }
+    });
+    setProjects([...projects, ...projs]);
+  }
 
   useEffect(() => {
     axios.get(`/api/v1/persons/${personId}`)
       .then((resp) => {
-        console.log(resp.data.data)
-        setPerson(resp.data.data.attributes)
+        console.log('load: ', resp.data)
+        setPerson(resp.data.data.attributes);
+        sortIncluded(resp.data.included);
       })
       .catch(resp => console.log(resp))
   }, [props.match.params.id])
 
-  const artistList = artists.map(artist => {
-    return <li key={artist.id}>{artist.attributes.full_name}</li>
-  })
-
-  const albumList = albums.map(album => {
-    return <li key={album.id}>{album.attributes.title}</li>
+  const projectList = projects.map(proj => {
+    return <li key={proj.id}>{proj.attributes.title}</li>
   })
 
   return (
     <div>
       <Typography variant="h4">{person.full_name}</Typography><br />
-
-
+      {projectList}
       <Link to={`/persons/${personId}/edit`}>edit</Link>
     </div>
   )
