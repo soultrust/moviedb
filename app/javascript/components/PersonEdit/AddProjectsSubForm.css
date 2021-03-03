@@ -1,0 +1,13 @@
+.add-project-subform {
+  display: flex;
+  align-items: flex-end;
+}
+
+.form-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.field-character-name {
+  grid-column: 1/-1;
+}

@@ -39,18 +39,25 @@ const PersonEdit = (props) => {
     e.preventDefault()
 
     const csrfToken = document.querySelector('[name=csrf-token]').content
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+
+    const projectsToSave = projectsToBeSaved.map(project => {
+      const { character_name, project_id, role_type } = project;
+      return { character_name, project_id, role_type };
+    })
 
     const payload = {
       data: {
-        attributes: person
+        attributes: person,
+        roles_attributes: projectsToSave
       }
     }
 
     if (personId) {
       axios.put(`/api/v1/persons/${personId}`, payload)
         .then(resp => {
-          alert('person has been created/edited!')
+          props.onPersonUpdated(resp.data.data);
+          history.push(`/persons/${personId}`);
         })
         .catch(resp => {
           console.log(resp)
@@ -59,7 +66,8 @@ const PersonEdit = (props) => {
     }
     axios.post('/api/v1/persons', payload)
       .then(resp => {
-        props.onPersonUpdated(resp.data.data)
+        props.onPersonUpdated(resp.data.data);
+        history.push(`/persons/${personId}`);
       })
       .catch(resp => console.log(resp));
   }

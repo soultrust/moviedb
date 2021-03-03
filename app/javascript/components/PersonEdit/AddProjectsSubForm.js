@@ -1,14 +1,15 @@
-import React, { Component, Fragment } from 'react'
-import axios from 'axios'
-import { Button, TextField, Typography } from '@material-ui/core'
-import NnAutosuggest from '../Forms/NnAutosuggest'
+import React, { Component, Fragment } from 'react';
+import axios from 'axios';
+import { Button, TextField, Typography, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import NnAutosuggest from '../Forms/NnAutosuggest';
+import classes from './AddProjectsSubForm.css';
 
 const getSuggestions = value => {
   return new Promise(resolve => {
     axios.get(`/api/v1/projects?keywords=${value}`)
       .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
       .catch(resp => console.log(resp))
-  })
+  });
 }
 class AddProjectsSubForm extends Component {
   constructor() {
@@ -19,7 +20,8 @@ class AddProjectsSubForm extends Component {
       role: {
         character_name: '',
         project_id: null,
-        title: ''
+        title: '',
+        role_type: 'not_set'
       }
     };
   }
@@ -72,8 +74,8 @@ class AddProjectsSubForm extends Component {
       role: {
         character_name: '',
         project_id: null,
-        person_id: null,
-        title: ''
+        title: '',
+        role_type: 'not_set'
       }
     });
   }
@@ -104,21 +106,44 @@ class AddProjectsSubForm extends Component {
     return `${suggestion.attributes.title}`
   }
 
+  handleRoleTypeChange = (e) => {
+    this.setState({
+      role: { ...this.state.role, role_type: e.target.value }
+    });
+  }
+
   render() {
     return (
       <Fragment>
-        <h3>Add Projects - As Actor</h3>
-        <div className="subform-add-project">
-          <NnAutosuggest
-            value={this.state.role.title}
-            onChange={this.handleChange}
-            label="Project"
-            onItemSelected={this.handleProjectSelection}
-            url="/api/v1/projects"
-            getSuggestionValue={this.getSuggestionValue}
-            createSuggestionLabel={this.createSuggestionLabel}
-          />
-          <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
+        <h3>Add Projects</h3>
+        <div className="add-project-subform">
+          <div className="form-section">
+            <NnAutosuggest
+              value={this.state.role.title}
+              onChange={this.handleChange}
+              label="Project"
+              onItemSelected={this.handleProjectSelection}
+              url="/api/v1/projects"
+              getSuggestionValue={this.getSuggestionValue}
+              createSuggestionLabel={this.createSuggestionLabel}
+            />
+            <FormControl>
+              <InputLabel id="demo-simple-select-label">Role</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.state.role.role_type}
+                onChange={this.handleRoleTypeChange}
+              >
+                <MenuItem value={'not_set'}>Select Role</MenuItem>
+                <MenuItem value={'actor'}>Actor</MenuItem>
+                <MenuItem value={'director'}>Director</MenuItem>
+              </Select>
+            </FormControl>
+            { this.state.role.role_type === 'actor' &&
+              <TextField label="Character Name" className="field-character-name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
+            }
+          </div>
           <Button onClick={this.handleSubmit} variant="outlined" className="btn-add" size="small">Add</Button>
         </div>
       </Fragment>

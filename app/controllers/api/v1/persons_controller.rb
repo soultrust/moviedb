@@ -31,7 +31,7 @@ module Api
 
       def show
         person = Person.find(params[:id])
-        render json: PersonSerializer.new(person).serializable_hash
+        render json: PersonSerializer.new(person, options).serializable_hash
       end
 
       def edit
@@ -42,7 +42,7 @@ module Api
         person = Person.find(params[:id])
 
         if person.update(person_params)
-          render json: PersonSerializer.new(person).serializable_hash
+          render json: PersonSerializer.new(person, options).serializable_hash
         else
           render json: { error: person.errors.messages }, status: 422
         end
@@ -61,7 +61,15 @@ module Api
       private
 
       def person_params
-        params.require(:data).require(:attributes).permit(:full_name, :notes)
+        params.require(:data)
+          .permit(
+            attributes: [:full_name, :notes],
+            roles_attributes: [:project_id, :role_type, :character_name]
+          )
+      end
+
+      def options
+        @options ||= { include: [:roles, :projects] }
       end
     end
   end
