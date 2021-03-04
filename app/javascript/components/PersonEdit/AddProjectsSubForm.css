@@ -1,3 +1,15 @@
+
+.field-character-name {
+  grid-column: 1/-1;
+  overflow: hidden;
+  height: 0;
+  transition: height 0.3s ease-out;
+}
+
+.field-character-name.show {
+  height: 48px;
+}
+
 .add-project-subform {
   display: flex;
   align-items: flex-end;
@@ -8,6 +20,3 @@
   grid-template-columns: 2fr 1fr;
 }
 
-.field-character-name {
-  grid-column: 1/-1;
-}

@@ -17,6 +17,7 @@ class AddProjectsSubForm extends Component {
     this.state = {
       value: '',
       suggestions: [],
+      showCharacterNameField: false,
       role: {
         character_name: '',
         project_id: null,
@@ -112,6 +113,10 @@ class AddProjectsSubForm extends Component {
     });
   }
 
+  characterNameActive = () => {
+
+  }
+
   render() {
     return (
       <Fragment>
@@ -140,9 +145,13 @@ class AddProjectsSubForm extends Component {
                 <MenuItem value={'director'}>Director</MenuItem>
               </Select>
             </FormControl>
-            { this.state.role.role_type === 'actor' &&
-              <TextField label="Character Name" className="field-character-name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-            }
+
+            <TextField
+              label="Character Name"
+              className={`field-character-name ${this.state.role.role_type === 'actor' ? 'show' : ''}`}
+              onChange={this.handleCharacterNameChange} value={this.state.role.character_name}
+            />
+
           </div>
           <Button onClick={this.handleSubmit} variant="outlined" className="btn-add" size="small">Add</Button>
         </div>
