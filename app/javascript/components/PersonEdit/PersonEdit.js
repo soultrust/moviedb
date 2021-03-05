@@ -1,9 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import { Button, TextField, Typography } from '@material-ui/core'
-import axios from 'axios'
+import { Button, TextField, Typography } from '@material-ui/core';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
+
 import { makeStyles } from '@material-ui/core/styles'
 import AddProjectsSubForm from './AddProjectsSubForm';
-import { useHistory } from "react-router-dom";
+import { sortIncluded } from '../Helpers';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -22,18 +24,42 @@ const PersonEdit = (props) => {
     notes: null
   });
   const [projectsToBeSaved, setProjectsToBeSaved] = useState([]);
-  const personId = props.match.params.id
+  const [actingProjects, setActingProjects] = useState([]);
+  const [crewProjects, setCrewProjects] = useState([]);
+  const personId = props.match.params.id;
 
   useEffect(() => {
     if (personId) {
       axios.get(`/api/v1/persons/${personId}`)
         .then((resp) => {
           console.log(resp.data.data.attributes);
-          setPerson(resp.data.data.attributes)
+          setPerson(resp.data.data.attributes);
+          const { actingProjectsTemp, crewProjectsTemp } = sortIncluded(resp.data.included);
+          setActingProjects([...actingProjects, ...actingProjectsTemp]);
+          setCrewProjects([...crewProjects, ...crewProjectsTemp]);
         })
-        .catch(resp => console.log(resp))
+        .catch(resp => console.log(resp));
+
+      return () => {
+        setActingProjects(prevProjs => {
+          prevProjs.length = 0;
+          return prevProjs;
+        });
+        setCrewProjects(prevProjs => {
+          prevProjs.length = 0;
+          return prevProjs;
+        });
+      }
     }
   }, []);
+
+  const actingList = actingProjects.map(proj => {
+    return <li key={proj.id}>{proj.title} - {proj.characterName}</li>
+  });
+
+  const crewList = crewProjects.map(proj => {
+    return <li key={proj.id}>{proj.title} - {proj.roleType}</li>
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -95,6 +121,15 @@ const PersonEdit = (props) => {
     <form onSubmit={handleSubmit} className="form-person-edit">
       <Typography variant="h4">{ personId ? person.full_name : 'Add a Person' }</Typography><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
+      { !!actingList.length &&
+        <h3>Projects as Actor</h3>
+      }
+      {actingList}
+
+      { !!crewList.length &&
+        <h3>Projects as Crew</h3>
+      }
+      {crewList}
       <AddProjectsSubForm onProjectAdded={handleProjectAdded} />
       <ul className="cast-list">
         {projectsToSaveList}
