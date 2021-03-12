@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_12_093304) do
+ActiveRecord::Schema.define(version: 2021_03_11_032906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,13 @@ ActiveRecord::Schema.define(version: 2021_02_12_093304) do
     t.index ["person_id", "project_id", "role_type", "character_name"], name: "uniqueness_index", unique: true
     t.index ["person_id"], name: "index_roles_on_person_id"
     t.index ["project_id"], name: "index_roles_on_project_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "password_digest"
   end
 
   add_foreign_key "roles", "persons"

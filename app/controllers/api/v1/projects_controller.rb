@@ -1,7 +1,7 @@
 module Api
   module V1
     class ProjectsController < ApplicationController
-      protect_from_forgery with: :null_session
+      before_action :authenticate_user, only: [:create, :update, :destroy]
 
       def index
         projects = Project.order(created_at: :desc).limit(20)
@@ -16,7 +16,7 @@ module Api
           .order(project_search_term.order)
           .limit(20)
         else
-          projects = Project.all.limit(20)
+          projects = Project.all.limit(10)
         end
         render json: ProjectSerializer.new(projects).serializable_hash
       end
@@ -57,6 +57,16 @@ module Api
       end
 
       private
+
+      def authenticate_user
+        # Authorization: Bearer <token>
+        token, _options = ActionController::HttpAuthentication::Token.token_and_options(request)
+        user_id = AuthenticationTokenService.decode(token)
+        # raise user_id.inspect
+        User.find(user_id)
+      rescue ActiveRecord::RecordNotFound => error
+        render json: { error: error }, status: :unauthorized
+      end
 
       def project_params
         params.require(:data)

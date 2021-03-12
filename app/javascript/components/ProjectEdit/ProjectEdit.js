@@ -91,6 +91,7 @@ const ProjectEdit = (props) => {
         })
     }
 
+    // Updating existing project
     if (projectId) {
       axios
         .put(`/api/v1/projects/${projectId}`, {
@@ -105,6 +106,8 @@ const ProjectEdit = (props) => {
         });
       return;
     }
+
+    // Creating new project
     axios
       .post('/api/v1/projects/', {
         data: {
@@ -131,9 +134,9 @@ const ProjectEdit = (props) => {
       const existingCastNew = existingCast.filter(actor => {
         console.log(actor)
         return roleId !== actor.role_id
-      })
+      });
 
-      setExistingCast(existingCastNew)
+      setExistingCast(existingCastNew);
     }
   }
 
