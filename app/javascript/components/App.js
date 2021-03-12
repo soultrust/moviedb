@@ -1,12 +1,11 @@
-import React from 'react'
-import { Route, Switch, Link } from 'react-router-dom'
-import Projects from './Projects/Projects'
-import Project from './Project/Project'
-import ProjectEdit from './ProjectEdit/ProjectEdit'
-import Persons from './Persons/Persons'
-import { Container, ThemeProvider, Typography } from '@material-ui/core'
-import { createMuiTheme } from '@material-ui/core/styles'
-import classes from './App.css'
+import React from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
+import Projects from './Projects/Projects';
+import Persons from './Persons/Persons';
+import Auth from './Auth/Auth';
+import { Container, ThemeProvider, Typography } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import classes from './App.css';
 
 const theme = createMuiTheme({
   typography: {
@@ -29,7 +28,7 @@ const App = () => {
           <Route exact path="/" component={Projects} />
           <Route path="/projects/" component={Projects} />
           <Route path="/persons" component={Persons} />
-          {/* <Route exact path="/persons/:id" component={Person} /> */}
+          <Route exact path="/signup" component={Auth} />
         </Switch>
       </Container>
     </ThemeProvider>
