@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import Input from '../Forms/Input/Input';
 import { Button, TextField } from '@material-ui/core'
 import classes from './Auth.module.css';
-// import * as actions from '../../store/actions/index';
 
 class Auth extends Component {
     state = {
         controls: {
-            email: {
+            username: {
                 elementType: 'input',
                 elementConfig: {
-                    type: 'email',
-                    placeholder: 'Mail Address'
+                    type: 'username',
+                    placeholder: 'Username'
                 },
                 value: '',
                 validation: {
                     required: true,
-                    isEmail: true
+                    minLength: 6
                 },
                 valid: false,
                 touched: false
@@ -71,52 +71,69 @@ class Auth extends Component {
     }
 
     inputChangedHandler = (event, controlName) => {
-        const updatedControls = {
-            ...this.state.controls,
-            [controlName]: {
-                ...this.state.controls[controlName],
-                value: event.target.value,
-                valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
-                touched: true
-            }
-        };
-        this.setState({controls: updatedControls});
+      const updatedControls = {
+          ...this.state.controls,
+          [controlName]: {
+              ...this.state.controls[controlName],
+              value: event.target.value,
+              valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+              touched: true
+          }
+      };
+      this.setState({controls: updatedControls});
     }
 
     submitHandler = (event) => {
-        event.preventDefault();
-        this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value);
+      event.preventDefault();
+      const { username, password } = this.state.controls;
+
+      // SignUp
+      if (this.props.isSignUp) {
+        axios
+          .post('/api/v1/users', {
+            username: username.value,
+            password: password.value
+          })
+          .then(resp => console.log(resp));
+      }
+      // Login
+      axios
+        .post('/api/v1/authenticate', {
+          username: username.value,
+          password: password.value
+        })
+        .then(resp => console.log(resp));
     }
 
     render () {
-        const formElementsArray = [];
-        for ( let key in this.state.controls ) {
-            formElementsArray.push( {
-                id: key,
-                config: this.state.controls[key]
-            } );
-        }
+      const formElementsArray = [];
+      for ( let key in this.state.controls ) {
+        formElementsArray.push({
+          id: key,
+          config: this.state.controls[key]
+        });
+      }
 
-        const form = formElementsArray.map( formElement => (
-            <Input
-                key={formElement.id}
-                elementType={formElement.config.elementType}
-                elementConfig={formElement.config.elementConfig}
-                value={formElement.config.value}
-                invalid={!formElement.config.valid}
-                shouldValidate={formElement.config.validation}
-                touched={formElement.config.touched}
-                changed={( event ) => this.inputChangedHandler( event, formElement.id )} />
-        ) );
+      const form = formElementsArray.map( formElement => (
+        <Input
+          key={formElement.id}
+          elementType={formElement.config.elementType}
+          elementConfig={formElement.config.elementConfig}
+          value={formElement.config.value}
+          invalid={!formElement.config.valid}
+          shouldValidate={formElement.config.validation}
+          touched={formElement.config.touched}
+          changed={( event ) => this.inputChangedHandler( event, formElement.id )} />
+      ));
 
-        return (
-            <div className={classes.Auth}>
-                <form onSubmit={this.submitHandler}>
-                    {form}
-                    <Button>SUBMIT</Button>
-                </form>
-            </div>
-        );
+      return (
+        <div className={classes.Auth}>
+          <form onSubmit={this.submitHandler}>
+              {form}
+            <Button type="submit">{this.props.isSignUp ? 'SUBMIT' : 'LOGIN'}</Button>
+          </form>
+        </div>
+      );
     }
 }
 

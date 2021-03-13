@@ -26,7 +26,6 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'jsonapi-serializer'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-
 gem 'jwt'
 
 group :development, :test do

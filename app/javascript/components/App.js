@@ -28,7 +28,14 @@ const App = () => {
           <Route exact path="/" component={Projects} />
           <Route path="/projects/" component={Projects} />
           <Route path="/persons" component={Persons} />
-          <Route exact path="/signup" component={Auth} />
+          <Route exact
+            path="/signup"
+            render={routeProps => <Auth {...routeProps} isSignUp={true} />}
+          />
+          <Route exact
+            path="/login"
+            render={routeProps => <Auth {...routeProps} isSignUp={false} />}
+          />
         </Switch>
       </Container>
     </ThemeProvider>
