@@ -21,9 +21,14 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container className="test">
-        <Link to="/" className="title">
-          <Typography>Soultrust Movie DB</Typography>
-        </Link>
+        <div className="title-bar">
+          <Link to="/" className="title-link">
+            Soultrust Movie Database
+          </Link>
+          <Link to="/login" className="login-link">
+            Admin Login
+          </Link>
+        </div>
         <Switch>
           <Route exact path="/" component={Projects} />
           <Route path="/projects/" component={Projects} />

@@ -15,17 +15,25 @@ body > div {
   margin-bottom: 3%;
 }
 
-.title {
-  text-transform: uppercase;
+.title-bar {
+  font-size: 1rem;
   border-bottom: 2px solid #000;
-  margin-bottom: 50px;
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.title-link,
+.login-link {
+  text-transform: uppercase;
+  width: max-content;
   color: #000;
   text-decoration: none;
 }
 
-.title .MuiTypography-root {
-  text-decoration: none;
+.login-link {
+  margin-top: 0.1rem;
+  font-size: 0.8rem;
 }
 
 .layout-2-col {
