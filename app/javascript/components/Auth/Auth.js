@@ -47,8 +47,9 @@ class Auth extends Component {
 
   checkValidity(value, rules) {
     let isValid = true;
+
     if (!rules) {
-        return true;
+      return true;
     }
 
     if (rules.required) {
@@ -69,8 +70,8 @@ class Auth extends Component {
     }
 
     if (rules.isNumeric) {
-        const pattern = /^\d+$/;
-        isValid = pattern.test(value) && isValid
+      const pattern = /^\d+$/;
+      isValid = pattern.test(value) && isValid
     }
 
     return isValid;
@@ -109,6 +110,7 @@ class Auth extends Component {
         password: password.value
       })
       .then(resp => {
+        localStorage.setItem('token', resp.data.token);
         this.setMessage('Great Success!', 'success');
       })
       .catch(err => {
