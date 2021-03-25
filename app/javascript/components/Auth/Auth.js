@@ -1,51 +1,47 @@
-import React, { Component } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { Button, TextField, Snackbar } from '@material-ui/core'
 
 import Input from '../Forms/Input/Input';
-import FlashMessage from '../UI/FlashMessage/FlashMessage';
+// import FlashMessage from '../UI/FlashMessage/FlashMessage';
+import { FlashContext } from '../FlashContext';
 import classes from './Auth.module.css';
 
-class Auth extends Component {
-  state = {
-    controls: {
-      username: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'username',
-            placeholder: 'Username'
-        },
-        value: '',
-        validation: {
-            required: true,
-            minLength: 6
-        },
-        valid: false,
-        touched: false
-      },
-      password: {
-        elementType: 'input',
-        elementConfig: {
-            type: 'password',
-            placeholder: 'Password'
-        },
-        value: '',
-        validation: {
-            required: true,
-            minLength: 6
-        },
-        valid: false,
-        touched: false
-      }
-    },
-    message: {
-      text: '',
-      type: null,
-      isOpen: false
-    }
-  }
+const Auth = (props) => {
+  const [flash, setFlash] = useContext(FlashContext);
 
-  checkValidity(value, rules) {
+  const [controls, setControls] = useState({
+    username: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'username',
+        placeholder: 'Username'
+      },
+      value: '',
+      validation: {
+        required: true,
+        minLength: 6
+      },
+      valid: false,
+      touched: false
+    },
+    password: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'password',
+        placeholder: 'Password'
+      },
+      value: '',
+      validation: {
+        required: true,
+        minLength: 6
+      },
+      valid: false,
+      touched: false
+    }
+  });
+
+  const checkValidity = (value, rules) => {
     let isValid = true;
 
     if (!rules) {
@@ -77,25 +73,25 @@ class Auth extends Component {
     return isValid;
   }
 
-  inputChangedHandler = (event, controlName) => {
+  const inputChangedHandler = (event, controlName) => {
     const updatedControls = {
-      ...this.state.controls,
+      ...controls,
       [controlName]: {
-        ...this.state.controls[controlName],
+        ...controls[controlName],
         value: event.target.value,
-        valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+        valid: checkValidity(event.target.value, controls[controlName].validation),
         touched: true
       }
     };
-    this.setState({controls: updatedControls});
+    setControls(updatedControls);
   }
 
-  submitHandler = (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
-    const { username, password } = this.state.controls;
+    const { username, password } = controls;
 
     // SignUp
-    if (this.props.isSignUp) {
+    if (props.isSignUp) {
       axios
         .post('/api/v1/users', {
           username: username.value,
@@ -111,56 +107,47 @@ class Auth extends Component {
       })
       .then(resp => {
         localStorage.setItem('token', resp.data.token);
-        this.setMessage('Great Success!', 'success');
+        setFlash({ ...flash, message: 'Great Success you can give yourself a blowjob!', type: 'success', isOpen: true });
+        props.history.push('/');
       })
       .catch(err => {
-        this.setMessage('Bad news. You can\'t come in.', 'error');
+        setFlash({ ...flash, message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true });
       })
   }
 
-  setMessage = (msg, type) => {
-    this.setState({
-      message: {
-        ...this.state.message,
-        text: msg,
-        type,
-        isOpen: true
-      }
+  const formElementsArray = [];
+  console.log(controls);
+  for ( let key in controls ) {
+    formElementsArray.push({
+      id: key,
+      config: controls[key]
     });
-  };
-
-  render() {
-    const { text, type, isOpen } = this.state.message;
-    const formElementsArray = [];
-    for ( let key in this.state.controls ) {
-      formElementsArray.push({
-        id: key,
-        config: this.state.controls[key]
-      });
-    }
-
-    const form = formElementsArray.map( formElement => (
-      <Input
-        key={formElement.id}
-        elementType={formElement.config.elementType}
-        elementConfig={formElement.config.elementConfig}
-        value={formElement.config.value}
-        invalid={!formElement.config.valid}
-        shouldValidate={formElement.config.validation}
-        touched={formElement.config.touched}
-        changed={( event ) => this.inputChangedHandler( event, formElement.id )} />
-    ));
-
-    return (
-      <div className={classes.Auth}>
-        <form onSubmit={this.submitHandler}>
-            {form}
-          <Button type="submit">{this.props.isSignUp ? 'SUBMIT' : 'LOGIN'}</Button>
-        </form>
-        <FlashMessage message={text} type={type} open={isOpen}  />
-      </div>
-    );
   }
+
+
+
+  const form = formElementsArray.map( formElement => (
+    <Input
+      key={formElement.id}
+      elementType={formElement.config.elementType}
+      elementConfig={formElement.config.elementConfig}
+      value={formElement.config.value}
+      invalid={!formElement.config.valid}
+      shouldValidate={formElement.config.validation}
+      touched={formElement.config.touched}
+      changed={( event ) => inputChangedHandler( event, formElement.id )} />
+  ));
+
+  console.log(flash);
+
+  return (
+    <div className={classes.Auth}>
+      <form onSubmit={submitHandler}>
+          {form}
+        <Button type="submit">{props.isSignUp ? 'SUBMIT' : 'LOGIN'}</Button>
+      </form>
+    </div>
+  );
 }
 
 export default Auth;

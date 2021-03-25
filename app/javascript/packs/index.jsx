@@ -6,13 +6,16 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import App from '../components/App'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { FlashProvider } from '../components/FlashContext';
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Router>
-      <Route path="/" component={App} />
-    </Router>,
+    <FlashProvider>
+      <Router>
+        <Route path="/" component={App} />
+      </Router>
+    </FlashProvider>,
     document.body.appendChild(document.createElement('div')),
   )
 })
