@@ -7,15 +7,15 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import App from '../components/App'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { FlashProvider } from '../components/FlashContext';
+import { AppProvider } from '../components/AppContext';
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <FlashProvider>
+    <AppProvider>
       <Router>
         <Route path="/" component={App} />
       </Router>
-    </FlashProvider>,
+    </AppProvider>,
     document.body.appendChild(document.createElement('div')),
   )
 })

@@ -1,14 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, TextField, Snackbar } from '@material-ui/core'
 
 import Input from '../Forms/Input/Input';
-// import FlashMessage from '../UI/FlashMessage/FlashMessage';
-import { FlashContext } from '../FlashContext';
+import { AppContext } from '../AppContext';
 import classes from './Auth.module.css';
 
 const Auth = (props) => {
-  const [flash, setFlash] = useContext(FlashContext);
+  const [global, setGlobal] = useContext(AppContext);
 
   const [controls, setControls] = useState({
     username: {
@@ -74,6 +73,7 @@ const Auth = (props) => {
   }
 
   const inputChangedHandler = (event, controlName) => {
+
     const updatedControls = {
       ...controls,
       [controlName]: {
@@ -107,24 +107,34 @@ const Auth = (props) => {
       })
       .then(resp => {
         localStorage.setItem('token', resp.data.token);
-        setFlash({ ...flash, message: 'Great Success you can give yourself a blowjob!', type: 'success', isOpen: true });
+        setGlobal({
+          ...global,
+          flash: {
+            message: 'Great Success you can give yourself a blowjob!',
+            type: 'success',
+            isOpen: true
+          },
+          token: resp.data.token
+        });
         props.history.push('/');
       })
       .catch(err => {
-        setFlash({ ...flash, message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true });
+        setGlobal({
+          ...global,
+          flash: {
+            message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true
+          }
+        });
       })
   }
 
   const formElementsArray = [];
-  console.log(controls);
   for ( let key in controls ) {
     formElementsArray.push({
       id: key,
       config: controls[key]
     });
   }
-
-
 
   const form = formElementsArray.map( formElement => (
     <Input
@@ -137,8 +147,6 @@ const Auth = (props) => {
       touched={formElement.config.touched}
       changed={( event ) => inputChangedHandler( event, formElement.id )} />
   ));
-
-  console.log(flash);
 
   return (
     <div className={classes.Auth}>

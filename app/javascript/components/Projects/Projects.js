@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Route, Switch, Link } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
 import axios from 'axios'
 
 import Project from '../Project/Project'

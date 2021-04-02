@@ -14,7 +14,7 @@ module Api
           .order(person_search_term.order)
           .limit(20)
         else
-          persons = Person.all.limit(20)
+          persons = Person.all.limit(10)
         end
         render json: PersonSerializer.new(persons).serializable_hash
       end

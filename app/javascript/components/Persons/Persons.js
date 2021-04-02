@@ -45,7 +45,7 @@ const Persons = () => {
           <h3>Recently Saved</h3>
           <PersonList persons={persons} />
         </div>
-        <div className="main">
+        <div className="record-detail">
           <Switch>
             <Route exact path="/persons" component={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />
             <Route exact path="/persons/:id/edit" render={props => <PersonEdit {...props} onPersonUpdated={updatePersons} />} />

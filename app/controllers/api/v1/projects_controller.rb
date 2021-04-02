@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_user, only: [:create, :update, :destroy]
 
       def index
-        projects = Project.order(created_at: :desc).limit(20)
+        projects = Project.order(created_at: :desc).limit(10)
 
         if params[:keywords].present?
           keywords = params[:keywords]

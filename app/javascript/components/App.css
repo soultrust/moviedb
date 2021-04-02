@@ -15,6 +15,11 @@ body > div {
   margin-bottom: 3%;
 }
 
+h3 {
+  font-size: 1rem;
+  margin-right: 1rem;
+}
+
 .title-bar {
   font-size: 1rem;
   border-bottom: 2px solid #000;
@@ -34,6 +39,7 @@ body > div {
 .login-link {
   margin-top: 0.1rem;
   font-size: 0.8rem;
+  cursor: pointer;
 }
 
 .layout-2-col {
@@ -90,12 +96,7 @@ ul.generic a {
   padding: 2rem;
   border: 1px solid #000;
   border-radius: 9px;
-}
-
-.form-person-edit {
-  border: 1px solid #000;
-  padding: 2rem;
-  border-radius: 9px;
+  width: 500px;
 }
 
 .MuiContainer-root.MuiContainer-maxWidthLg {
