@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :projects
       resources :persons  #, only: [:create, :destroy]
       resources :roles
+      resources :users
 
       post 'authenticate', to: 'authentication#create'
     end
