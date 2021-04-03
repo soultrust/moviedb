@@ -73,6 +73,10 @@ const App = (props) => {
           <Route exact path="/" component={Projects} />
           <Route path="/projects" component={Projects} />
           <Route path="/persons" component={Persons} />
+          <Route exact
+              path="/signup"
+              render={routeProps => <Auth {...routeProps} isSignUp={true} />}
+            />
           { global.isAuthenticated ?
             <Route exact
               path="/signup"
