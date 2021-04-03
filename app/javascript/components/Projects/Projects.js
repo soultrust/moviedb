@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import axios from 'axios'
+import React, { useContext, useState, useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import axios from 'axios';
 
 import Project from '../Project/Project'
 import ProjectEdit from '../ProjectEdit/ProjectEdit'

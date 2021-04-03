@@ -9,7 +9,7 @@ import classes from './Auth.module.css';
 const Auth = (props) => {
   const [global, setGlobal] = useContext(AppContext);
 
-  const [controls, setControls] = useState({
+  const signupFields = {
     username: {
       elementType: 'input',
       elementConfig: {
@@ -52,7 +52,38 @@ const Auth = (props) => {
       valid: false,
       touched: false
     }
-  });
+  };
+
+  const loginFields = {
+    username: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'username',
+        placeholder: 'Username'
+      },
+      value: '',
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    },
+    password: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'password',
+        placeholder: 'Password'
+      },
+      value: '',
+      validation: {
+        required: true
+      },
+      valid: false,
+      touched: false
+    }
+  }
+
+  const [controls, setControls] = useState( props.isSignUp ? signupFields : loginFields );
 
   const checkValidity = (value, rules) => {
     let isValid = true;
