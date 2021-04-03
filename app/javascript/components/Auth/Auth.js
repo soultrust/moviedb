@@ -98,36 +98,37 @@ const Auth = (props) => {
           password: password.value
         })
         .then(resp => console.log(resp));
+    } else {
+      // Login
+      axios
+        .post('/api/v1/authenticate', {
+          username: username.value,
+          password: password.value
+        })
+        .then(resp => {
+          localStorage.setItem('token', resp.data.token);
+          setGlobal({
+            ...global,
+            flash: {
+              message: 'Great Success you can give yourself a blowjob!',
+              type: 'success',
+              isOpen: true
+            },
+            isAuthenticated: !!resp.data.token
+          });
+          props.history.push('/');
+        })
+        .catch(err => {
+          setGlobal({
+            ...global,
+            flash: {
+              type: 'error',
+              message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true,
+              isOpen: true
+            }
+          });
+        });
     }
-    // Login
-    axios
-      .post('/api/v1/authenticate', {
-        username: username.value,
-        password: password.value
-      })
-      .then(resp => {
-        localStorage.setItem('token', resp.data.token);
-        setGlobal({
-          ...global,
-          flash: {
-            message: 'Great Success you can give yourself a blowjob!',
-            type: 'success',
-            isOpen: true
-          },
-          isAuthenticated: !!resp.data.token
-        });
-        props.history.push('/');
-      })
-      .catch(err => {
-        setGlobal({
-          ...global,
-          flash: {
-            type: 'error',
-            message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true,
-            isOpen: true
-          }
-        });
-      })
   }
 
   const formElementsArray = [];
