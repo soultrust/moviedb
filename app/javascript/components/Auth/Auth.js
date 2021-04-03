@@ -37,6 +37,20 @@ const Auth = (props) => {
       },
       valid: false,
       touched: false
+    },
+    password_confirmation: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'password',
+        placeholder: 'Confirm Password'
+      },
+      value: '',
+      validation: {
+        required: true,
+        minLength: 6
+      },
+      valid: false,
+      touched: false
     }
   });
 
@@ -88,14 +102,17 @@ const Auth = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    const { username, password } = controls;
+    const { username, password, password_confirmation } = controls;
 
     // SignUp
     if (props.isSignUp) {
       axios
         .post('/api/v1/users', {
-          username: username.value,
-          password: password.value
+          user: {
+            username: username.value,
+            password: password.value,
+            password_confirmation: password_confirmation.value
+          }
         })
         .then(resp => console.log(resp));
     } else {

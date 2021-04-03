@@ -1,19 +1,20 @@
 module Api
   module V1
-    class AuthenticationController < ApplicationController
+    class UsersController < ApplicationController
       def create
-        user = User.new(user_params)
+        user = User.create!(
+          username: params['user']['username'],
+          password: params['user']['password'],
+          password_confirmation: params['user']['password_confirmation']
+        )
 
-        if user.save
-          'saved'
+        if user
+          render json: {
+            status: :created,
+            user: user
+          }
         else
-          render json: { error: role.errors.messages }, status: 422
-        end
-
-        private
-
-        def user_params
-          params.require(:user).permit(:username, :password_digest)
+          render json: { status: 500 }
         end
       end
     end
