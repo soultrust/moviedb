@@ -54,6 +54,7 @@ const Projects = (props) => {
         { global.isAuthenticated ?
           <Switch>
             <Route exact path="/" render={() => <ProjectEdit projectUpdated={handleProjectUpdated} />} />
+            <Route exact path="/projects/:id" component={Project} />
             <Route exact
               path="/projects/:id/edit"
               render={routeProps => <ProjectEdit {...routeProps} projectUpdated={handleProjectUpdated} />} />
