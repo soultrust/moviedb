@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
-import AddCastMembersForm from '../ProjectEdit/AddCastMembersForm'
 import { Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import classes from './Project.css'
@@ -32,21 +31,23 @@ const Project = (props) => {
         character_name: actor.attributes.character_name
       }
     })
-    setCast(actors)
+    setCast(actors);
   }
 
   useEffect(() => {
-    const projectId = props.match.params.id
-    const url = `/api/v1/projects/${projectId}`
+    const projectId = props.match.params.id || props.firstProjectId;
 
-    axios.get(url)
-      .then(resp => {
-        extractActors(resp.data.included)
-        setProject(resp.data)
-        setLoaded(true)
-      })
-      .catch(resp => console.log(resp))
-  }, [props.match.params.id])
+    if (projectId) {
+      const url = `/api/v1/projects/${projectId}`;
+      axios.get(url)
+        .then(resp => {
+          extractActors(resp.data.included);
+          setProject(resp.data);
+          setLoaded(true);
+        })
+        .catch(resp => console.log(resp));
+    }
+  }, [props.match.params.id, props.firstProjectId])
 
   return (
     <Fragment>

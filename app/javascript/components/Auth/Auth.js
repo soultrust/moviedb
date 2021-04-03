@@ -114,7 +114,7 @@ const Auth = (props) => {
             type: 'success',
             isOpen: true
           },
-          token: resp.data.token
+          isAuthenticated: !!resp.data.token
         });
         props.history.push('/');
       })
@@ -122,7 +122,9 @@ const Auth = (props) => {
         setGlobal({
           ...global,
           flash: {
-            message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true
+            type: 'error',
+            message: 'Bad news. You can\'t come in.', type: 'error', isOpen: true,
+            isOpen: true
           }
         });
       })

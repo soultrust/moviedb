@@ -19,11 +19,11 @@ const ProjectList = (props) => {
 
   const list = projects.map(item => {
     return (
-      <li key={item.id} className={item.id === props.updatedProjectId ? 'line-item-highlight':null}>
+      <li key={item.id} className={item.id === props.updatedProjectId ? 'line-item-highlight' : null}>
         <Link to={`/projects/${item.id}`}>{item.attributes.title}</Link>
       </li>
     )
-  })
+  });
 
   return (
     <div className="recently-saved">

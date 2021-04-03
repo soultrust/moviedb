@@ -10,7 +10,7 @@ export const AppProvider = (props) => {
       type: null,
       isOpen: false
     },
-    token: localStorage.getItem('token') || ''
+    isAuthenticated: !!localStorage.getItem('token') || false
   });
 
   return (

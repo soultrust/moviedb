@@ -7,8 +7,8 @@ import Person from '../Person/Person'
 import Nav from '../Nav/Nav'
 
 const Persons = () => {
-  const [persons, setPersons] = useState([])
-  const history = useHistory()
+  const [persons, setPersons] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     axios.get('/api/v1/persons')
@@ -16,7 +16,7 @@ const Persons = () => {
         setPersons(resp.data.data)
       })
       .catch(resp => console.log(resp))
-  }, [])
+  }, []);
 
   const updatePersons = (updatedPerson) => {
     const updatedPersonIndex = persons.findIndex(person => person.id === updatedPerson.id)

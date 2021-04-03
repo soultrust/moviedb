@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
-import { Button, Container, ThemeProvider, Typography, Snackbar } from '@material-ui/core';
+import { Route, Switch, Link, Redirect, useHistory } from 'react-router-dom';
+import { Container, ThemeProvider, Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createMuiTheme } from '@material-ui/core/styles';
 
@@ -22,6 +22,7 @@ const theme = createMuiTheme({
 
 const App = (props) => {
   const [global, setGlobal] = useContext(AppContext);
+  const history = useHistory();
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -38,13 +39,24 @@ const App = (props) => {
   }
 
   const logout = () => {
-    localStorage.setItem('token', '');
     setGlobal({
       ...global,
-      token: ''
+      isAuthenticated: false
     });
-    props.history.push('/login');
+    localStorage.setItem('token', '');
+    history.push('/login');
+  }
 
+  let logInOutSection = null;
+
+  if (props.location.pathname !== '/login') {
+    logInOutSection = global.isAuthenticated ?
+      <div onClick={logout} className="login-link">
+        Logout
+      </div> :
+      <Link to="/login" className="login-link">
+        Admin Login
+      </Link>;
   }
 
   return (
@@ -54,34 +66,34 @@ const App = (props) => {
           <Link to="/" className="title-link">
             Soultrust Movie Database
           </Link>
-          { global.token ?
-            <div onClick={logout} className="login-link">
-              Logout
-            </div> : props.location.pathname !== '/login' ?
-            <Link to="/login" className="login-link">
-              Admin Login
-            </Link> : ''
-          }
+          {logInOutSection}
         </div>
+
         <Switch>
           <Route exact path="/" component={Projects} />
-          <Route path="/projects/" component={Projects} />
+          <Route path="/projects" component={Projects} />
           <Route path="/persons" component={Persons} />
-          <Route exact
-            path="/signup"
-            render={routeProps => <Auth {...routeProps} isSignUp={true} />}
-          />
-          <Route exact
-            path="/login"
-            render={routeProps => <Auth {...routeProps} isSignUp={false} />}
-          />
+          { global.isAuthenticated ?
+            <Route exact
+              path="/signup"
+              render={routeProps => <Auth {...routeProps} isSignUp={true} />}
+            />
+            :
+            <Route exact
+              path="/login"
+              render={routeProps => <Auth {...routeProps} isSignUp={false} />}
+            />
+          }
+          <Route render={() => <Redirect to="/" />} />
         </Switch>
+
       </Container>
       <Snackbar open={global.flash.isOpen} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={global.flash.type}>
           {global.flash.message}
         </Alert>
       </Snackbar>
+      <div>{ global.isAuthenticated ? 'LOGGED IN' : 'LOGGED OUT' }</div>
     </ThemeProvider>
   );
 };
