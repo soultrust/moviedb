@@ -32,7 +32,15 @@ module SoultrustFilms
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.load_defaults "6.0"
     config.autoloader = :classic
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', headers: :any, methods: [
+          :delete, :put, :patch, :get, :post, :options
+        ]
+      end
+    end
   end
 end

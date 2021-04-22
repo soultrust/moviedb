@@ -1,6 +1,7 @@
 module Api
   module V1
     class ProjectsController < ApplicationController
+      include ActionController::HttpAuthentication::Token
       before_action :authenticate_user, only: [:create, :update, :destroy]
 
       def index
@@ -59,10 +60,13 @@ module Api
       private
 
       def authenticate_user
+        # p request
         # Authorization: Bearer <token>
-        token, _options = ActionController::HttpAuthentication::Token.token_and_options(request)
+        token, _options = token_and_options(request)
+        # p token
         user_id = AuthenticationTokenService.decode(token)
         # raise user_id.inspect
+        # raise token.inspect
         User.find(user_id)
       rescue ActiveRecord::RecordNotFound => error
         render json: { error: error }, status: :unauthorized

@@ -118,7 +118,6 @@ const Auth = (props) => {
   }
 
   const inputChangedHandler = (event, controlName) => {
-
     const updatedControls = {
       ...controls,
       [controlName]: {
@@ -162,7 +161,8 @@ const Auth = (props) => {
               type: 'success',
               isOpen: true
             },
-            isAuthenticated: !!resp.data.token
+            isAuthenticated: !!resp.data.token,
+            token: resp.data.token
           });
           props.history.push('/');
         })
@@ -187,7 +187,7 @@ const Auth = (props) => {
     });
   }
 
-  const form = formElementsArray.map( formElement => (
+  const form = formElementsArray.map(formElement => (
     <Input
       key={formElement.id}
       elementType={formElement.config.elementType}

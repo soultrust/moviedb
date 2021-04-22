@@ -1,64 +1,62 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect, useContext, Fragment } from 'react';
+import axios from 'axios';
 
-import AddCastMembersForm from './AddCastMembersForm'
-import { Link, useHistory } from 'react-router-dom'
-import { Button, TextField } from '@material-ui/core'
+import AddCastMembersForm from './AddCastMembersForm';
+import { Link, useHistory } from 'react-router-dom';
+import { Button, TextField } from '@material-ui/core';
+import { AppContext } from '../AppContext';
 
 const ProjectEdit = (props) => {
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(false);
   const [project, setProject] = useState({
     title: ''
-  })
-  const [existingCast, setExistingCast] = useState([])
-  const [castToBeSaved, setCastToBeSaved] = useState([])
-  const [castToBeDeleted, setCastToBeDeleted] = useState([])
+  });
+  const [existingCast, setExistingCast] = useState([]);
+  const [castToBeSaved, setCastToBeSaved] = useState([]);
+  const [castToBeDeleted, setCastToBeDeleted] = useState([]);
+  const [global] = useContext(AppContext);
 
-  const history = useHistory()
-  const projectId = props.match && props.match.params.id
+  const history = useHistory();
+  const projectId = props.match && props.match.params.id;
 
   const extractActors = (projectInclResult) => {
-    console.log('projectInclResult: ', projectInclResult)
-
     // Filter actors
     const actorObjects = projectInclResult.filter(inc => {
-      return inc.type === 'role' && inc.attributes.role_type === 'actor'
-    })
-
+      return inc.type === 'role' && inc.attributes.role_type === 'actor';
+    });
     // Filter persons
     const personObjects = projectInclResult.filter(inc => {
-      return inc.type === 'person'
-    })
-
+      return inc.type === 'person';
+    });
     const actors = actorObjects.map((actor) => {
       const member = personObjects.find(person => {
-        return +actor.attributes.person_id === +person.id
-      })
+        return +actor.attributes.person_id === +person.id;
+      });
       return {
         role_id: actor.id,
         person_id: actor.attributes.person_id,
         full_name: member.attributes.full_name,
         character_name: actor.attributes.character_name
       }
-    })
-    setExistingCast(actors)
+    });
+    setExistingCast(actors);
   }
 
   useEffect(() => {
     if (!projectId) {
-      setLoaded(true)
-      return
+      setLoaded(true);
+      return;
     }
-    const url = `/api/v1/projects/${projectId}`
+    const url = `/api/v1/projects/${projectId}`;
 
     axios.get(url)
       .then(resp => {
-        extractActors(resp.data.included)
-        setProject(resp.data.data.attributes)
-        setLoaded(true)
+        extractActors(resp.data.included);
+        setProject(resp.data.data.attributes);
+        setLoaded(true);
       })
-      .catch(resp => console.log(resp))
-  }, [projectId])
+      .catch(resp => console.log(resp));
+  }, [projectId]);
 
   const handleTitleChange = (e) => {
     setProject({
@@ -67,7 +65,7 @@ const ProjectEdit = (props) => {
   }
 
   const saveProject = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     let castPreSave;
 
@@ -75,7 +73,7 @@ const ProjectEdit = (props) => {
       castPreSave = castToBeSaved.map(actor => {
         const {
           person_id, project_id, character_name
-        } = actor
+        } = actor;
 
         return {
           person_id, project_id, character_name, role_type: 1
@@ -87,7 +85,7 @@ const ProjectEdit = (props) => {
       axios
         .delete(`/api/v1/roles/${castToBeDeleted.join(',')}`)
         .then(resp => {
-          console.log(resp)
+          console.log(resp);
         })
     }
 
@@ -101,8 +99,8 @@ const ProjectEdit = (props) => {
           }
         })
         .then(resp => {
-          props.projectUpdated(resp.data.data)
-          history.push(`/projects/${projectId}`)
+          props.projectUpdated(resp.data.data);
+          history.push(`/projects/${projectId}`);
         });
       return;
     }
@@ -114,15 +112,20 @@ const ProjectEdit = (props) => {
           attributes: project,
           roles_attributes: castPreSave
         }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${global.token}`
+        }
       })
       .then(resp => {
-        props.projectUpdated(resp.data.data)
-        history.push(`/projects/${resp.data.data.id}`)
+        props.projectUpdated(resp.data.data);
+        history.push(`/projects/${resp.data.data.id}`);
       })
   }
 
   const handleCastMemberSaved = (actor) => {
-    setCastToBeSaved([...castToBeSaved, actor])
+    setCastToBeSaved([...castToBeSaved, actor]);
   }
 
   const removeFromList = (roleId, list) => {
@@ -132,8 +135,8 @@ const ProjectEdit = (props) => {
       setCastToBeDeleted(castToBeDeletedNew);
 
       const existingCastNew = existingCast.filter(actor => {
-        console.log(actor)
-        return roleId !== actor.role_id
+        console.log(actor);
+        return roleId !== actor.role_id;
       });
 
       setExistingCast(existingCastNew);
