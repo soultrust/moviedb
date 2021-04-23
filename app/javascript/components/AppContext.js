@@ -6,7 +6,7 @@ export const AppProvider = (props) => {
   const [global, setGlobal] = useState({
     ...global,
     flash: {
-      message: 'hello you\'re done for today',
+      message: '',
       type: null,
       isOpen: false
     },

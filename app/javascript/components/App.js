@@ -34,9 +34,7 @@ const App = (props) => {
         ...global.flash,
         message: '',
         isOpen: false
-      },
-      isAuthenticated: false,
-      token: null
+      }
     });
   }
 
@@ -45,7 +43,7 @@ const App = (props) => {
       ...global,
       isAuthenticated: false
     });
-    localStorage.setItem('token', null);
+    localStorage.setItem('token', '');
     history.push('/login');
   }
 

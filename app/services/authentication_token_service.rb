@@ -3,7 +3,7 @@ class AuthenticationTokenService
   ALGORITHM_TYPE = 'HS256'
 
   def self.call(user_id)
-    payload = { user_id: user_id, exp: 20.seconds.from_now.to_i }
+    payload = { user_id: user_id, exp: 2.hours.from_now }
     JWT.encode payload, HMAC_SECRET, ALGORITHM_TYPE
   end
 
