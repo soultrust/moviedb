@@ -153,7 +153,8 @@ const Auth = (props) => {
           password: password.value
         })
         .then(resp => {
-          localStorage.setItem('token', resp.data.token);
+          console.log(resp.data)
+          localStorage.setItem('token', resp.data.access_token);
           setGlobal({
             ...global,
             flash: {
@@ -161,8 +162,8 @@ const Auth = (props) => {
               type: 'success',
               isOpen: true
             },
-            isAuthenticated: !!resp.data.token,
-            token: resp.data.token
+            isAuthenticated: !!resp.data.access_token,
+            token: resp.data.access_token
           });
           props.history.push('/');
         })

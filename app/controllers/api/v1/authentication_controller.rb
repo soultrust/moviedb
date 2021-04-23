@@ -13,8 +13,9 @@ module Api
         user = User.find_by(username: params[:username])
         raise AuthenticationError unless user && user.authenticate(params.require(:password))
 
-        token = AuthenticationTokenService.call(user.id)
-        render json: { token: token }, status: :created
+        access_token = AuthenticationTokenService.call(user.id)
+        refresh_token = AuthenticationTokenService.refresh(user.id)
+        render json: { access_token: access_token, refresh_token: refresh_token }, status: :created
       end
 
       private
