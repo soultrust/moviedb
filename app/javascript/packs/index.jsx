@@ -9,6 +9,9 @@ import App from '../components/App'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { AppProvider } from '../components/AppContext';
 
+const root = document.createElement('div');
+root.classList.add('root');
+
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <AppProvider>
@@ -16,6 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <Route path="/" component={App} />
       </Router>
     </AppProvider>,
-    document.body.appendChild(document.createElement('div')),
+    document.body.appendChild(root),
   )
 })

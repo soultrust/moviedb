@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { Fragment, useContext, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 
 import Project from '../Project/Project'
 import ProjectEdit from '../ProjectEdit/ProjectEdit'
 import ProjectList from '../ProjectList/ProjectList'
-import Nav from '../Nav/Nav'
 import { AppContext } from '../AppContext';
 
 const Projects = (props) => {
@@ -43,13 +42,12 @@ const Projects = (props) => {
   }
 
   return (
-    <div className="layout-2-col">
+    <Fragment>
       <div className="list-container">
-        <Nav />
         <h3>Recently Saved Projects</h3>
         <ProjectList projects={projects} updatedProjectId={updatedProjectId} />
       </div>
-      <div className="record-detail">
+      <main className="main-panel">
 
         { global.isAuthenticated ?
           <Switch>
@@ -68,8 +66,8 @@ const Projects = (props) => {
           </Switch>
         }
 
-      </div>
-    </div>
+      </main>
+    </Fragment>
   )
 }
 

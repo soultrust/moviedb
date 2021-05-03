@@ -7,6 +7,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Projects from './Projects/Projects';
 import Persons from './Persons/Persons';
 import Auth from './Auth/Auth';
+import Nav from './Nav/Nav';
+import Search from './Search/Search';
 import { AppContext } from './AppContext';
 import classes from './App.css';
 
@@ -61,13 +63,16 @@ const App = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container className="test">
+      <Container className="grid-layout">
         <div className="title-bar">
           <Link to="/" className="title-link">
             Soultrust Movie Database
           </Link>
           {logInOutSection}
         </div>
+
+        <Nav />
+        <Search />
 
         <Switch>
           <Route exact path="/" component={Projects} />
@@ -97,7 +102,7 @@ const App = (props) => {
           {global.flash.message}
         </Alert>
       </Snackbar>
-      <div>{ global.isAuthenticated ? 'LOGGED IN' : 'LOGGED OUT' }</div>
+      <div className="auth-status">{ global.isAuthenticated ? 'LOGGED IN' : 'LOGGED OUT' }</div>
     </ThemeProvider>
   );
 };
