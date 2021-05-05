@@ -5,6 +5,7 @@ import NnAutosuggest from '../Forms/NnAutosuggest';
 import classes from './AddProjectsSubForm.css';
 
 const getSuggestions = value => {
+  // debugger;
   return new Promise(resolve => {
     axios.get(`/api/v1/projects?keywords=${value}`)
       .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
@@ -32,12 +33,14 @@ class AddProjectsSubForm extends Component {
   }
 
   onChange = (event, { newValue }) => {
+    // debugger;
     this.setState({
       value: newValue
     })
   }
 
   onSuggestionsFetchRequested = async ({ value }) => {
+    // debugger;
     const suggestions = await getSuggestions(value)
     this.setState({
       suggestions: suggestions
@@ -45,21 +48,25 @@ class AddProjectsSubForm extends Component {
   }
 
   onSuggestionsClearRequested = () => {
+    // debugger;
     this.setState({
       suggestions: []
     })
   }
 
-  renderSuggestion = suggestion => (
-    <span onClick={() => {
-      this.handleSelection({
-        id: suggestion.id,
-        title: suggestion.attributes.title
-      })
-    }}>
-      {suggestion.attributes.title}
-    </span>
-  )
+  renderSuggestion = suggestion => {
+    // debugger;
+    return (
+      <span onClick={() => {
+        this.handleSelection({
+          id: suggestion.id,
+          title: suggestion.attributes.title
+        })
+      }}>
+        {suggestion.attributes.title}
+      </span>
+    )
+  }
 
   handleProjectSelection = (project) => {
     console.log('handle project selected: ', project)
@@ -70,6 +77,7 @@ class AddProjectsSubForm extends Component {
   }
 
   handleSubmit = () => {
+    // debugger;
     this.props.onProjectAdded(this.state.role);
     this.setState({
       role: {
@@ -82,10 +90,12 @@ class AddProjectsSubForm extends Component {
   }
 
   handleCharacterNameChange = (e) => {
+    // debugger;
     this.setState({ role: { ...this.state.role, character_name: e.target.value } })
   }
 
   getSuggestionValue = (suggestion) => {
+    // debugger;
     const { title } = suggestion.attributes
 
     this.setState({
@@ -96,6 +106,7 @@ class AddProjectsSubForm extends Component {
   }
 
   handleChange = () => (event, { newValue }) => {
+    // debugger;
     this.setState(state => {
       return {
         role: { ...state.role, title: newValue }
@@ -104,10 +115,12 @@ class AddProjectsSubForm extends Component {
   }
 
   createSuggestionLabel = (suggestion) => {
+    // debugger;
     return `${suggestion.attributes.title}`
   }
 
   handleRoleTypeChange = (e) => {
+    // debugger;
     this.setState({
       role: { ...this.state.role, role_type: e.target.value }
     });

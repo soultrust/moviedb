@@ -55,14 +55,13 @@ const styles = theme => ({
   },
 });
 
-class NnAutosuggest extends React.Component {
+class NnAutosuggestGroups extends React.Component {
   state = {
     suggestions: [],
     value: ''
   }
 
   renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    // debugger;
     const label = this.props.createSuggestionLabel(suggestion)
     const matches = match(label, query)
     const parts = parse(label, matches);
@@ -87,28 +86,30 @@ class NnAutosuggest extends React.Component {
   }
 
   getSuggestions = value => {
-    // debugger;
+    const combinedReqs = this.props.urls.map(url => {
+      return axios.get(`${url}?keywords=${value}`);
+    });
+    const leanFlattened = [];
     return new Promise(resolve => {
-      axios.get(`${this.props.url}?keywords=${value}`)
-        .then(resp => {
-          !resp || resp.data.error ? resolve([]) : resolve(resp.data.data)
+      Promise.all(combinedReqs)
+        .then(resultGroups => {
+          resultGroups.forEach(group => {
+            leanFlattened.push(...group.data.data);
+          });
+          resolve(leanFlattened);
         })
         .catch(resp => console.log(resp))
-    })
+    });
   }
 
   handleSuggestionsFetchRequested = async ({ value }) => {
-    // debugger;
     this.setState({
       suggestions: await this.getSuggestions(value),
     });
   };
 
   handleSuggestionsClearRequested = () => {
-    // debugger;
-    this.setState({
-      suggestions: [],
-    });
+    this.setState({ suggestions: [] });
   };
 
   render() {
@@ -150,8 +151,8 @@ class NnAutosuggest extends React.Component {
   }
 }
 
-NnAutosuggest.propTypes = {
+NnAutosuggestGroups.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NnAutosuggest)
+export default withStyles(styles)(NnAutosuggestGroups)

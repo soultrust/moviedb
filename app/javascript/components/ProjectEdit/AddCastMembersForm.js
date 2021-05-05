@@ -3,13 +3,13 @@ import axios from 'axios'
 import { Button, TextField, Typography } from '@material-ui/core'
 import NnAutosuggest from '../Forms/NnAutosuggest'
 
-const getSuggestions = value => {
-  return new Promise(resolve => {
-    axios.get(`/api/v1/persons?keywords=${value}`)
-      .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
-      .catch(resp => console.log(resp))
-  })
-}
+// const getSuggestions = value => {
+//   return new Promise(resolve => {
+//     axios.get(`/api/v1/persons?keywords=${value}`)
+//       .then(resp => !resp || resp.data.error ? resolve([]) : resolve(resp.data.data))
+//       .catch(resp => console.log(resp))
+//   })
+// }
 class AddCastMembersForm extends Component {
   constructor() {
     super()
@@ -35,18 +35,18 @@ class AddCastMembersForm extends Component {
     })
   }
 
-  onSuggestionsFetchRequested = async ({ value }) => {
-    const suggestions = await getSuggestions(value)
-    this.setState({
-      suggestions: suggestions
-    })
-  }
+  // onSuggestionsFetchRequested = async ({ value }) => {
+  //   const suggestions = await getSuggestions(value)
+  //   this.setState({
+  //     suggestions: suggestions
+  //   })
+  // }
 
-  onSuggestionsClearRequested = () => {
-    this.setState({
-      suggestions: []
-    })
-  }
+  // onSuggestionsClearRequested = () => {
+  //   this.setState({
+  //     suggestions: []
+  //   })
+  // }
 
   renderSuggestion = suggestion => (
     <span onClick={() => {

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :users
 
       post 'authenticate', to: 'authentication#create'
+      get 'search', to: 'search#index'
     end
   end
 

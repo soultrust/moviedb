@@ -112,11 +112,12 @@ const ProjectEdit = (props) => {
           attributes: project,
           roles_attributes: castPreSave
         }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${global.token}`
-        }
+        // },
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${global.token}`
+        //   }
+        // })
       })
       .then(resp => {
         props.projectUpdated(resp.data.data);

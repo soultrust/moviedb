@@ -8,7 +8,7 @@ import Projects from './Projects/Projects';
 import Persons from './Persons/Persons';
 import Auth from './Auth/Auth';
 import Nav from './Nav/Nav';
-import Search from './Search/Search';
+import SearchProjectsPeople from './SearchProjectsPeople/SearchProjectsPeople';
 import { AppContext } from './AppContext';
 import classes from './App.css';
 
@@ -72,7 +72,7 @@ const App = (props) => {
         </div>
 
         <Nav />
-        <Search />
+        <SearchProjectsPeople />
 
         <Switch>
           <Route exact path="/" component={Projects} />
