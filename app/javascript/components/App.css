@@ -195,3 +195,19 @@ ul.generic a {
 .search {
   grid-column: 2/-1;
 }
+
+.autocomplete {
+  grid-column: 2/-1;
+  margin-bottom: 2rem;
+  border-radius: 9px;
+}
+
+.autocomplete .MuiOutlinedInput-root {
+  border-radius: 9px;
+}
+
+.root .MuiAutocomplete-popper {
+  display: block !important;
+  visibility: visible !important;
+  left: 0;
+}
