@@ -5,10 +5,10 @@ import axios from 'axios';
 import Project from '../Project/Project'
 import ProjectEdit from '../ProjectEdit/ProjectEdit'
 import ProjectList from '../ProjectList/ProjectList'
-import { AppContext } from '../AppContext';
+import AppContext from '../AppContext';
 
 const Projects = (props) => {
-  const [global] = useContext(AppContext);
+  const appCtx = useContext(AppContext);
   const [projects, setProjects] = useState([]);
   const [updatedProjectId, setUpdatedProjectId] = useState('');
   let firstProjectId;
@@ -17,7 +17,7 @@ const Projects = (props) => {
     axios.get('/api/v1/projects')
       .then((resp) => {
         setProjects(resp.data.data);
-        if (!global.isAuthenticated) {
+        if (!appCtx.isLoggedIn) {
           const randomNum = Math.floor((Math.random() * 10) + 1);
           firstProjectId = resp.data.data[randomNum].id;
           props.history.push(`/projects/${firstProjectId}`);
@@ -49,7 +49,7 @@ const Projects = (props) => {
       </div>
       <main className="main-panel">
 
-        { global.isAuthenticated ?
+        { appCtx.isLoggedIn ?
           <Switch>
             <Route exact path="/" render={() => <ProjectEdit projectUpdated={handleProjectUpdated} />} />
             <Route exact path="/projects/:id" component={Project} />

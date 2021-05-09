@@ -14,7 +14,8 @@ const ProjectEdit = (props) => {
   const [existingCast, setExistingCast] = useState([]);
   const [castToBeSaved, setCastToBeSaved] = useState([]);
   const [castToBeDeleted, setCastToBeDeleted] = useState([]);
-  const [global] = useContext(AppContext);
+  // const appCtx = useContext(AppContext);
+  // const isLoggedIn = appContext.isLoggedIn;
 
   const history = useHistory();
   const projectId = props.match && props.match.params.id;

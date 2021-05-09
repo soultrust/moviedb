@@ -6,10 +6,10 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 import Projects from './Projects/Projects';
 import Persons from './Persons/Persons';
-import Auth from './Auth/Auth';
+
 import Nav from './Nav/Nav';
 import SearchProjectsPeople from './SearchProjectsPeople/SearchProjectsPeople';
-import { AppContext } from './AppContext';
+import AppContext from './AppContext';
 import classes from './App.css';
 
 const theme = createMuiTheme({
@@ -23,7 +23,7 @@ const theme = createMuiTheme({
 });
 
 const App = (props) => {
-  const [global, setGlobal] = useContext(AppContext);
+  const appCtx = useContext(AppContext);
   const history = useHistory();
 
   const handleClose = (event, reason) => {
@@ -41,18 +41,14 @@ const App = (props) => {
   }
 
   const logout = () => {
-    setGlobal({
-      ...global,
-      isAuthenticated: false
-    });
-    localStorage.setItem('token', '');
+    appCtx.logout();
     history.push('/login');
   }
 
   let logInOutSection = null;
 
-  if (props.location.pathname !== '/login') {
-    logInOutSection = global.isAuthenticated ?
+  if (location.pathname !== '/login') {
+    logInOutSection = appCtx.isLoggedIn ?
       <div onClick={logout} className="login-link">
         Logout
       </div> :
@@ -78,31 +74,17 @@ const App = (props) => {
           <Route exact path="/" component={Projects} />
           <Route path="/projects" component={Projects} />
           <Route path="/persons" component={Persons} />
-          <Route exact
-              path="/signup"
-              render={routeProps => <Auth {...routeProps} isSignUp={true} />}
-            />
-          { global.isAuthenticated ?
-            <Route exact
-              path="/signup"
-              render={routeProps => <Auth {...routeProps} isSignUp={true} />}
-            />
-            :
-            <Route exact
-              path="/login"
-              render={routeProps => <Auth {...routeProps} isSignUp={false} />}
-            />
-          }
-          <Route render={() => <Redirect to="/" />} />
+
+          {/* <Route render={() => <Redirect to="/" />} /> */}
         </Switch>
 
       </Container>
-      <Snackbar open={global.flash.isOpen} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={global.flash.type}>
-          {global.flash.message}
+      <Snackbar open={appCtx.flash.isOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={appCtx.flash.type}>
+          {appCtx.flash.message}
         </Alert>
       </Snackbar>
-      <div className="auth-status">{ global.isAuthenticated ? 'LOGGED IN' : 'LOGGED OUT' }</div>
+      <div className="auth-status">{ appCtx.isLoggedIn ? 'LOGGED IN' : 'LOGGED OUT' }</div>
     </ThemeProvider>
   );
 };

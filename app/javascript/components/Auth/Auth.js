@@ -3,11 +3,11 @@ import axios from 'axios';
 import { Button, TextField, Snackbar } from '@material-ui/core'
 
 import Input from '../Forms/Input/Input';
-import { AppContext } from '../AppContext';
+import AppContext from '../AppContext';
 import classes from './Auth.module.css';
 
 const Auth = (props) => {
-  const [global, setGlobal] = useContext(AppContext);
+  const appCtx = useContext(AppContext);
 
   const signupFields = {
     username: {
@@ -153,18 +153,21 @@ const Auth = (props) => {
           password: password.value
         })
         .then(resp => {
-          console.log(resp.data)
-          localStorage.setItem('token', resp.data.access_token);
-          setGlobal({
-            ...global,
-            flash: {
-              message: 'Great Success you can give yourself a blowjob!',
-              type: 'success',
-              isOpen: true
-            },
-            isAuthenticated: !!resp.data.access_token,
-            token: resp.data.access_token
-          });
+          console.log(resp.data);
+          const { access_token } = resp.data;
+          // console.log(resp.data)
+          // localStorage.setItem('token', resp.data.access_token);
+          // setGlobal({
+          //   ...global,
+          //   flash: {
+          //     message: 'Great Success you can give yourself a blowjob!',
+          //     type: 'success',
+          //     isOpen: true
+          //   },
+          //   isAuthenticated: !!resp.data.access_token,
+          //   token: resp.data.access_token
+          // });
+          appCtx.login(access_token)
           props.history.push('/');
         })
         .catch(err => {

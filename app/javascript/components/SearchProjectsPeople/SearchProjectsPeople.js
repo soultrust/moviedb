@@ -1,17 +1,17 @@
-/* eslint-disable no-use-before-define */
 import React from 'react';
 import axios from 'axios'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useHistory } from 'react-router-dom';
 
-
-export default function SearchProjectsPeople() {
+const SearchProjectsPeople = () => {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [loading, setLoading] = React.useState(open && options.length === 0);
+  const history = useHistory();
 
   React.useEffect(() => {
     let active = true;
@@ -54,8 +54,6 @@ export default function SearchProjectsPeople() {
     }
   }, [open]);
 
-
-
   return (
     <Autocomplete
       className="autocomplete"
@@ -71,8 +69,9 @@ export default function SearchProjectsPeople() {
       }}
       value={value}
       onChange={(_, newValue) => {
-        // setValue(newValue);
-        console.log(newValue)
+        const { id, type } = newValue;
+        history.push(`/${type}s/${id}`);
+        setInputValue('');
       }}
       inputValue={inputValue}
       onInputChange={(_, newInputValue) => {
@@ -110,3 +109,5 @@ export default function SearchProjectsPeople() {
     />
   );
 }
+
+export default SearchProjectsPeople;
