@@ -60,13 +60,8 @@ module Api
       private
 
       def authenticate_user
-        # p request
-        # Authorization: Bearer <token>
         token, _options = token_and_options(request)
-        # p token
         user_id = AuthenticationTokenService.decode(token)
-        # raise user_id.inspect
-        # raise token.inspect
         User.find(user_id)
       rescue ActiveRecord::RecordNotFound => error
         render json: { error: error }, status: :unauthorized

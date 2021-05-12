@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_12_233806) do
+ActiveRecord::Schema.define(version: 2021_05_12_043420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,15 @@ ActiveRecord::Schema.define(version: 2021_03_12_233806) do
     t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "refresh_tokens", force: :cascade do |t|
+    t.string "crypted_token"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["crypted_token"], name: "index_refresh_tokens_on_crypted_token", unique: true
+    t.index ["user_id"], name: "index_refresh_tokens_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -49,6 +58,7 @@ ActiveRecord::Schema.define(version: 2021_03_12_233806) do
     t.string "username"
   end
 
+  add_foreign_key "refresh_tokens", "users"
   add_foreign_key "roles", "persons"
   add_foreign_key "roles", "projects"
 end

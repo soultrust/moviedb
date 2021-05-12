@@ -6,9 +6,10 @@ const AppContext = createContext({
     type: null,
     isOpen: false
   },
+  updateFlash: () => {},
   token: '',
   isLoggedIn: false,
-  login: (token) => { },
+  login: (token) => {},
   logout: () => {}
 });
 
@@ -25,16 +26,28 @@ export const AppProvider = (props) => {
 
   const loginHandler = (token) => {
     setToken(token);
+    setFlash({
+      message: 'Great Success!!!',
+      type: 'success',
+      isOpen: true
+    });
   };
+
   const logoutHandler = () => {
     setToken(null);
   };
+
+  const updateFlash = (params) => {
+    setFlash(params);
+  }
+
   const contextValue = {
     flash: flash,
     token: token,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
-    logout: logoutHandler
+    logout: logoutHandler,
+    updateFlash: updateFlash
   };
 
   return (

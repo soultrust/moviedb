@@ -154,20 +154,8 @@ const Auth = (props) => {
         })
         .then(resp => {
           console.log(resp.data);
-          const { access_token } = resp.data;
-          // console.log(resp.data)
-          // localStorage.setItem('token', resp.data.access_token);
-          // setGlobal({
-          //   ...global,
-          //   flash: {
-          //     message: 'Great Success you can give yourself a blowjob!',
-          //     type: 'success',
-          //     isOpen: true
-          //   },
-          //   isAuthenticated: !!resp.data.access_token,
-          //   token: resp.data.access_token
-          // });
-          appCtx.login(access_token)
+          const { token } = resp.data;
+          appCtx.login(token);
           props.history.push('/');
         })
         .catch(err => {
@@ -203,12 +191,15 @@ const Auth = (props) => {
       changed={( event ) => inputChangedHandler( event, formElement.id )} />
   ));
 
+
+
   return (
     <div className={classes.Auth}>
       <form onSubmit={submitHandler}>
           {form}
         <Button type="submit">{props.isSignUp ? 'SUBMIT' : 'LOGIN'}</Button>
       </form>
+
     </div>
   );
 }

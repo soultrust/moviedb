@@ -1,7 +1,3 @@
-// Run this example by adding <%= javascript_pack_tag 'hello_react' %> to the head of your layout file,
-// like app/views/layouts/application.html.erb. All it does is render <div>Hello React</div> at the bottom
-// of the page.
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
@@ -17,17 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <AppProvider>
       <BrowserRouter>
-        <Switch>
-          <Route exact
-            path="/signup"
-            render={routeProps => <Auth {...routeProps} isSignUp={true} />}
-          />
-          <Route exact
-            path="/login"
-            render={routeProps => <Auth {...routeProps} isSignUp={false} />}
-          />
-          <Route path="/" component={App} />
-        </Switch>
+        <App />
       </BrowserRouter>
     </AppProvider>,
     document.body.appendChild(root)

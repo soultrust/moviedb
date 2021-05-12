@@ -1,12 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Route, Switch, Link, Redirect, useHistory } from 'react-router-dom';
-import { Container, ThemeProvider, Snackbar } from '@material-ui/core';
+import { Button, TextField, Snackbar, Container, ThemeProvider } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { createMuiTheme } from '@material-ui/core/styles';
 
+import Main from './Main';
+import Auth from './Auth/Auth';
 import Projects from './Projects/Projects';
 import Persons from './Persons/Persons';
-
 import Nav from './Nav/Nav';
 import SearchProjectsPeople from './SearchProjectsPeople/SearchProjectsPeople';
 import AppContext from './AppContext';
@@ -26,59 +27,35 @@ const App = (props) => {
   const appCtx = useContext(AppContext);
   const history = useHistory();
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setGlobal({
-      ...global,
-      flash: {
-        ...global.flash,
-        message: '',
-        isOpen: false
-      }
-    });
-  }
-
   const logout = () => {
     appCtx.logout();
     history.push('/login');
   }
 
-  let logInOutSection = null;
-
-  if (location.pathname !== '/login') {
-    logInOutSection = appCtx.isLoggedIn ?
-      <div onClick={logout} className="login-link">
-        Logout
-      </div> :
-      <Link to="/login" className="login-link">
-        Admin Login
-      </Link>;
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    appCtx.updateFlash({
+      message: '',
+      isOpen: false
+    });
   }
+
 
   return (
     <ThemeProvider theme={theme}>
-      <Container className="grid-layout">
-        <div className="title-bar">
-          <Link to="/" className="title-link">
-            Soultrust Movie Database
-          </Link>
-          {logInOutSection}
-        </div>
-
-        <Nav />
-        <SearchProjectsPeople />
-
-        <Switch>
-          <Route exact path="/" component={Projects} />
-          <Route path="/projects" component={Projects} />
-          <Route path="/persons" component={Persons} />
-
-          {/* <Route render={() => <Redirect to="/" />} /> */}
-        </Switch>
-
-      </Container>
+      <Switch>
+        <Route exact
+          path="/signup"
+          render={routeProps => <Auth {...routeProps} isSignUp={true} />}
+        />
+        <Route exact
+          path="/login"
+          render={routeProps => <Auth {...routeProps} isSignUp={false} />}
+        />
+        <Route path="/" component={Main} />
+      </Switch>
       <Snackbar open={appCtx.flash.isOpen} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={appCtx.flash.type}>
           {appCtx.flash.message}

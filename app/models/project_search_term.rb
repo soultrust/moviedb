@@ -19,7 +19,7 @@ class ProjectSearchTerm
   end
 
   def starts_with(search_term)
-    search_term + "%"
+    "%" + search_term + "%"
   end
 
   def

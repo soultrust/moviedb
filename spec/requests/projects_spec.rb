@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Projects API', type: :request do
-  let(:user) { FactoryBot.create(:user, email: 'tomo@soultrust.com', password: 'Password1', username: 'soultrust') }
+  let(:user) { FactoryBot.create(:user, password: 'password', username: 'soultrust') }
 
   describe 'POST /projects' do
     it 'creates a new project' do

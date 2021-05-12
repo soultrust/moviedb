@@ -4,7 +4,7 @@ import axios from 'axios';
 import AddCastMembersForm from './AddCastMembersForm';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
-import { AppContext } from '../AppContext';
+import AppContext from '../AppContext';
 
 const ProjectEdit = (props) => {
   const [loaded, setLoaded] = useState(false);
@@ -14,7 +14,7 @@ const ProjectEdit = (props) => {
   const [existingCast, setExistingCast] = useState([]);
   const [castToBeSaved, setCastToBeSaved] = useState([]);
   const [castToBeDeleted, setCastToBeDeleted] = useState([]);
-  // const appCtx = useContext(AppContext);
+  const appCtx = useContext(AppContext);
   // const isLoggedIn = appContext.isLoggedIn;
 
   const history = useHistory();
@@ -108,18 +108,19 @@ const ProjectEdit = (props) => {
 
     // Creating new project
     axios
-      .post('/api/v1/projects/', {
-        data: {
-          attributes: project,
-          roles_attributes: castPreSave
+      .post('/api/v1/projects/',
+        {
+          data: {
+            attributes: project,
+            roles_attributes: castPreSave
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${appCtx.token}`
+          }
         }
-        // },
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${global.token}`
-        //   }
-        // })
-      })
+      )
       .then(resp => {
         props.projectUpdated(resp.data.data);
         history.push(`/projects/${resp.data.data.id}`);
