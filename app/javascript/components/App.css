@@ -101,6 +101,7 @@ ul.generic a {
   border: 1px solid #000;
   border-radius: 9px;
   grid-column: 2/-1;
+  width: 510px;
 }
 
 .MuiContainer-root.MuiContainer-maxWidthLg {
