@@ -32,8 +32,8 @@ const Main = (props) => {
       <Nav />
       <SearchProjectsPeople />
       <Switch>
-        <Route exact path="/persons" component={Persons} />
-        <Route exact path="/projects" component={Projects} />
+        <Route path="/persons" component={Persons} />
+        <Route path="/projects" component={Projects} />
         <Route path="/" component={Projects} />
       </Switch>
     </Container>
