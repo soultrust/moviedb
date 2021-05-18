@@ -19,7 +19,7 @@ class PersonSearchTerm
   end
 
   def contains(search_term)
-    "(^|\s*)#{search_term}.*"
+    '(^| )' + search_term + '.*'
   end
 
   def
