@@ -6,12 +6,12 @@ class ProjectSearchTerm
     @where_clause = ''
     @where_args = {}
 
-    build_for_name_search(search_term)
+    build_for_title_search(search_term)
   end
 
   private
 
-  def build_for_name_search(search_term)
+  def build_for_title_search(search_term)
     @where_clause << case_insensitive_search(:title)
     @where_args[:title] = starts_with(search_term)
 
@@ -19,7 +19,7 @@ class ProjectSearchTerm
   end
 
   def starts_with(search_term)
-    "%" + search_term + "%"
+    search_term + "%"
   end
 
   def
