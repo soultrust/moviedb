@@ -18,9 +18,9 @@ const Projects = (props) => {
       .then((resp) => {
         setProjects(resp.data.data);
         if (!appCtx.isLoggedIn) {
-          const randomNum = Math.floor((Math.random() * 10) + 1);
-          firstProjectId = resp.data.data[randomNum].id;
-          props.history.push(`/projects/${firstProjectId}`);
+          // const randomNum = Math.floor((Math.random() * 10) + 1);
+          // firstProjectId = resp.data.data[randomNum].id;
+          // props.history.push(`/projects/${firstProjectId}`);
         }
       })
       .catch(resp => console.log(resp))
