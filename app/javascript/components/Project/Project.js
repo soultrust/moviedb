@@ -59,12 +59,12 @@ const Project = (props) => {
           <h2 className="record-detail-title">{project.data.attributes.title}</h2>
           <div className={classes['cast-crew']}>
             <div>
-              <Typography aphy variant="h5">Cast</Typography>
+              <Typography variant="h5">Cast</Typography>
               <ul className={classes['list-actors']}>
                 {cast.map(actor => {
                   return (
                     <li key={actor.id}>
-                      <Link to={`/persons/${actor.id}`} className="name-actor">{actor.full_name}</Link>
+                      <div to={`/persons/${actor.id}`} className="name-actor">{actor.full_name}</div>
                       <div className="name-character">{actor.character_name}</div>
                     </li>
                   )
