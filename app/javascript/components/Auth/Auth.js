@@ -134,8 +134,9 @@ const Auth = (props) => {
     event.preventDefault();
     const { username, password, password_confirmation } = controls;
 
-    // SignUp
+
     if (props.isSignUp) {
+      // SignUp
       axios
         .post('/api/v1/users', {
           user: {

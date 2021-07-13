@@ -42,7 +42,6 @@ const App = (props) => {
     });
   }
 
-
   return (
     <ThemeProvider theme={theme}>
       <Switch>
