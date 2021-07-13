@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import { Typography } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { sortIncluded } from '../Helpers';
+import AppContext from '../AppContext';
 
 const Person = (props) => {
   const personId = props.match.params.id
@@ -13,6 +14,7 @@ const Person = (props) => {
   })
   const [actingProjects, setActingProjects] = useState([]);
   const [crewProjects, setCrewProjects] = useState([]);
+  const appCtx = useContext(AppContext);
 
   useEffect(() => {
     axios.get(`/api/v1/persons/${personId}`)
@@ -37,7 +39,11 @@ const Person = (props) => {
   }, [props.match.params.id]);
 
   const actingList = actingProjects.map(proj => {
-    return <li key={proj.id}>{proj.title} - {proj.characterName}</li>
+    return (
+      <li key={proj.id}>
+        <Link to={`/projects/${proj.id}`}>{proj.title}</Link> - {proj.characterName}
+      </li>
+    );
   });
 
   const crewList = crewProjects.map(proj => {
@@ -56,7 +62,12 @@ const Person = (props) => {
         <h3>Projects as Crew</h3>
       }
       {crewList}
-      <Link to={`/persons/${personId}/edit`}>edit</Link>
+      <br />
+      <br />
+      {
+        appCtx.isLoggedIn &&
+        <Link to={`/persons/${personId}/edit`}>edit</Link>
+      }
     </div>
   )
 }
