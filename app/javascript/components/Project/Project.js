@@ -72,7 +72,7 @@ const Project = (props) => {
               </ul>
             </div>
             <div>
-              <Typography aphy variant="h5">Crew</Typography>
+              <Typography variant="h5">Crew</Typography>
               <ul className={classes['list-crew']}>
 
               </ul>
