@@ -55,7 +55,14 @@ const App = (props) => {
         />
         <Route path="/" component={Main} />
       </Switch>
-      <Snackbar open={appCtx.flash.isOpen} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        open={appCtx.flash.isOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}>
         <Alert onClose={handleClose} severity={appCtx.flash.type}>
           {appCtx.flash.message}
         </Alert>

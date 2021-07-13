@@ -30,7 +30,7 @@ const Main = (props) => {
         {logInOutSection}
       </div>
       <Nav />
-      <SearchProjectsPeople />
+      <SearchProjectsPeople className="search" />
       <Switch>
         <Route path="/persons" component={Persons} />
         <Route path="/projects" component={Projects} />

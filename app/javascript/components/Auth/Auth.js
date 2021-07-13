@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
-import { Button } from '@material-ui/core'
+import { Button, TextField } from '@material-ui/core';
 
 import Input from '../Forms/Input/Input';
 import AppContext from '../AppContext';
@@ -192,15 +192,22 @@ const Auth = (props) => {
       changed={( event ) => inputChangedHandler( event, formElement.id )} />
   ));
 
-
-
   return (
     <div className={classes.Auth}>
+      <div className={classes['title-bar']}>
+        Soultrust Movie Database
+      </div>
       <form onSubmit={submitHandler}>
+        <div className={classes.fields}>
           {form}
-        <Button type="submit">{props.isSignUp ? 'SUBMIT' : 'LOGIN'}</Button>
+        </div>
+        <Button
+          className={classes['btn-login']}
+          variant="outlined"
+          type="submit">
+            {props.isSignUp ? 'SUBMIT' : 'LOGIN'}
+        </Button>
       </form>
-
     </div>
   );
 }

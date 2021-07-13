@@ -1,0 +1,33 @@
+.list-actors {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.list-actors li {
+  padding: 0.4rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.list-actors li:hover {
+  background-color: #efefef;
+}
+
+.list-actors .name-actor {
+  margin-right: 1.5rem;
+  flex-grow: 1;
+}
+
+.list-actors .name-character {
+  margin-right: 0.8rem;
+}
+
+.list-actors .spacer {
+  width: 4rem;
+}
+
+.cast-crew {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+}
