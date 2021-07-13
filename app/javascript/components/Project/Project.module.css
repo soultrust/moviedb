@@ -12,7 +12,7 @@
 }
 
 .list-actors li:hover {
-  background-color: #efefef;
+  /* background-color: #efefef; */
 }
 
 .list-actors .name-actor {
