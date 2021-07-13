@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
-import { Button, TextField, Snackbar } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 
 import Input from '../Forms/Input/Input';
 import AppContext from '../AppContext';
