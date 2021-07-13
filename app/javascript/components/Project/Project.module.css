@@ -1,6 +1,8 @@
 .list-actors {
   list-style-type: none;
   padding-left: 0;
+  min-width: 50%;
+  max-width: 75%;
 }
 
 .list-actors li {
@@ -24,10 +26,4 @@
 
 .list-actors .spacer {
   width: 4rem;
-}
-
-.cast-crew {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 1rem;
 }
