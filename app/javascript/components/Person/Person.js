@@ -47,7 +47,7 @@ const Person = (props) => {
   });
 
   const crewList = crewProjects.map(proj => {
-    return <li key={proj.id}>{proj.title} - {proj.roleType}</li>
+    return <li key={proj.id}>{proj.title} &mdash; {proj.roleType}</li>
   });
 
   return (
@@ -64,7 +64,7 @@ const Person = (props) => {
       { !!crewList.length &&
         <div>
           <h3>Projects as Crew</h3>
-          <ul>{crewList}</ul>
+          <ul className="generic-list">{crewList}</ul>
         </div>
       }
       <br />
