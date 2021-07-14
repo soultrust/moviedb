@@ -54,11 +54,11 @@ const PersonEdit = (props) => {
   }, []);
 
   const actingList = actingProjects.map(proj => {
-    return <li key={proj.id}>{proj.title} - {proj.characterName}</li>
+    return <li key={proj.id}>{proj.title} &mdash; {proj.characterName}</li>
   });
 
   const crewList = crewProjects.map(proj => {
-    return <li key={proj.id}>{proj.title} - {proj.roleType}</li>
+    return <li key={proj.id}>{proj.title} &mdash; {proj.roleType}</li>
   });
 
   const handleSubmit = (e) => {
@@ -122,14 +122,23 @@ const PersonEdit = (props) => {
       <Typography variant="h4">{ personId ? person.full_name : 'Add a Person' }</Typography><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
       { !!actingList.length &&
-        <h3>Projects as Actor</h3>
+        <div>
+          <h3>Projects as Actor</h3>
+          <ul className="generic-list">
+            {actingList}
+          </ul>
+        </div>
       }
-      {actingList}
 
       { !!crewList.length &&
-        <h3>Projects as Crew</h3>
+        <div>
+          <h3>Projects as Crew</h3>
+          <ul className="generic-list">
+            {crewList}
+          </ul>
+        </div>
       }
-      {crewList}
+
       <AddProjectsSubForm onProjectAdded={handleProjectAdded} />
       <ul className="cast-list">
         {projectsToSaveList}
