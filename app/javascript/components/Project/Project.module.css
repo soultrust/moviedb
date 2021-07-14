@@ -11,17 +11,9 @@
   justify-content: space-between;
 }
 
-.list-actors li:hover {
-  /* background-color: #efefef; */
-}
-
-.list-actors .name-actor {
-  margin-right: 1.5rem;
-  flex-grow: 1;
-}
-
-.list-actors .name-character {
+.name-character {
   margin-right: 0.8rem;
+  margin-left: 0.3rem;
 }
 
 .list-actors .spacer {

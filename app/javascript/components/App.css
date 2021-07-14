@@ -81,29 +81,29 @@ h3 {
   margin-top: 0;
 }
 
-ul.generic {
+ul.generic-list {
   list-style-type: none;
   padding-left: 0;
-  margin-left: -0.5rem;
   margin-top: 0;
 }
 
-ul.generic a {
-  display: block;
-  padding: 0.2rem 10% 0.3rem 0.5rem;
+ul.generic-list a {
+  padding: 0.2rem 0 0.3rem 0rem;
   text-decoration: none;
-  width: 100%;
 }
 
-ul.generic a:visited {
+ul.generic-list a:visited {
   color: #999;
 }
 
 ul.links-list {
   list-style-type: none;
   padding-left: 0;
-  margin-left: -0.5rem;
   margin-top: 0;
+}
+
+ul.links-list li {
+  margin-left: -0.5rem;
 }
 
 ul.links-list li:hover {
@@ -112,7 +112,7 @@ ul.links-list li:hover {
 
 ul.links-list a {
   display: block;
-  padding: 0.2rem 10% 0.3rem 0.5rem;
+  padding: 0.2rem 0.5rem 0.3rem 0.5rem;
   text-decoration: none;
   width: 100%;
 }
@@ -127,7 +127,6 @@ ul.links-list a:visited {
   border: 1px solid #000;
   border-radius: 9px;
   grid-column: 2/-1;
-  width: 510px;
 }
 
 .MuiContainer-root.MuiContainer-maxWidthLg {

@@ -60,12 +60,14 @@ const Project = (props) => {
           <div className={classes['cast-crew']}>
             <div>
               <Typography variant="h5">Cast</Typography>
-              <ul className={classes['list-actors']}>
+              <ul className="generic-list">
                 {cast.map(actor => {
                   return (
                     <li key={actor.id}>
-                      <Link to={`/persons/${actor.id}`} className="name-actor">{actor.full_name}</Link>
-                      <div className="name-character">{actor.character_name}</div>
+                      <Link to={`/persons/${actor.id}`}>
+                        {actor.full_name}
+                      </Link> &mdash;
+                      <span className={classes['name-character']}>{actor.character_name}</span>
                     </li>
                   )
                 })}
@@ -73,7 +75,7 @@ const Project = (props) => {
             </div>
             <div>
               <Typography variant="h5">Crew</Typography>
-              <ul className={classes['list-crew']}>
+              <ul className="generic-list">
 
               </ul>
             </div>

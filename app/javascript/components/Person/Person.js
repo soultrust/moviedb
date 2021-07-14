@@ -41,7 +41,7 @@ const Person = (props) => {
   const actingList = actingProjects.map(proj => {
     return (
       <li key={proj.id}>
-        <Link to={`/projects/${proj.id}`}>{proj.title}</Link> - {proj.characterName}
+        <Link to={`/projects/${proj.id}`}>{proj.title}</Link> &mdash; {proj.characterName}
       </li>
     );
   });
@@ -56,7 +56,7 @@ const Person = (props) => {
       { !!actingList.length &&
         <div>
           <h3>Projects as Actor</h3>
-          <ul>{actingList}</ul>
+          <ul className="generic-list">{actingList}</ul>
         </div>
       }
 

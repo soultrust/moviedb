@@ -13,7 +13,7 @@ const PersonList = (props) => {
 
   return (
     <Fragment>
-      <ul className="generic">
+      <ul className="links-list">
         {list}
       </ul>
     </Fragment>
