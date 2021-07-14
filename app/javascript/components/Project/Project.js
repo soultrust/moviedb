@@ -73,12 +73,15 @@ const Project = (props) => {
                 })}
               </ul>
             </div>
-            <div>
-              <Typography variant="h5">Crew</Typography>
-              <ul className="generic-list">
+            {
+              !!cast.length &&
+              <div>
+                <Typography variant="h5">Crew</Typography>
+                <ul className="generic-list">
 
-              </ul>
-            </div>
+                </ul>
+              </div>
+            }
           </div>
           {
             appCtx.isLoggedIn &&

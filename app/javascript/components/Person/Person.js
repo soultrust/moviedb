@@ -59,8 +59,6 @@ const Person = (props) => {
           <ul className="generic-list">{actingList}</ul>
         </div>
       }
-
-
       { !!crewList.length &&
         <div>
           <h3>Projects as Crew</h3>
