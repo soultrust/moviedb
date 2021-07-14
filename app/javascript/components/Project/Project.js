@@ -58,23 +58,26 @@ const Project = (props) => {
         <Fragment>
           <h2 className="record-detail-title">{project.data.attributes.title}</h2>
           <div className={classes['cast-crew']}>
-            <div>
-              <Typography variant="h5">Cast</Typography>
-              <ul className="generic-list">
-                {cast.map(actor => {
-                  return (
-                    <li key={actor.id}>
-                      <Link to={`/persons/${actor.id}`}>
-                        {actor.full_name}
-                      </Link> &mdash;
-                      <span className={classes['name-character']}>{actor.character_name}</span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
             {
               !!cast.length &&
+              <div>
+                <Typography variant="h5">Cast</Typography>
+                <ul className="generic-list">
+                  {cast.map(actor => {
+                    return (
+                      <li key={actor.id}>
+                        <Link to={`/persons/${actor.id}`}>
+                          {actor.full_name}
+                        </Link> &mdash;
+                        <span className={classes['name-character']}>{actor.character_name}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            }
+            {
+              false &&
               <div>
                 <Typography variant="h5">Crew</Typography>
                 <ul className="generic-list">
