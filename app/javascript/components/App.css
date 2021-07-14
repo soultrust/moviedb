@@ -92,10 +92,6 @@ ul.generic-list a {
   text-decoration: none;
 }
 
-ul.generic-list a:visited {
-  color: #999;
-}
-
 ul.links-list {
   list-style-type: none;
   padding-left: 0;
@@ -115,10 +111,6 @@ ul.links-list a {
   padding: 0.2rem 0.5rem 0.3rem 0.5rem;
   text-decoration: none;
   width: 100%;
-}
-
-ul.links-list a:visited {
-  color: #999;
 }
 
 .main-panel {
