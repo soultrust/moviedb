@@ -54,14 +54,19 @@ const Person = (props) => {
     <div>
       <Typography variant="h4">{person.full_name}</Typography><br />
       { !!actingList.length &&
-        <h3>Projects as Actor</h3>
+        <div>
+          <h3>Projects as Actor</h3>
+          <ul>{actingList}</ul>
+        </div>
       }
-      {actingList}
+
 
       { !!crewList.length &&
-        <h3>Projects as Crew</h3>
+        <div>
+          <h3>Projects as Crew</h3>
+          <ul>{crewList}</ul>
+        </div>
       }
-      {crewList}
       <br />
       <br />
       {

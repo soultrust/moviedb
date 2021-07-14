@@ -27,7 +27,7 @@ const ProjectList = (props) => {
 
   return (
     <div className="recently-saved">
-      <ul className="generic">
+      <ul className="links-list">
         {list}
       </ul>
     </div>
