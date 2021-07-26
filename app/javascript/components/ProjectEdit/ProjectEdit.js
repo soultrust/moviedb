@@ -184,7 +184,7 @@ const ProjectEdit = (props) => {
               label="Title"
               onChange={handleTitleChange}
               value={project.title}
-              className="title"
+              className={`${classes['field-title']} field-title`}
             /><br />
             <AddCastMembersForm projectId={projectId} onCastMemberSaved={handleCastMemberSaved} />
             <ul className="cast-list">

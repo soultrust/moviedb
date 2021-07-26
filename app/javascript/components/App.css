@@ -146,10 +146,6 @@ ul.links-list a {
   flex-flow: column;
 }
 
-.form-project-edit .title .MuiInput-input {
-  font-size: 2rem;
-}
-
 .btn-add-title {
   align-self: flex-start;
 }
