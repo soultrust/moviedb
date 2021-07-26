@@ -138,7 +138,7 @@ class AddProjectsSubForm extends Component {
             <NnAutosuggest
               value={this.state.role.title}
               onChange={this.handleChange}
-              label="Project"
+              label="Search Project"
               onItemSelected={this.handleProjectSelection}
               url="/api/v1/projects"
               getSuggestionValue={this.getSuggestionValue}
