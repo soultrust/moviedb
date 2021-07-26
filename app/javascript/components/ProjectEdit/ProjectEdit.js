@@ -188,10 +188,12 @@ const ProjectEdit = (props) => {
               className={`${classes['field-title']} field-title`}
             /><br />
             <AddCastMembersForm projectId={projectId} onCastMemberSaved={handleCastMemberSaved} />
-            <ul className="cast-list">
-              {existingCastList}
-              {castToSavedList}
-            </ul>
+            { !!existingCastList.length || !!castToSavedList.length &&
+              <ul className="cast-list">
+                {existingCastList}
+                {castToSavedList}
+              </ul>
+            }
             <Button variant="outlined" className="btn-add-title" size="small" type="submit">Update Project</Button>
             <br />
           </form>

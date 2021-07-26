@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react'
-import axios from 'axios'
-import { Button, TextField, Typography } from '@material-ui/core'
-import NnAutosuggest from '../Forms/NnAutosuggest'
+import React, { Component, Fragment } from 'react';
+import axios from 'axios';
+import { Button, TextField, Typography } from '@material-ui/core';
+import NnAutosuggest from '../Forms/NnAutosuggest';
+import classes from './AddCastMembersForm.module.css';
 
 // const getSuggestions = value => {
 //   return new Promise(resolve => {
@@ -110,7 +111,7 @@ class AddCastMembersForm extends Component {
     return (
       <Fragment>
         <h3>Add Cast Members</h3>
-        <div className="add-cast-member">
+        <div className={classes['add-cast-member']}>
           <NnAutosuggest
             value={this.state.role.full_name}
             onChange={this.handleChange}
@@ -121,7 +122,7 @@ class AddCastMembersForm extends Component {
             createSuggestionLabel={this.createSuggestionLabel}
           />
           <TextField label="Character Name" onChange={this.handleCharacterNameChange} value={this.state.role.character_name} />
-        <Button onClick={this.handleSubmit} variant="outlined" className="btn-add" size="small">Add</Button>
+        <Button onClick={this.handleSubmit} variant="outlined" className={classes['btn-add']} size="small">Add</Button>
         </div>
       </Fragment>
     )

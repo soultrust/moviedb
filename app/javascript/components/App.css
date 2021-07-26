@@ -152,9 +152,6 @@ ul.links-list a {
 
 .cast-list li,
 .add-cast-member {
-  display: grid;
-  grid-template-columns: 3fr 3fr 1fr;
-  column-gap: 10px;
 }
 
 .add-cast-member .btn-add {

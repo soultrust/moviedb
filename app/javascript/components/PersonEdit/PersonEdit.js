@@ -144,7 +144,8 @@ const PersonEdit = (props) => {
       }
 
       <AddProjectsSubForm onProjectAdded={handleProjectAdded} />
-      { projectsToSaveList.length &&
+
+      { !!projectsToSaveList.length &&
         <ul className="cast-list">
           {projectsToSaveList}
         </ul>
