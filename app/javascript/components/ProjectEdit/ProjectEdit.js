@@ -5,6 +5,7 @@ import AddCastMembersForm from './AddCastMembersForm';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
 import AppContext from '../AppContext';
+import classes from './ProjectEdit.module.css';
 
 const ProjectEdit = (props) => {
   const [loaded, setLoaded] = useState(false);
