@@ -178,6 +178,7 @@ const ProjectEdit = (props) => {
     <Fragment>
       { loaded &&
         <Fragment>
+          <h2>Add a Project Record</h2>
           <form onSubmit={saveProject} className="form-project-edit">
             <TextField
               label="Title"
