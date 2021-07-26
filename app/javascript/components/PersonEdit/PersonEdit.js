@@ -144,9 +144,11 @@ const PersonEdit = (props) => {
       }
 
       <AddProjectsSubForm onProjectAdded={handleProjectAdded} />
-      <ul className="cast-list">
-        {projectsToSaveList}
-      </ul>
+      { projectsToSaveList.length &&
+        <ul className="cast-list">
+          {projectsToSaveList}
+        </ul>
+      }
       <Button variant="outlined" size="small" type="submit" style={{ display: 'block' }}>
         Add Person
       </Button>
