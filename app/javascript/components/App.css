@@ -124,6 +124,7 @@ ul.links-list a {
   border: 1px solid #000;
   border-radius: 9px;
   grid-column: 2/-1;
+  width: 550px;
 }
 
 .MuiContainer-root.MuiContainer-maxWidthLg {
