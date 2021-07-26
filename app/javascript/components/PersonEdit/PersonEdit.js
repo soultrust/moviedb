@@ -119,7 +119,7 @@ const PersonEdit = (props) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-person-edit">
-      <h3>{ personId ? person.full_name : 'Add a Person Record' }</h3><br />
+      <h2>{ personId ? person.full_name : 'Add a Person Record' }</h2><br />
       <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
       { !!actingList.length &&
         <div>
