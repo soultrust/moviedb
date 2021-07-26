@@ -2,16 +2,16 @@ import React, { Fragment, useContext, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 
-import Project from '../Project/Project'
-import ProjectEdit from '../ProjectEdit/ProjectEdit'
-import ProjectList from '../ProjectList/ProjectList'
+import Project from '../Project/Project';
+import ProjectEdit from '../ProjectEdit/ProjectEdit';
+import ProjectList from '../ProjectList/ProjectList';
 import AppContext from '../AppContext';
 
 const Projects = (props) => {
   const appCtx = useContext(AppContext);
   const [projects, setProjects] = useState([]);
   const [updatedProjectId, setUpdatedProjectId] = useState('');
-  let firstProjectId;
+  const [firstProjectId, setFirstProjectId] = useState(null);
 
   useEffect(() => {
     axios.get('/api/v1/projects')
@@ -19,7 +19,7 @@ const Projects = (props) => {
         setProjects(resp.data.data);
         if (!appCtx.isLoggedIn) {
           // const randomNum = Math.floor((Math.random() * 10) + 1);
-          // firstProjectId = resp.data.data[randomNum].id;
+          setFirstProjectId(resp.data.data[0].id);
           // props.history.push(`/projects/${firstProjectId}`);
         }
       })
@@ -60,7 +60,7 @@ const Projects = (props) => {
           </Switch>
           :
           <Switch>
-            <Route exact path="/" render={routeProps => <Project {...routeProps} />} />
+            <Route exact path="/" render={routeProps => <Project {...routeProps} firstProjectId={firstProjectId} />} />
             <Route path="/projects/:id" component={Project} />
             <Route><div>404 Not Found</div></Route>
           </Switch>

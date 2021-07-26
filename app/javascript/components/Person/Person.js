@@ -6,7 +6,7 @@ import { sortIncluded } from '../Helpers';
 import AppContext from '../AppContext';
 
 const Person = (props) => {
-  const personId = props.match.params.id
+  const personId = props.match.params.id || props.firstPersonId;
   const [person, setPerson] = useState({
     attributes: {
       full_name: ''
@@ -17,7 +17,9 @@ const Person = (props) => {
   const appCtx = useContext(AppContext);
 
   useEffect(() => {
-    axios.get(`/api/v1/persons/${personId}`)
+
+    if (personId) {
+      axios.get(`/api/v1/persons/${personId}`)
       .then((resp) => {
         setPerson(resp.data.data.attributes);
         const { actingProjectsTemp, crewProjectsTemp } = sortIncluded(resp.data.included);
@@ -25,6 +27,9 @@ const Person = (props) => {
         setCrewProjects([...crewProjects, ...crewProjectsTemp]);
       })
       .catch(resp => console.log(resp));
+    } else {
+      console.log(personId);
+    }
 
     return () => {
       setActingProjects(prevProjs => {
@@ -36,7 +41,7 @@ const Person = (props) => {
         return prevProjs;
       });
     }
-  }, [props.match.params.id]);
+  }, [props.match.params.id, props.firstPersonId]);
 
   const actingList = actingProjects.map(proj => {
     return (

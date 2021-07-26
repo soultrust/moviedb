@@ -134,7 +134,6 @@ const Auth = (props) => {
     event.preventDefault();
     const { username, password, password_confirmation } = controls;
 
-
     if (props.isSignUp) {
       // SignUp
       axios

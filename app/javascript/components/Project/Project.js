@@ -6,6 +6,7 @@ import classes from './Project.module.css';
 import AppContext from '../AppContext';
 
 const Project = (props) => {
+  const projectId = props.match.params.id || props.firstProjectId;
   const [project, setProject] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [cast, setCast] = useState([]);
@@ -37,7 +38,6 @@ const Project = (props) => {
   }
 
   useEffect(() => {
-    const projectId = props.match.params.id || props.firstProjectId;
 
     if (projectId) {
       const url = `/api/v1/projects/${projectId}`;
@@ -48,6 +48,8 @@ const Project = (props) => {
           setLoaded(true);
         })
         .catch(resp => console.log(resp));
+    } else {
+      console.log(props.firstProjectId)
     }
   }, [props.match.params.id, props.firstProjectId])
 
