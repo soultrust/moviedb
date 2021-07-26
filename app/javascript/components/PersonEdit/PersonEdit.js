@@ -6,6 +6,7 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles'
 import AddProjectsSubForm from './AddProjectsSubForm';
 import { sortIncluded } from '../Helpers';
+import classes from './PersonEdit.module.css';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -119,8 +120,11 @@ const PersonEdit = (props) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-person-edit">
-      <h2>{ personId ? person.full_name : 'Add a Person Record' }</h2><br />
-      <TextField label="Name" onChange={handleNameChange} value={person.full_name} /><br /><br />
+      <h2>{ personId ? person.full_name : 'Add a Person Record' }</h2>
+      <TextField label="Name"
+        className={`${classes['field-name']} field-name`}
+        onChange={handleNameChange}
+        value={person.full_name} /><br /><br />
       { !!actingList.length &&
         <div>
           <h3>Projects as Actor</h3>

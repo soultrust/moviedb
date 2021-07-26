@@ -20,13 +20,14 @@ a {
 }
 
 h2 {
-  margin-top: 0;
+  margin-top: -0.5rem;
 }
 
 h3 {
   font-size: 1rem;
   margin-right: 1rem;
   margin-top: 0;
+  margin-bottom: 0.3rem;
 }
 
 .title-bar {
@@ -127,6 +128,10 @@ ul.links-list a {
 
 .MuiContainer-root.MuiContainer-maxWidthLg {
   width: max-content;
+}
+
+.field-name {
+  width: 100%;
 }
 
 .form-project-members {

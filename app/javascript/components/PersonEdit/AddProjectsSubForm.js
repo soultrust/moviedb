@@ -135,7 +135,6 @@ class AddProjectsSubForm extends Component {
       <Fragment>
         <h3>Add Projects</h3>
         <div className="add-project-subform">
-          <div className="form-section">
             <NnAutosuggest
               value={this.state.role.title}
               onChange={this.handleChange}
@@ -158,15 +157,22 @@ class AddProjectsSubForm extends Component {
                 <MenuItem value={'director'}>Director</MenuItem>
               </Select>
             </FormControl>
-
+            <div className="btn-add-project-holder">
+              <Button
+                onClick={this.handleSubmit}
+                variant="outlined"
+                className="btn-add-project"
+                size="small">
+                  Add
+              </Button>
+            </div>
             <TextField
               label="Character Name"
               className={`field-character-name ${this.state.role.role_type === 'actor' ? 'show' : ''}`}
               onChange={this.handleCharacterNameChange} value={this.state.role.character_name}
             />
 
-          </div>
-          <Button onClick={this.handleSubmit} variant="outlined" className="btn-add" size="small">Add</Button>
+
         </div>
       </Fragment>
     )
