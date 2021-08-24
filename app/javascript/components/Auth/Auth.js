@@ -153,7 +153,6 @@ const Auth = (props) => {
           password: password.value
         })
         .then(resp => {
-          console.log(resp.data);
           const { token } = resp.data;
           appCtx.login(token);
           props.history.push('/');

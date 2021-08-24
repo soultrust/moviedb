@@ -16,7 +16,8 @@ const AppContext = createContext({
 export default AppContext;
 
 export const AppProvider = (props) => {
-  const [token, setToken] = useState(null);
+  const initialToken = localStorage.getItem('token');
+  const [token, setToken] = useState(initialToken);
   const [flash, setFlash] = useState({
     message: '',
     type: null,
@@ -26,6 +27,8 @@ export const AppProvider = (props) => {
 
   const loginHandler = (token) => {
     setToken(token);
+    localStorage.setItem('token', token);
+
     setFlash({
       message: 'Great Success!!!',
       type: 'success',
@@ -35,6 +38,7 @@ export const AppProvider = (props) => {
 
   const logoutHandler = () => {
     setToken(null);
+    localStorage.removeItem('token');
   };
 
   const updateFlash = (params) => {
