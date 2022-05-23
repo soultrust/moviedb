@@ -211,6 +211,7 @@ ul.links-list a {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: max-content;
+  grid-template-rows: 56px 84px 1fr;
 }
 
 .search {
