@@ -1,7 +1,37 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { isConsumedByUser, toggleConsumedByUser } from '../api/consumed';
+import ConsumedCheckbox from './ConsumedCheckbox';
+
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
 
 function MovieDetails({ movie, onClose }) {
+  const { user } = useAuth();
+  const [consumed, setConsumedState] = useState(false);
+  const [consumedLoading, setConsumedLoading] = useState(!!user);
+
+  useEffect(() => {
+    if (!movie?.id) return;
+    if (!user) {
+      setConsumedState(false);
+      setConsumedLoading(false);
+      return;
+    }
+    setConsumedLoading(true);
+    isConsumedByUser(movie.id)
+      .then((result) => {
+        setConsumedState(result === true);
+      })
+      .catch(() => {
+        setConsumedState(false);
+      })
+      .finally(() => {
+        setConsumedLoading(false);
+      });
+  }, [movie?.id, user]);
+
   if (!movie) return null;
 
   const backdropUrl = movie.backdrop_path 
@@ -11,6 +41,16 @@ function MovieDetails({ movie, onClose }) {
   const posterUrl = movie.poster_path 
     ? `${IMAGE_BASE_URL}${movie.poster_path}` 
     : null;
+
+  const handleConsumedChange = async (checked) => {
+    if (!user) return;
+    const result = await toggleConsumedByUser({
+      id: movie.id,
+      title: movie.title || movie.name,
+      media_type: movie.media_type || 'movie',
+    });
+    if (result) setConsumedState(result.added);
+  };
 
   return (
     <div className="movie-details-overlay" onClick={onClose}>
@@ -24,6 +64,21 @@ function MovieDetails({ movie, onClose }) {
         )}
         
         <div className="movie-details-body">
+          <div className="movie-details-content-header">
+            {user ? (
+              <ConsumedCheckbox
+                id={`consumed-${movie.id}`}
+                checked={consumed}
+                onChange={handleConsumedChange}
+                label="Consumed"
+                disabled={consumedLoading}
+              />
+            ) : (
+              <span className="consumed-login-hint">
+                <Link to="/login">Log in</Link> to mark as consumed
+              </span>
+            )}
+          </div>
           {posterUrl && (
             <div className="movie-details-poster">
               <img src={posterUrl} alt={movie.title} />
@@ -31,7 +86,7 @@ function MovieDetails({ movie, onClose }) {
           )}
           
           <div className="movie-details-info">
-            <h1>{movie.title}</h1>
+            <h1>{movie.title || movie.name}</h1>
             
             {movie.tagline && <p className="tagline">{movie.tagline}</p>}
             

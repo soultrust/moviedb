@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser
+from .models import CustomUser, Consumed
 
 
 class CustomUserAdmin(UserAdmin):
@@ -14,3 +14,10 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+@admin.register(Consumed)
+class ConsumedAdmin(admin.ModelAdmin):
+    list_display = ["user", "title", "tmdb_id", "media_type"]
+    list_filter = ["media_type"]
+    search_fields = ["title", "user__email"]
