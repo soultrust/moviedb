@@ -1,26 +1,21 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import {
-  getTrending,
-  getPopularMovies,
-  getMovieDetails,
-  search,
-} from './api/tmdb';
-import { useAuth } from './context/AuthContext';
-import MovieGrid from './components/MovieGrid';
-import MovieDetails from './components/MovieDetails';
-import SearchBar from './components/SearchBar';
-import ConsumedPage from './pages/ConsumedPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import type { TMDBMovieListItem, TMDBMovieDetails } from './types';
-import './App.css';
+import { useState, useEffect } from "react";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import { getTrending, getPopularMovies, getMovieDetails, search } from "./api/tmdb";
+import { useAuth } from "./context/AuthContext";
+import MovieGrid from "./components/MovieGrid";
+import MovieDetails from "./components/MovieDetails";
+import SearchBar from "./components/SearchBar";
+import ConsumedPage from "./pages/ConsumedPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import type { TMDBMovieListItem, TMDBMovieDetails } from "./types";
+import "./App.css";
 
-type Tab = 'trending' | 'popular' | 'search';
+type Tab = "trending" | "popular" | "search";
 
 function App() {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<Tab>('trending');
+  const [activeTab, setActiveTab] = useState<Tab>("trending");
   const [movies, setMovies] = useState<TMDBMovieListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovieDetails | null>(null);
@@ -32,7 +27,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (activeTab !== 'search') {
+    if (activeTab !== "search") {
       loadInitialData();
     }
   }, [activeTab]);
@@ -42,9 +37,9 @@ function App() {
     setPage(1);
     try {
       let data;
-      if (activeTab === 'trending') {
-        data = await getTrending('movie', 'week', 1);
-      } else if (activeTab === 'popular') {
+      if (activeTab === "trending") {
+        data = await getTrending("movie", "week", 1);
+      } else if (activeTab === "popular") {
         data = await getPopularMovies(1);
       }
 
@@ -53,7 +48,7 @@ function App() {
         setHasMore(data.page < data.total_pages);
       }
     } catch (error) {
-      console.error('Failed to load movies:', error);
+      console.error("Failed to load movies:", error);
       setMovies([]);
     } finally {
       setLoading(false);
@@ -61,7 +56,8 @@ function App() {
   };
 
   const handleSearch = async (query: string) => {
-    setActiveTab('search');
+    if (location.pathname !== "/") navigate("/");
+    setActiveTab("search");
     setLoading(true);
     setPage(1);
     try {
@@ -69,7 +65,7 @@ function App() {
       setMovies(data.results ?? []);
       setHasMore(data.page < data.total_pages);
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error("Search failed:", error);
       setMovies([]);
     } finally {
       setLoading(false);
@@ -81,7 +77,7 @@ function App() {
       const details = await getMovieDetails(movie.id);
       setSelectedMovie(details);
     } catch (error) {
-      console.error('Failed to load movie details:', error);
+      console.error("Failed to load movie details:", error);
     }
   };
 
@@ -92,11 +88,11 @@ function App() {
     const nextPage = page + 1;
     try {
       let data;
-      if (activeTab === 'trending') {
-        data = await getTrending('movie', 'week', nextPage);
-      } else if (activeTab === 'popular') {
+      if (activeTab === "trending") {
+        data = await getTrending("movie", "week", nextPage);
+      } else if (activeTab === "popular") {
         data = await getPopularMovies(nextPage);
-      } else if (activeTab === 'search') {
+      } else if (activeTab === "search") {
         return;
       }
 
@@ -106,48 +102,44 @@ function App() {
         setHasMore(data.page < data.total_pages);
       }
     } catch (error) {
-      console.error('Failed to load more:', error);
+      console.error("Failed to load more:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const location = useLocation();
-  const isConsumedPage = location.pathname === '/consumed';
+  const navigate = useNavigate();
+  const isConsumedPage = location.pathname === "/consumed";
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🎬 MovieDB</h1>
-        <p className="subtitle">Discover movies and TV shows</p>
+        <div className="container">
+          <h1>Soultrust Movie DB</h1>
+          <p className="subtitle">Discover movies and TV shows</p>
+        </div>
       </header>
 
       <nav className="app-nav">
         <button
           type="button"
-          className={activeTab === 'trending' && !isConsumedPage ? 'active' : ''}
-          onClick={() => setActiveTab('trending')}
+          className={activeTab === "trending" && !isConsumedPage ? "active" : ""}
+          onClick={() => setActiveTab("trending")}
         >
           Trending
         </button>
         <button
           type="button"
-          className={activeTab === 'popular' && !isConsumedPage ? 'active' : ''}
-          onClick={() => setActiveTab('popular')}
+          className={activeTab === "popular" && !isConsumedPage ? "active" : ""}
+          onClick={() => setActiveTab("popular")}
         >
           Popular
         </button>
-        <button
-          type="button"
-          className={activeTab === 'search' && !isConsumedPage ? 'active' : ''}
-          onClick={() => setActiveTab('search')}
-        >
-          Search
-        </button>
-        <Link
-          to="/consumed"
-          className={`nav-link ${isConsumedPage ? 'active' : ''}`}
-        >
+        <div className="nav-search">
+          <SearchBar onSearch={handleSearch} loading={loading} />
+        </div>
+        <Link to="/consumed" className={`nav-link ${isConsumedPage ? "active" : ""}`}>
           Consumed
         </Link>
         {user ? (
@@ -161,13 +153,13 @@ function App() {
           <>
             <Link
               to="/login"
-              className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+              className={`nav-link ${location.pathname === "/login" ? "active" : ""}`}
             >
               Log in
             </Link>
             <Link
               to="/register"
-              className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
+              className={`nav-link ${location.pathname === "/register" ? "active" : ""}`}
             >
               Sign up
             </Link>
@@ -183,18 +175,8 @@ function App() {
           path="/"
           element={
             <>
-              {activeTab === 'search' && (
-                <div className="search-section">
-                  <SearchBar onSearch={handleSearch} loading={loading} />
-                </div>
-              )}
-
               <main className="app-main">
-                <MovieGrid
-                  movies={movies}
-                  onMovieClick={handleMovieClick}
-                  loading={loading}
-                />
+                <MovieGrid movies={movies} onMovieClick={handleMovieClick} loading={loading} />
 
                 {hasMore && movies.length > 0 && (
                   <div className="load-more-container">
@@ -204,17 +186,14 @@ function App() {
                       disabled={loading}
                       className="load-more-btn"
                     >
-                      {loading ? 'Loading...' : 'Load More'}
+                      {loading ? "Loading..." : "Load More"}
                     </button>
                   </div>
                 )}
               </main>
 
               {selectedMovie && (
-                <MovieDetails
-                  movie={selectedMovie}
-                  onClose={() => setSelectedMovie(null)}
-                />
+                <MovieDetails movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
               )}
             </>
           }
