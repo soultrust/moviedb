@@ -49,6 +49,7 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
       id: movie.id,
       title: movie.title ?? movie.name,
       media_type: movie.media_type ?? 'movie',
+      poster_path: movie.poster_path ?? null,
     });
     if (result) setConsumedState(result.added);
   };

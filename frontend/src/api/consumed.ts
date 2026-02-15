@@ -20,6 +20,7 @@ export async function addConsumed(params: {
   tmdb_id: number;
   title?: string;
   media_type?: string;
+  poster_path?: string | null;
 }): Promise<ConsumedItem | null> {
   const res = await authFetch(API + '/', {
     method: 'POST',
@@ -28,6 +29,7 @@ export async function addConsumed(params: {
       tmdb_id: Number(params.tmdb_id),
       title: params.title ?? '',
       media_type: params.media_type ?? 'movie',
+      poster_path: params.poster_path ?? null,
     }),
   });
   if (res.status === 401) return null;
@@ -77,6 +79,7 @@ export async function toggleConsumedByUser(
     tmdb_id: payload.id,
     title: payload.title ?? payload.name,
     media_type: payload.media_type ?? 'movie',
+    poster_path: payload.poster_path ?? null,
   });
   return { added: true };
 }

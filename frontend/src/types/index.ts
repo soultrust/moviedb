@@ -26,6 +26,7 @@ export interface ConsumedItem {
   tmdb_id: number;
   title: string;
   media_type: string;
+  poster_path?: string | null;
 }
 
 export interface ToggleConsumedPayload {
@@ -33,6 +34,7 @@ export interface ToggleConsumedPayload {
   title?: string;
   name?: string;
   media_type?: string;
+  poster_path?: string | null;
 }
 
 // TMDB API (minimal shapes; API returns more)

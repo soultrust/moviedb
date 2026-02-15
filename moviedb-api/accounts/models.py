@@ -14,6 +14,7 @@ class Consumed(models.Model):
     tmdb_id = models.IntegerField()
     title = models.CharField(max_length=500)
     media_type = models.CharField(max_length=20)  # 'movie' or 'tv'
+    poster_path = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
         ordering = ["-id"]

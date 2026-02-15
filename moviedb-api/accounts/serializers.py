@@ -51,5 +51,5 @@ class UserSerializer(serializers.ModelSerializer):
 class ConsumedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumed
-        fields = ("id", "tmdb_id", "title", "media_type")
+        fields = ("id", "tmdb_id", "title", "media_type", "poster_path")
         read_only_fields = ("id",)

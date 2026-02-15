@@ -70,11 +70,19 @@ def consumed_list(request):
     serializer = ConsumedSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
+    defaults = {
+        "title": data["title"],
+        "media_type": data["media_type"],
+        "poster_path": data.get("poster_path") or None,
+    }
     obj, created = Consumed.objects.get_or_create(
         user=request.user,
         tmdb_id=data["tmdb_id"],
-        defaults={"title": data["title"], "media_type": data["media_type"]},
+        defaults=defaults,
     )
+    if not created and defaults.get("poster_path") and not obj.poster_path:
+        obj.poster_path = defaults["poster_path"]
+        obj.save(update_fields=["poster_path"])
     return Response(
         ConsumedSerializer(obj).data,
         status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
