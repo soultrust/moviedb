@@ -19,12 +19,7 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
   const [consumedLoading, setConsumedLoading] = useState(!!user);
 
   useEffect(() => {
-    if (!movie?.id) return;
-    if (!user) {
-      setConsumedState(false);
-      setConsumedLoading(false);
-      return;
-    }
+    if (!movie?.id || !user) return;
     setConsumedLoading(true);
     isConsumedByUser(movie.id)
       .then((result) => {
