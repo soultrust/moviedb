@@ -1,6 +1,13 @@
 import MovieCard from './MovieCard';
+import type { TMDBMovieListItem } from '../types';
 
-function MovieGrid({ movies, onMovieClick, loading }) {
+interface MovieGridProps {
+  movies: TMDBMovieListItem[];
+  onMovieClick?: (movie: TMDBMovieListItem) => void;
+  loading: boolean;
+}
+
+function MovieGrid({ movies, onMovieClick, loading }: MovieGridProps) {
   if (loading) {
     return (
       <div className="loading-container">
@@ -21,9 +28,9 @@ function MovieGrid({ movies, onMovieClick, loading }) {
   return (
     <div className="movie-grid">
       {movies.map((movie) => (
-        <MovieCard 
-          key={movie.id} 
-          movie={movie} 
+        <MovieCard
+          key={movie.id}
+          movie={movie}
           onClick={onMovieClick}
         />
       ))}

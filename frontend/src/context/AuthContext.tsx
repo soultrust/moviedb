@@ -1,13 +1,19 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import * as authApi from '../api/auth';
+import type { AuthState, User } from '../types';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext<AuthState | null>(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(authApi.getUser());
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(authApi.getUser());
   const [loading, setLoading] = useState(true);
 
-  const setAuth = useCallback((payload) => {
+  const setAuth = useCallback((payload: Partial<{ access: string; refresh: string; user: User }>) => {
     authApi.setAuth(payload);
     setUser(payload?.user ?? null);
   }, []);
@@ -23,7 +29,8 @@ export function AuthProvider({ children }) {
       setLoading(false);
       return;
     }
-    authApi.me()
+    authApi
+      .me()
       .then((u) => {
         if (u) setUser(u);
         else logout();
@@ -32,7 +39,7 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, [logout]);
 
-  const value = {
+  const value: AuthState = {
     user,
     loading,
     setAuth,
@@ -47,7 +54,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
+export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;

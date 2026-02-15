@@ -1,25 +1,31 @@
 import { useState } from 'react';
+import type { TMDBMovieListItem } from '../types';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-function MovieCard({ movie, onClick }) {
+interface MovieCardProps {
+  movie: TMDBMovieListItem;
+  onClick?: (movie: TMDBMovieListItem) => void;
+}
+
+function MovieCard({ movie, onClick }: MovieCardProps) {
   const [imageError, setImageError] = useState(false);
-  
-  const posterPath = movie.poster_path 
-    ? `${IMAGE_BASE_URL}${movie.poster_path}` 
+
+  const posterPath = movie.poster_path
+    ? `${IMAGE_BASE_URL}${movie.poster_path}`
     : '/placeholder-poster.jpg';
-  
+
   const handleImageError = () => {
     setImageError(true);
   };
 
   return (
-    <div className="movie-card" onClick={() => onClick && onClick(movie)}>
+    <div className="movie-card" onClick={() => onClick?.(movie)}>
       <div className="movie-poster">
         {!imageError ? (
-          <img 
-            src={posterPath} 
-            alt={movie.title || movie.name || 'Movie poster'} 
+          <img
+            src={posterPath}
+            alt={movie.title ?? movie.name ?? 'Movie poster'}
             onError={handleImageError}
             loading="lazy"
           />
@@ -30,11 +36,11 @@ function MovieCard({ movie, onClick }) {
         )}
       </div>
       <div className="movie-info">
-        <h3 className="movie-title">{movie.title || movie.name}</h3>
+        <h3 className="movie-title">{movie.title ?? movie.name}</h3>
         {movie.release_date && (
           <p className="movie-date">{new Date(movie.release_date).getFullYear()}</p>
         )}
-        {movie.vote_average && (
+        {movie.vote_average != null && (
           <div className="movie-rating">
             <span>⭐</span>
             <span>{movie.vote_average.toFixed(1)}</span>

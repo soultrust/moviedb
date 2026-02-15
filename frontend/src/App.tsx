@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { getTrending, getPopularMovies, getMovieDetails, search, getGenres } from './api/tmdb';
+import {
+  getTrending,
+  getPopularMovies,
+  getMovieDetails,
+  search,
+} from './api/tmdb';
 import { useAuth } from './context/AuthContext';
 import MovieGrid from './components/MovieGrid';
 import MovieDetails from './components/MovieDetails';
@@ -8,20 +13,21 @@ import SearchBar from './components/SearchBar';
 import ConsumedPage from './pages/ConsumedPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import type { TMDBMovieListItem, TMDBMovieDetails } from './types';
 import './App.css';
 
+type Tab = 'trending' | 'popular' | 'search';
+
 function App() {
-  const { user, logout, loading: authLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState('trending');
-  const [movies, setMovies] = useState([]);
+  const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState<Tab>('trending');
+  const [movies, setMovies] = useState<TMDBMovieListItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [genres, setGenres] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState<TMDBMovieDetails | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    loadGenres();
     loadInitialData();
   }, []);
 
@@ -30,15 +36,6 @@ function App() {
       loadInitialData();
     }
   }, [activeTab]);
-
-  const loadGenres = async () => {
-    try {
-      const data = await getGenres();
-      setGenres(data.genres || []);
-    } catch (error) {
-      console.error('Failed to load genres:', error);
-    }
-  };
 
   const loadInitialData = async () => {
     setLoading(true);
@@ -50,9 +47,9 @@ function App() {
       } else if (activeTab === 'popular') {
         data = await getPopularMovies(1);
       }
-      
+
       if (data) {
-        setMovies(data.results || []);
+        setMovies(data.results ?? []);
         setHasMore(data.page < data.total_pages);
       }
     } catch (error) {
@@ -63,13 +60,13 @@ function App() {
     }
   };
 
-  const handleSearch = async (query) => {
+  const handleSearch = async (query: string) => {
     setActiveTab('search');
     setLoading(true);
     setPage(1);
     try {
       const data = await search(query, 1);
-      setMovies(data.results || []);
+      setMovies(data.results ?? []);
       setHasMore(data.page < data.total_pages);
     } catch (error) {
       console.error('Search failed:', error);
@@ -79,7 +76,7 @@ function App() {
     }
   };
 
-  const handleMovieClick = async (movie) => {
+  const handleMovieClick = async (movie: TMDBMovieListItem) => {
     try {
       const details = await getMovieDetails(movie.id);
       setSelectedMovie(details);
@@ -90,7 +87,7 @@ function App() {
 
   const loadMore = async () => {
     if (loading || !hasMore) return;
-    
+
     setLoading(true);
     const nextPage = page + 1;
     try {
@@ -100,12 +97,11 @@ function App() {
       } else if (activeTab === 'popular') {
         data = await getPopularMovies(nextPage);
       } else if (activeTab === 'search') {
-        // For search, we'd need to store the query
         return;
       }
-      
+
       if (data) {
-        setMovies([...movies, ...(data.results || [])]);
+        setMovies((prev) => [...prev, ...(data.results ?? [])]);
         setPage(nextPage);
         setHasMore(data.page < data.total_pages);
       }
@@ -127,19 +123,22 @@ function App() {
       </header>
 
       <nav className="app-nav">
-        <button 
+        <button
+          type="button"
           className={activeTab === 'trending' && !isConsumedPage ? 'active' : ''}
           onClick={() => setActiveTab('trending')}
         >
           Trending
         </button>
-        <button 
+        <button
+          type="button"
           className={activeTab === 'popular' && !isConsumedPage ? 'active' : ''}
           onClick={() => setActiveTab('popular')}
         >
           Popular
         </button>
-        <button 
+        <button
+          type="button"
           className={activeTab === 'search' && !isConsumedPage ? 'active' : ''}
           onClick={() => setActiveTab('search')}
         >
@@ -154,12 +153,24 @@ function App() {
         {user ? (
           <>
             <span className="nav-user">{user.email}</span>
-            <button type="button" onClick={logout} className="nav-logout">Log out</button>
+            <button type="button" onClick={logout} className="nav-logout">
+              Log out
+            </button>
           </>
         ) : (
           <>
-            <Link to="/login" className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}>Log in</Link>
-            <Link to="/register" className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}>Sign up</Link>
+            <Link
+              to="/login"
+              className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+            >
+              Log in
+            </Link>
+            <Link
+              to="/register"
+              className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
+            >
+              Sign up
+            </Link>
           </>
         )}
       </nav>
@@ -167,10 +178,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/consumed"
-          element={<ConsumedPage />}
-        />
+        <Route path="/consumed" element={<ConsumedPage />} />
         <Route
           path="/"
           element={
@@ -182,15 +190,20 @@ function App() {
               )}
 
               <main className="app-main">
-                <MovieGrid 
-                  movies={movies} 
+                <MovieGrid
+                  movies={movies}
                   onMovieClick={handleMovieClick}
                   loading={loading}
                 />
-                
+
                 {hasMore && movies.length > 0 && (
                   <div className="load-more-container">
-                    <button onClick={loadMore} disabled={loading} className="load-more-btn">
+                    <button
+                      type="button"
+                      onClick={loadMore}
+                      disabled={loading}
+                      className="load-more-btn"
+                    >
                       {loading ? 'Loading...' : 'Load More'}
                     </button>
                   </div>
@@ -198,9 +211,9 @@ function App() {
               </main>
 
               {selectedMovie && (
-                <MovieDetails 
-                  movie={selectedMovie} 
-                  onClose={() => setSelectedMovie(null)} 
+                <MovieDetails
+                  movie={selectedMovie}
+                  onClose={() => setSelectedMovie(null)}
                 />
               )}
             </>

@@ -1,26 +1,27 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { login } from '../api/auth';
+import { register as registerApi } from '../api/auth';
 
-function LoginPage() {
+function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const data = await login(email, password);
+      const data = await registerApi(email, password, name);
       setAuth({ access: data.access, refresh: data.refresh, user: data.user });
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -28,7 +29,7 @@ function LoginPage() {
 
   return (
     <div className="auth-page">
-      <h2>Log in</h2>
+      <h2>Sign up</h2>
       <form onSubmit={handleSubmit} className="auth-form">
         {error && <p className="auth-error">{error}</p>}
         <input
@@ -40,22 +41,30 @@ function LoginPage() {
           autoComplete="email"
         />
         <input
+          type="text"
+          placeholder="Name (optional)"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete="name"
+        />
+        <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          autoComplete="current-password"
+          minLength={8}
+          autoComplete="new-password"
         />
         <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Log in'}
+          {loading ? 'Creating account...' : 'Sign up'}
         </button>
       </form>
       <p className="auth-switch">
-        Don't have an account? <Link to="/register">Sign up</Link>
+        Already have an account? <Link to="/login">Log in</Link>
       </p>
     </div>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

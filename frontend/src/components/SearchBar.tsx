@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 
-function SearchBar({ onSearch, loading }) {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+  loading: boolean;
+}
+
+function SearchBar({ onSearch, loading }: SearchBarProps) {
   const [query, setQuery] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.trim()) {
       onSearch(query.trim());
