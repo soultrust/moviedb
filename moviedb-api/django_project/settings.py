@@ -28,7 +28,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = "django-insecure-c(888m!t2=^5t^7kl1=4^$+=so-rywmax74w!_+nymkocouq7h"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["soultrust-moviedb-api.onrender.com"]
 
