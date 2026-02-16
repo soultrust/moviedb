@@ -116,7 +116,6 @@ function PersonDetails({ personId, onClose }: PersonDetailsProps) {
                     <Link
                       to={`/movie/${movie.id}`}
                       className="person-movie-link"
-                      onClick={onClose}
                     >
                       {movie.poster_path ? (
                         <img

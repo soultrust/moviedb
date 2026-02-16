@@ -123,7 +123,6 @@ function TvDetails({ show, onClose }: TvDetailsProps) {
                       key={actor.id}
                       to={`/person/${actor.id}`}
                       className="cast-member cast-member-link"
-                      onClick={() => onClose()}
                     >
                       {actor.profile_path ? (
                         <img

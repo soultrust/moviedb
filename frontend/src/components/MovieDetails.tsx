@@ -130,7 +130,6 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
                       key={actor.id}
                       to={`/person/${actor.id}`}
                       className="cast-member cast-member-link"
-                      onClick={() => onClose()}
                     >
                       {actor.profile_path ? (
                         <img
