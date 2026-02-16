@@ -1,6 +1,7 @@
 import type { AuthPayload, User } from '../types';
+import { API_URLS } from '../config';
 
-const AUTH_API = 'http://localhost:8000/api/auth';
+const AUTH_API = API_URLS.AUTH;
 const ACCESS_KEY = 'moviedb_access';
 const REFRESH_KEY = 'moviedb_refresh';
 const USER_KEY = 'moviedb_user';

@@ -1,7 +1,8 @@
 import { authFetch } from './auth';
 import type { ConsumedItem, ToggleConsumedPayload } from '../types';
+import { API_URLS } from '../config';
 
-const API = 'http://localhost:8000/api/auth/consumed';
+const API = API_URLS.CONSUMED;
 
 /**
  * List consumed items for the current user (requires login).

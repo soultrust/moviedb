@@ -7,8 +7,9 @@ import type {
   TMDBPersonDetails,
   TMDBTvDetails,
 } from '../types';
+import { API_URLS } from '../config';
 
-const API_BASE_URL = 'http://localhost:8000/api/movies';
+const API_BASE_URL = API_URLS.MOVIES;
 
 /**
  * Fetch trending movies or TV shows

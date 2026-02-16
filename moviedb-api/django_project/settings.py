@@ -28,9 +28,12 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = "django-insecure-c(888m!t2=^5t^7kl1=4^$+=so-rywmax74w!_+nymkocouq7h"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
+# Allow localhost in development, Render hostname in production
 ALLOWED_HOSTS = ["soultrust-moviedb-api.onrender.com"]
+if DEBUG:
+    ALLOWED_HOSTS.extend(["localhost", "127.0.0.1"])
 
 
 # Application definition
