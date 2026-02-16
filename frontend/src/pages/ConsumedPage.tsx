@@ -1,11 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { listConsumed } from '../api/consumed';
-import { getMovieDetails } from '../api/tmdb';
 import MovieGrid from '../components/MovieGrid';
-import MovieDetails from '../components/MovieDetails';
-import type { ConsumedItem, TMDBMovieListItem, TMDBMovieDetails } from '../types';
+import type { ConsumedItem, TMDBMovieListItem } from '../types';
 
 function consumedToMovieItem(item: ConsumedItem): TMDBMovieListItem {
   return {
@@ -19,9 +17,9 @@ function consumedToMovieItem(item: ConsumedItem): TMDBMovieListItem {
 
 function ConsumedPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [items, setItems] = useState<ConsumedItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMovie, setSelectedMovie] = useState<TMDBMovieDetails | null>(null);
 
   const loadItems = useCallback(() => {
     if (!user) return;
@@ -41,14 +39,13 @@ function ConsumedPage() {
     loadItems();
   }, [user, loadItems]);
 
-  const handleMovieClick = useCallback(async (movie: TMDBMovieListItem) => {
-    try {
-      const details = await getMovieDetails(movie.id);
-      setSelectedMovie(details);
-    } catch {
-      // Backend may only support movie details; TV can 404
-    }
-  }, []);
+  const handleMovieClick = useCallback(
+    (movie: TMDBMovieListItem) => {
+      const path = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+      navigate(path);
+    },
+    [navigate]
+  );
 
   if (!user) {
     return (
@@ -98,12 +95,6 @@ function ConsumedPage() {
           ← Back to Soultrust Movie DB
         </Link>
       </div>
-      {selectedMovie && (
-        <MovieDetails
-          movie={selectedMovie}
-          onClose={() => setSelectedMovie(null)}
-        />
-      )}
     </div>
   );
 }

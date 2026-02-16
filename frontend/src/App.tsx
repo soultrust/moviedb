@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
-import { getTrending, getPopularMovies, getMovieDetails, search } from "./api/tmdb";
+import { getTrending, getPopularMovies, search } from "./api/tmdb";
 import { useAuth } from "./context/AuthContext";
 import MovieGrid from "./components/MovieGrid";
-import MovieDetails from "./components/MovieDetails";
 import SearchBar from "./components/SearchBar";
 import ConsumedPage from "./pages/ConsumedPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PersonDetailPage from "./pages/PersonDetailPage";
-import type { TMDBMovieListItem, TMDBMovieDetails } from "./types";
+import MovieDetailPage from "./pages/MovieDetailPage";
+import TvDetailPage from "./pages/TvDetailPage";
+import type { TMDBMovieListItem } from "./types";
 import "./App.css";
 
 type Tab = "trending" | "popular" | "search";
@@ -20,7 +21,6 @@ function App() {
   const { user, logout } = useAuth();
   const [movies, setMovies] = useState<TMDBMovieListItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState<TMDBMovieDetails | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
@@ -37,17 +37,6 @@ function App() {
   useEffect(() => {
     if (location.pathname === "/trending" || location.pathname === "/popular") setSearchMode(false);
   }, [location.pathname]);
-
-  useEffect(() => {
-    const openMovieId = (location.state as { openMovieId?: number } | null)?.openMovieId;
-    if (
-      openMovieId &&
-      (location.pathname === "/" || location.pathname === "/trending" || location.pathname === "/popular")
-    ) {
-      getMovieDetails(openMovieId).then(setSelectedMovie).catch(console.error);
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
     if (location.pathname === "/" && searchMode) return;
@@ -101,13 +90,9 @@ function App() {
     }
   };
 
-  const handleMovieClick = async (movie: TMDBMovieListItem) => {
-    try {
-      const details = await getMovieDetails(movie.id);
-      setSelectedMovie(details);
-    } catch (error) {
-      console.error("Failed to load movie details:", error);
-    }
+  const handleMovieClick = (movie: TMDBMovieListItem) => {
+    const path = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+    navigate(path);
   };
 
   const loadMore = async () => {
@@ -157,10 +142,6 @@ function App() {
           </div>
         )}
       </main>
-
-      {selectedMovie && (
-        <MovieDetails movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
-      )}
     </>
   );
 
@@ -225,6 +206,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/consumed" element={<ConsumedPage />} />
         <Route path="/person/:id" element={<PersonDetailPage />} />
+        <Route path="/movie/:id" element={<MovieDetailPage />} />
+        <Route path="/tv/:id" element={<TvDetailPage />} />
         <Route path="/trending" element={movieGridContent} />
         <Route path="/popular" element={movieGridContent} />
         <Route path="/" element={movieGridContent} />

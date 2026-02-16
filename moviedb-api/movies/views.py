@@ -95,6 +95,18 @@ def search(request):
 
 @csrf_exempt
 @require_GET
+def get_tv_details(request, tv_id):
+    """Get TV show details"""
+    try:
+        data = client.get_tv_details(tv_id)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        logger.error(f"Error fetching TV details: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+@require_GET
 def get_person_details(request, person_id):
     """Get person/actor details"""
     try:

@@ -74,6 +74,13 @@ class TMDBClient:
             append_to_response="credits,videos,similar"
         )
 
+    def get_tv_details(self, tv_id):
+        return self._get(
+            f"tv/{tv_id}",
+            cache_ttl=86400,
+            append_to_response="credits,videos,similar"
+        )
+
     def search(self, query, page=1):
         return self._get("search/multi", query=query, page=page)
 

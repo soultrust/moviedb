@@ -859,6 +859,36 @@ body {
   display: block;
 }
 
+.person-detail-profile-placeholder {
+  width: 200px;
+  aspect-ratio: 2/3;
+  background: var(--surface-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.person-details-body {
+  padding: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.person-details-content.movie-details-content {
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.person-details-content .person-details-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .person-detail-meta {
   flex: 1;
   min-width: 200px;

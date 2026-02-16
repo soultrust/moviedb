@@ -95,6 +95,36 @@ export interface TMDBGenresResponse {
   genres: TMDBGenre[];
 }
 
+// TMDB TV show details (same shape as movie for credits/videos)
+export interface TMDBTvDetails {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  overview?: string;
+  first_air_date?: string;
+  number_of_seasons?: number;
+  vote_average?: number;
+  genres?: TMDBGenre[];
+  credits?: {
+    cast?: Array<{
+      id: number;
+      name: string;
+      character: string;
+      profile_path: string | null;
+    }>;
+  };
+  videos?: {
+    results?: Array<{
+      id: string;
+      name: string;
+      type: string;
+      site: string;
+      key: string;
+    }>;
+  };
+}
+
 // TMDB Person / Actor
 export interface TMDBPersonDetails {
   id: number;
