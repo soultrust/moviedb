@@ -95,6 +95,18 @@ def search(request):
 
 @csrf_exempt
 @require_GET
+def get_person_details(request, person_id):
+    """Get person/actor details"""
+    try:
+        data = client.get_person_details(person_id)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        logger.error(f"Error fetching person details: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+@require_GET
 def get_genres(request):
     """Get list of movie genres"""
     try:

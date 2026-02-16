@@ -94,3 +94,24 @@ export interface TMDBSearchResponse {
 export interface TMDBGenresResponse {
   genres: TMDBGenre[];
 }
+
+// TMDB Person / Actor
+export interface TMDBPersonDetails {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  biography?: string;
+  birthday?: string;
+  deathday?: string | null;
+  place_of_birth?: string | null;
+  known_for_department?: string;
+  movie_credits?: {
+    cast?: Array<{
+      id: number;
+      title: string;
+      poster_path: string | null;
+      release_date?: string;
+      character: string;
+    }>;
+  };
+}

@@ -126,16 +126,23 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
                 <h3>Cast</h3>
                 <div className="cast-list">
                   {movie.credits.cast.slice(0, 10).map((actor) => (
-                    <div key={actor.id} className="cast-member">
-                      {actor.profile_path && (
+                    <Link
+                      key={actor.id}
+                      to={`/person/${actor.id}`}
+                      className="cast-member cast-member-link"
+                      onClick={() => onClose()}
+                    >
+                      {actor.profile_path ? (
                         <img
                           src={`${IMAGE_BASE_URL}${actor.profile_path}`}
                           alt={actor.name}
                         />
+                      ) : (
+                        <div className="cast-member-placeholder">No photo</div>
                       )}
                       <p>{actor.name}</p>
                       <p className="character">{actor.character}</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

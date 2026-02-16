@@ -4,6 +4,7 @@ import type {
   TMDBPaginatedResponse,
   TMDBGenresResponse,
   TMDBSearchResponse,
+  TMDBPersonDetails,
 } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api/movies';
@@ -69,4 +70,13 @@ export const getGenres = async (): Promise<TMDBGenresResponse> => {
   const response = await fetch(`${API_BASE_URL}/genres/`);
   if (!response.ok) throw new Error('Failed to fetch genres');
   return response.json() as Promise<TMDBGenresResponse>;
+};
+
+/**
+ * Fetch person/actor details by ID
+ */
+export const getPersonDetails = async (personId: number): Promise<TMDBPersonDetails> => {
+  const response = await fetch(`${API_BASE_URL}/person/${personId}/`);
+  if (!response.ok) throw new Error('Failed to fetch person details');
+  return response.json() as Promise<TMDBPersonDetails>;
 };

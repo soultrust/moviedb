@@ -79,3 +79,10 @@ class TMDBClient:
 
     def get_genres(self):
         return self._get("genre/movie/list", cache_ttl=86400 * 7)
+
+    def get_person_details(self, person_id):
+        return self._get(
+            f"person/{person_id}",
+            cache_ttl=86400,
+            append_to_response="movie_credits",
+        )

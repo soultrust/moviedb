@@ -8,6 +8,7 @@ import SearchBar from "./components/SearchBar";
 import ConsumedPage from "./pages/ConsumedPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import PersonDetailPage from "./pages/PersonDetailPage";
 import type { TMDBMovieListItem, TMDBMovieDetails } from "./types";
 import "./App.css";
 
@@ -36,6 +37,17 @@ function App() {
   useEffect(() => {
     if (location.pathname === "/trending" || location.pathname === "/popular") setSearchMode(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const openMovieId = (location.state as { openMovieId?: number } | null)?.openMovieId;
+    if (
+      openMovieId &&
+      (location.pathname === "/" || location.pathname === "/trending" || location.pathname === "/popular")
+    ) {
+      getMovieDetails(openMovieId).then(setSelectedMovie).catch(console.error);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
     if (location.pathname === "/" && searchMode) return;
@@ -212,6 +224,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/consumed" element={<ConsumedPage />} />
+        <Route path="/person/:id" element={<PersonDetailPage />} />
         <Route path="/trending" element={movieGridContent} />
         <Route path="/popular" element={movieGridContent} />
         <Route path="/" element={movieGridContent} />
