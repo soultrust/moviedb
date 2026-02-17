@@ -116,6 +116,7 @@ function TvDetails({ show }: TvDetailsProps) {
                     <Link
                       key={actor.id}
                       to={`/person/${actor.id}`}
+                      replace
                       className="cast-member cast-member-link"
                     >
                       {actor.profile_path ? (

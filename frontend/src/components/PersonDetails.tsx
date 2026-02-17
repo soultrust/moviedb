@@ -94,6 +94,7 @@ function PersonDetails({ personId }: PersonDetailsProps) {
                   <li key={movie.id} className="person-movie-item">
                     <Link
                       to={`/movie/${movie.id}`}
+                      replace
                       className="person-movie-link"
                     >
                       {movie.poster_path ? (

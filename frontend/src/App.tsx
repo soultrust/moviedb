@@ -209,7 +209,11 @@ function App() {
         <Route
           path="/person/:id"
           element={
-            <DetailOverlay onClose={() => navigate(-1)} contentClassName="person-details-content">
+            <DetailOverlay
+              key={location.pathname}
+              onClose={() => navigate(-1)}
+              contentClassName="person-details-content"
+            >
               <PersonDetailPage />
             </DetailOverlay>
           }
@@ -217,7 +221,7 @@ function App() {
         <Route
           path="/movie/:id"
           element={
-            <DetailOverlay onClose={() => navigate(-1)}>
+            <DetailOverlay key={location.pathname} onClose={() => navigate(-1)}>
               <MovieDetailPage />
             </DetailOverlay>
           }
@@ -225,7 +229,7 @@ function App() {
         <Route
           path="/tv/:id"
           element={
-            <DetailOverlay onClose={() => navigate(-1)}>
+            <DetailOverlay key={location.pathname} onClose={() => navigate(-1)}>
               <TvDetailPage />
             </DetailOverlay>
           }
