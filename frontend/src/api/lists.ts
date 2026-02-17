@@ -24,6 +24,25 @@ export async function fetchLists(params: {
   return res.json() as Promise<MovieList[]>;
 }
 
+/** List with media_type for display (combined from media + person lists). */
+export interface ListWithType extends MovieList {
+  media_type?: string;
+}
+
+/**
+ * Fetch all user lists (media and person combined).
+ */
+export async function fetchAllLists(): Promise<ListWithType[]> {
+  const [mediaLists, personLists] = await Promise.all([
+    fetchLists({ listMediaType: 'media' }),
+    fetchLists({ listMediaType: 'person' }),
+  ]);
+  return [
+    ...mediaLists.map((l) => ({ ...l, media_type: 'media' as const })),
+    ...personLists.map((l) => ({ ...l, media_type: 'person' as const })),
+  ];
+}
+
 /**
  * Create a new list.
  */
@@ -77,4 +96,23 @@ export async function toggleListMembership(
     throw new Error(data.detail ?? 'Failed to update list');
   }
   return res.json() as Promise<{ in_list: boolean }>;
+}
+
+/** List item as returned by API (compatible with TMDBMovieListItem for grid display). */
+export interface ListItemDisplay {
+  id: number;
+  media_type: 'movie' | 'tv' | 'person';
+  title?: string | null;
+  name?: string | null;
+  poster_path: string | null;
+}
+
+/**
+ * Fetch items in a list.
+ */
+export async function fetchListItems(listId: number): Promise<ListItemDisplay[]> {
+  const res = await authFetch(`${LISTS_API}/${listId}/`);
+  if (res.status === 401) return [];
+  if (!res.ok) throw new Error('Failed to load list items');
+  return res.json() as Promise<ListItemDisplay[]>;
 }

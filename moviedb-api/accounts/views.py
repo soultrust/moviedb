@@ -91,6 +91,27 @@ def lists_list(request):
     )
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def list_items(request, list_id):
+    """Get items in a list (movies, TV shows, or persons)."""
+    lst = List.objects.filter(user=request.user, pk=list_id).first()
+    if not lst:
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+    items = lst.items.all().order_by("-id")
+    data = [
+        {
+            "id": item.tmdb_id,
+            "media_type": item.media_type,
+            "title": item.title if item.media_type != "person" else None,
+            "name": item.title if item.media_type == "person" else None,
+            "poster_path": item.poster_path,
+        }
+        for item in items
+    ]
+    return Response(data)
+
+
 @api_view(["POST", "DELETE"])
 @permission_classes([IsAuthenticated])
 def list_toggle_item(request, list_id):

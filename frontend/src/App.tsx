@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { getTrending, getPopularMovies, search } from "./api/tmdb";
+import { fetchListItems } from "./api/lists";
 import { useAuth } from "./context/AuthContext";
 import MovieGrid from "./components/MovieGrid";
 import SearchBar from "./components/SearchBar";
+import ListsDropdown from "./components/ListsDropdown";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DetailOverlay from "./components/DetailOverlay";
@@ -13,7 +15,7 @@ import TvDetailPage from "./pages/TvDetailPage";
 import type { TMDBMovieListItem } from "./types";
 import "./App.css";
 
-type Tab = "trending" | "popular" | "search";
+type Tab = "trending" | "popular" | "search" | "list";
 
 function App() {
   const location = useLocation();
@@ -25,24 +27,59 @@ function App() {
   const [hasMore, setHasMore] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
 
+  const listMatch = location.pathname.match(/^\/lists\/(\d+)$/);
+  const listId = listMatch ? listMatch[1] : null;
+
   const activeTab: Tab =
-    location.pathname === "/popular"
-      ? "popular"
-      : location.pathname === "/trending"
-        ? "trending"
-        : location.pathname === "/" && searchMode
-          ? "search"
-          : "trending";
+    listId
+      ? "list"
+      : location.pathname === "/popular"
+        ? "popular"
+        : location.pathname === "/trending"
+          ? "trending"
+          : location.pathname === "/" && searchMode
+            ? "search"
+            : "trending";
 
   useEffect(() => {
-    if (location.pathname === "/trending" || location.pathname === "/popular") setSearchMode(false);
-  }, [location.pathname]);
+    if (location.pathname === "/trending" || location.pathname === "/popular" || listId) setSearchMode(false);
+  }, [location.pathname, listId]);
 
   useEffect(() => {
     if (location.pathname === "/" && searchMode) return;
-    if (location.pathname !== "/" && location.pathname !== "/trending" && location.pathname !== "/popular") return;
+    if (location.pathname !== "/" && location.pathname !== "/trending" && location.pathname !== "/popular" && !listId) return;
+    if (listId) {
+      loadListData(parseInt(listId, 10));
+      return;
+    }
     loadInitialData();
-  }, [location.pathname, searchMode]);
+  }, [location.pathname, searchMode, listId]);
+
+  const loadListData = async (id: number) => {
+    if (!user) {
+      setMovies([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setPage(1);
+    try {
+      const data = await fetchListItems(id);
+      setMovies(
+        data.map((item) => ({
+          ...item,
+          title: item.title ?? undefined,
+          name: item.name ?? undefined,
+        }))
+      );
+      setHasMore(false);
+    } catch (error) {
+      console.error("Failed to load list:", error);
+      setMovies([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadInitialData = async () => {
     const mode: Tab =
@@ -90,13 +127,18 @@ function App() {
     }
   };
 
-  const handleMovieClick = (movie: TMDBMovieListItem) => {
-    const path = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+  const handleMovieClick = (item: TMDBMovieListItem) => {
+    const path =
+      item.media_type === "person"
+        ? `/person/${item.id}`
+        : item.media_type === "tv"
+          ? `/tv/${item.id}`
+          : `/movie/${item.id}`;
     navigate(path);
   };
 
   const loadMore = async () => {
-    if (loading || !hasMore) return;
+    if (loading || !hasMore || activeTab === "list" || activeTab === "search") return;
 
     setLoading(true);
     const nextPage = page + 1;
@@ -106,7 +148,7 @@ function App() {
         data = await getTrending("movie", "week", nextPage);
       } else if (activeTab === "popular") {
         data = await getPopularMovies(nextPage);
-      } else if (activeTab === "search") {
+      } else {
         return;
       }
 
@@ -193,6 +235,11 @@ function App() {
           >
             Popular
           </Link>
+          <ListsDropdown
+            isAuthenticated={!!user}
+            onSelectList={(id) => navigate(`/lists/${id}`)}
+            isListActive={!!listId}
+          />
         </nav>
       </header>
 
@@ -229,6 +276,7 @@ function App() {
         />
         <Route path="/trending" element={movieGridContent} />
         <Route path="/popular" element={movieGridContent} />
+        <Route path="/lists/:listId" element={movieGridContent} />
         <Route path="/" element={movieGridContent} />
       </Routes>
     </div>
