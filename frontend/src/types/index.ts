@@ -20,21 +20,11 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
-// Consumed (backend model)
-export interface ConsumedItem {
+// Lists
+export interface MovieList {
   id: number;
-  tmdb_id: number;
   title: string;
-  media_type: string;
-  poster_path?: string | null;
-}
-
-export interface ToggleConsumedPayload {
-  id: number;
-  title?: string;
-  name?: string;
-  media_type?: string;
-  poster_path?: string | null;
+  contains_movie: boolean;
 }
 
 // TMDB API (minimal shapes; API returns more)

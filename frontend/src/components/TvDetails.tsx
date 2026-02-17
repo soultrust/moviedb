@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { isConsumedByUser, toggleConsumedByUser } from '../api/consumed';
-import ConsumedCheckbox from './ConsumedCheckbox';
+import AddToListModal from './AddToListModal';
 import type { TMDBTvDetails } from '../types';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -14,17 +13,7 @@ interface TvDetailsProps {
 
 function TvDetails({ show }: TvDetailsProps) {
   const { user } = useAuth();
-  const [consumed, setConsumedState] = useState(false);
-  const [consumedLoading, setConsumedLoading] = useState(!!user);
-
-  useEffect(() => {
-    if (!show?.id || !user) return;
-    setConsumedLoading(true);
-    isConsumedByUser(show.id)
-      .then((result) => setConsumedState(result === true))
-      .catch(() => setConsumedState(false))
-      .finally(() => setConsumedLoading(false));
-  }, [show?.id, user]);
+  const [showAddToListModal, setShowAddToListModal] = useState(false);
 
   if (!show) return null;
 
@@ -34,17 +23,6 @@ function TvDetails({ show }: TvDetailsProps) {
   const posterUrl = show.poster_path
     ? `${IMAGE_BASE_URL}${show.poster_path}`
     : null;
-
-  const handleConsumedChange = async (_checked: boolean) => {
-    if (!user) return;
-    const result = await toggleConsumedByUser({
-      id: show.id,
-      name: show.name,
-      media_type: 'tv',
-      poster_path: show.poster_path ?? null,
-    });
-    if (result) setConsumedState(result.added);
-  };
 
   return (
     <>
@@ -57,16 +35,16 @@ function TvDetails({ show }: TvDetailsProps) {
         <div className="movie-details-body">
           <div className="movie-details-content-header">
             {user ? (
-              <ConsumedCheckbox
-                id={`consumed-tv-${show.id}`}
-                checked={consumed}
-                onChange={handleConsumedChange}
-                label="Consumed"
-                disabled={consumedLoading}
-              />
+              <button
+                type="button"
+                className="add-to-list-btn"
+                onClick={() => setShowAddToListModal(true)}
+              >
+                Add to Lists
+              </button>
             ) : (
               <span className="consumed-login-hint">
-                <Link to="/login">Log in</Link> to mark as consumed
+                <Link to="/login">Log in</Link> to add to lists
               </span>
             )}
           </div>
@@ -161,6 +139,19 @@ function TvDetails({ show }: TvDetailsProps) {
             )}
           </div>
         </div>
+
+      {showAddToListModal && user && (
+        <AddToListModal
+          item={{
+            id: show.id,
+            mediaType: 'tv',
+            title: show.name,
+            posterPath: show.poster_path ?? null,
+          }}
+          listMediaType="media"
+          onClose={() => setShowAddToListModal(false)}
+        />
+      )}
     </>
   );
 }

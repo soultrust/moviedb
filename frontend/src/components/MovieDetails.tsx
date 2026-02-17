@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { isConsumedByUser, toggleConsumedByUser } from '../api/consumed';
-import ConsumedCheckbox from './ConsumedCheckbox';
+import AddToListModal from './AddToListModal';
 import type { TMDBMovieDetails as TMDBMovieDetailsType } from '../types';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -14,23 +13,7 @@ interface MovieDetailsProps {
 
 function MovieDetails({ movie }: MovieDetailsProps) {
   const { user } = useAuth();
-  const [consumed, setConsumedState] = useState(false);
-  const [consumedLoading, setConsumedLoading] = useState(!!user);
-
-  useEffect(() => {
-    if (!movie?.id || !user) return;
-    setConsumedLoading(true);
-    isConsumedByUser(movie.id)
-      .then((result) => {
-        setConsumedState(result === true);
-      })
-      .catch(() => {
-        setConsumedState(false);
-      })
-      .finally(() => {
-        setConsumedLoading(false);
-      });
-  }, [movie?.id, user]);
+  const [showAddToListModal, setShowAddToListModal] = useState(false);
 
   if (!movie) return null;
 
@@ -41,17 +24,6 @@ function MovieDetails({ movie }: MovieDetailsProps) {
   const posterUrl = movie.poster_path
     ? `${IMAGE_BASE_URL}${movie.poster_path}`
     : null;
-
-  const handleConsumedChange = async (_checked: boolean) => {
-    if (!user) return;
-    const result = await toggleConsumedByUser({
-      id: movie.id,
-      title: movie.title ?? movie.name,
-      media_type: movie.media_type ?? 'movie',
-      poster_path: movie.poster_path ?? null,
-    });
-    if (result) setConsumedState(result.added);
-  };
 
   return (
     <>
@@ -64,16 +36,16 @@ function MovieDetails({ movie }: MovieDetailsProps) {
         <div className="movie-details-body">
           <div className="movie-details-content-header">
             {user ? (
-              <ConsumedCheckbox
-                id={`consumed-${movie.id}`}
-                checked={consumed}
-                onChange={handleConsumedChange}
-                label="Consumed"
-                disabled={consumedLoading}
-              />
+              <button
+                type="button"
+                className="add-to-list-btn"
+                onClick={() => setShowAddToListModal(true)}
+              >
+                Add to Lists
+              </button>
             ) : (
               <span className="consumed-login-hint">
-                <Link to="/login">Log in</Link> to mark as consumed
+                <Link to="/login">Log in</Link> to add to lists
               </span>
             )}
           </div>
@@ -168,6 +140,19 @@ function MovieDetails({ movie }: MovieDetailsProps) {
             )}
           </div>
         </div>
+
+      {showAddToListModal && user && (
+        <AddToListModal
+          item={{
+            id: movie.id,
+            mediaType: 'movie',
+            title: movie.title ?? movie.name ?? '',
+            posterPath: movie.poster_path ?? null,
+          }}
+          listMediaType="media"
+          onClose={() => setShowAddToListModal(false)}
+        />
+      )}
     </>
   );
 }

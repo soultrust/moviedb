@@ -7,6 +7,6 @@ urlpatterns = [
     path("login/", views.login),
     path("refresh/", TokenRefreshView.as_view()),
     path("me/", views.me),
-    path("consumed/", views.consumed_list),
-    path("consumed/<int:pk>/", views.consumed_detail),
+    path("lists/", views.lists_list),
+    path("lists/<int:list_id>/toggle/", views.list_toggle_item),
 ]

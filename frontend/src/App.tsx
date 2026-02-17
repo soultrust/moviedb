@@ -4,7 +4,6 @@ import { getTrending, getPopularMovies, search } from "./api/tmdb";
 import { useAuth } from "./context/AuthContext";
 import MovieGrid from "./components/MovieGrid";
 import SearchBar from "./components/SearchBar";
-import ConsumedPage from "./pages/ConsumedPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DetailOverlay from "./components/DetailOverlay";
@@ -123,8 +122,6 @@ function App() {
     }
   };
 
-  const isConsumedPage = location.pathname === "/consumed";
-
   const movieGridContent = (
     <>
       <main className="app-main">
@@ -196,16 +193,12 @@ function App() {
           >
             Popular
           </Link>
-          <Link to="/consumed" className={`header-link ${isConsumedPage ? "active" : ""}`}>
-            Consumed
-          </Link>
         </nav>
       </header>
 
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/consumed" element={<ConsumedPage />} />
         <Route
           path="/person/:id"
           element={

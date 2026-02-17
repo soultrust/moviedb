@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { getPersonDetails } from '../api/tmdb';
+import AddToListModal from './AddToListModal';
 import type { TMDBPersonDetails } from '../types';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -10,6 +12,8 @@ interface PersonDetailsProps {
 }
 
 function PersonDetails({ personId }: PersonDetailsProps) {
+  const { user } = useAuth();
+  const [showAddToListModal, setShowAddToListModal] = useState(false);
   const [person, setPerson] = useState<TMDBPersonDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +56,21 @@ function PersonDetails({ personId }: PersonDetailsProps) {
 
   return (
     <div className="person-details-body">
+          <div className="movie-details-content-header person-details-content-header">
+            {user ? (
+              <button
+                type="button"
+                className="add-to-list-btn"
+                onClick={() => setShowAddToListModal(true)}
+              >
+                Add to Lists
+              </button>
+            ) : (
+              <span className="consumed-login-hint">
+                <Link to="/login">Log in</Link> to add to lists
+              </span>
+            )}
+          </div>
           <div className="person-detail-header">
             {profileUrl ? (
               <div className="person-detail-profile">
@@ -123,6 +142,19 @@ function PersonDetails({ personId }: PersonDetailsProps) {
               </ul>
             </div>
           )}
+
+      {showAddToListModal && user && (
+        <AddToListModal
+          item={{
+            id: person.id,
+            mediaType: 'person',
+            name: person.name,
+            profilePath: person.profile_path ?? null,
+          }}
+          listMediaType="person"
+          onClose={() => setShowAddToListModal(false)}
+        />
+      )}
     </div>
   );
 }

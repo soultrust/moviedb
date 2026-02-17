@@ -490,6 +490,25 @@ body {
   top: 1rem;
   right: 1rem;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.add-to-list-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-to-list-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Consumed checkbox (shadcn-style) */
@@ -567,6 +586,196 @@ body {
 
 .consumed-login-hint a:hover {
   text-decoration: underline;
+}
+
+/* Add to List modal */
+.add-to-list-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.add-to-list-modal {
+  background: var(--surface);
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.add-to-list-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
+}
+
+.add-to-list-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+}
+
+.add-to-list-modal-close:hover {
+  color: var(--text-primary);
+}
+
+.add-to-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.add-to-list-list {
+  list-style: none;
+  margin-bottom: 1rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.add-to-list-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.add-to-list-item:last-child {
+  border-bottom: none;
+}
+
+.add-to-list-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.add-to-list-checkbox {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.add-to-list-checkbox-box {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--surface-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.add-to-list-checkbox:checked + .add-to-list-checkbox-box {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.add-to-list-checkbox:checked + .add-to-list-checkbox-box::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.add-to-list-checkbox:focus-visible + .add-to-list-checkbox-box {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.add-to-list-checkbox:disabled + .add-to-list-checkbox-box {
+  opacity: 0.6;
+}
+
+.add-to-list-checkbox-text {
+  color: var(--text-primary);
+}
+
+.add-to-list-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.add-to-list-create-link {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.add-to-list-create-link:hover {
+  text-decoration: underline;
+}
+
+.add-to-list-create-form {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.add-to-list-create-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.add-to-list-create-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.add-to-list-create-btn {
+  padding: 0.5rem 1rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-to-list-create-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.add-to-list-create-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .movie-backdrop {
@@ -872,6 +1081,7 @@ body {
 }
 
 .person-details-body {
+  position: relative;
   padding: 2rem;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;

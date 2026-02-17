@@ -11,6 +11,6 @@ export const API_URLS = {
   MOVIES: `${API_BASE_URL}/api/movies`,
   // Auth endpoints
   AUTH: `${API_BASE_URL}/api/auth`,
-  // Consumed endpoints
-  CONSUMED: `${API_BASE_URL}/api/auth/consumed`,
+  // Lists endpoints
+  LISTS: `${API_BASE_URL}/api/auth/lists`,
 } as const;

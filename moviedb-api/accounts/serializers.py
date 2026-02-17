@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from .models import Consumed
+from .models import List, ListItem
 
 User = get_user_model()
 
@@ -48,8 +48,24 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "email", "name", "username")
 
 
-class ConsumedSerializer(serializers.ModelSerializer):
+class ListSerializer(serializers.ModelSerializer):
+    contains_movie = serializers.SerializerMethodField()
+
     class Meta:
-        model = Consumed
-        fields = ("id", "tmdb_id", "title", "media_type", "poster_path")
+        model = List
+        fields = ("id", "title", "contains_movie")
+        read_only_fields = ("id",)
+
+    def get_contains_movie(self, obj):
+        tmdb_id = self.context.get("tmdb_id")
+        item_media_type = self.context.get("item_media_type", "movie")
+        if tmdb_id is None:
+            return False
+        return obj.items.filter(tmdb_id=int(tmdb_id), media_type=item_media_type).exists()
+
+
+class ListItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListItem
+        fields = ("id", "tmdb_id", "media_type", "title", "poster_path")
         read_only_fields = ("id",)
