@@ -18,12 +18,7 @@ function PersonDetailPage() {
     return null;
   }
 
-  return (
-    <PersonDetails
-      personId={personId}
-      onClose={() => navigate(-1)}
-    />
-  );
+  return <PersonDetails personId={personId} />;
 }
 
 export default PersonDetailPage;

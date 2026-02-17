@@ -32,41 +32,22 @@ function MovieDetailPage() {
 
   if (loading) {
     return (
-      <div className="movie-details-overlay" onClick={() => navigate(-1)}>
-        <div className="movie-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={() => navigate(-1)} type="button">
-            ×
-          </button>
-          <div className="loading-container" style={{ padding: '3rem' }}>
-            <div className="spinner" />
-            <p>Loading…</p>
-          </div>
-        </div>
+      <div className="loading-container" style={{ padding: '3rem' }}>
+        <div className="spinner" />
+        <p>Loading…</p>
       </div>
     );
   }
 
   if (error || !movie) {
     return (
-      <div className="movie-details-overlay" onClick={() => navigate(-1)}>
-        <div className="movie-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={() => navigate(-1)} type="button">
-            ×
-          </button>
-          <div style={{ padding: '2rem' }}>
-            <p className="person-detail-error">{error ?? 'Movie not found.'}</p>
-          </div>
-        </div>
+      <div style={{ padding: '2rem' }}>
+        <p className="person-detail-error">{error ?? 'Movie not found.'}</p>
       </div>
     );
   }
 
-  return (
-    <MovieDetails
-      movie={movie}
-      onClose={() => navigate(-1)}
-    />
-  );
+  return <MovieDetails movie={movie} />;
 }
 
 export default MovieDetailPage;

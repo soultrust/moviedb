@@ -10,10 +10,9 @@ const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
 
 interface MovieDetailsProps {
   movie: TMDBMovieDetailsType | null;
-  onClose: () => void;
 }
 
-function MovieDetails({ movie, onClose }: MovieDetailsProps) {
+function MovieDetails({ movie }: MovieDetailsProps) {
   const { user } = useAuth();
   const [consumed, setConsumedState] = useState(false);
   const [consumedLoading, setConsumedLoading] = useState(!!user);
@@ -55,13 +54,8 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
   };
 
   return (
-    <div className="movie-details-overlay" onClick={onClose}>
-      <div className="movie-details-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose} type="button">
-          ×
-        </button>
-
-        {backdropUrl && (
+    <>
+      {backdropUrl && (
           <div className="movie-backdrop">
             <img src={backdropUrl} alt={movie.title ?? movie.name ?? ''} />
           </div>
@@ -173,8 +167,7 @@ function MovieDetails({ movie, onClose }: MovieDetailsProps) {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 

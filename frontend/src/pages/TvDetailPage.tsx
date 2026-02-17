@@ -30,36 +30,22 @@ function TvDetailPage() {
 
   if (loading) {
     return (
-      <div className="movie-details-overlay" onClick={() => navigate(-1)}>
-        <div className="movie-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={() => navigate(-1)} type="button">
-            ×
-          </button>
-          <div className="loading-container" style={{ padding: '3rem' }}>
-            <div className="spinner" />
-            <p>Loading…</p>
-          </div>
-        </div>
+      <div className="loading-container" style={{ padding: '3rem' }}>
+        <div className="spinner" />
+        <p>Loading…</p>
       </div>
     );
   }
 
   if (error || !show) {
     return (
-      <div className="movie-details-overlay" onClick={() => navigate(-1)}>
-        <div className="movie-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={() => navigate(-1)} type="button">
-            ×
-          </button>
-          <div style={{ padding: '2rem' }}>
-            <p className="person-detail-error">{error ?? 'Show not found.'}</p>
-          </div>
-        </div>
+      <div style={{ padding: '2rem' }}>
+        <p className="person-detail-error">{error ?? 'Show not found.'}</p>
       </div>
     );
   }
 
-  return <TvDetails show={show} onClose={() => navigate(-1)} />;
+  return <TvDetails show={show} />;
 }
 
 export default TvDetailPage;

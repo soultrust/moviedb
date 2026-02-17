@@ -7,10 +7,9 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 interface PersonDetailsProps {
   personId: number;
-  onClose: () => void;
 }
 
-function PersonDetails({ personId, onClose }: PersonDetailsProps) {
+function PersonDetails({ personId }: PersonDetailsProps) {
   const [person, setPerson] = useState<TMDBPersonDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,31 +25,17 @@ function PersonDetails({ personId, onClose }: PersonDetailsProps) {
 
   if (loading) {
     return (
-      <div className="movie-details-overlay person-details-overlay" onClick={onClose}>
-        <div className="movie-details-content person-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={onClose} type="button">
-            ×
-          </button>
-          <div className="loading-container" style={{ padding: '3rem' }}>
-            <div className="spinner" />
-            <p>Loading…</p>
-          </div>
-        </div>
+      <div className="loading-container" style={{ padding: '3rem' }}>
+        <div className="spinner" />
+        <p>Loading…</p>
       </div>
     );
   }
 
   if (error || !person) {
     return (
-      <div className="movie-details-overlay person-details-overlay" onClick={onClose}>
-        <div className="movie-details-content person-details-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-button" onClick={onClose} type="button">
-            ×
-          </button>
-          <div style={{ padding: '2rem' }}>
-            <p className="person-detail-error">{error ?? 'Person not found.'}</p>
-          </div>
-        </div>
+      <div style={{ padding: '2rem' }}>
+        <p className="person-detail-error">{error ?? 'Person not found.'}</p>
       </div>
     );
   }
@@ -66,13 +51,7 @@ function PersonDetails({ personId, onClose }: PersonDetailsProps) {
   });
 
   return (
-    <div className="movie-details-overlay person-details-overlay" onClick={onClose}>
-      <div className="movie-details-content person-details-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose} type="button">
-          ×
-        </button>
-
-        <div className="person-details-body">
+    <div className="person-details-body">
           <div className="person-detail-header">
             {profileUrl ? (
               <div className="person-detail-profile">
@@ -143,8 +122,6 @@ function PersonDetails({ personId, onClose }: PersonDetailsProps) {
               </ul>
             </div>
           )}
-        </div>
-      </div>
     </div>
   );
 }

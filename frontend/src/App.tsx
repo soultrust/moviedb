@@ -7,6 +7,7 @@ import SearchBar from "./components/SearchBar";
 import ConsumedPage from "./pages/ConsumedPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import DetailOverlay from "./components/DetailOverlay";
 import PersonDetailPage from "./pages/PersonDetailPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import TvDetailPage from "./pages/TvDetailPage";
@@ -205,9 +206,30 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/consumed" element={<ConsumedPage />} />
-        <Route path="/person/:id" element={<PersonDetailPage />} />
-        <Route path="/movie/:id" element={<MovieDetailPage />} />
-        <Route path="/tv/:id" element={<TvDetailPage />} />
+        <Route
+          path="/person/:id"
+          element={
+            <DetailOverlay onClose={() => navigate(-1)} contentClassName="person-details-content">
+              <PersonDetailPage />
+            </DetailOverlay>
+          }
+        />
+        <Route
+          path="/movie/:id"
+          element={
+            <DetailOverlay onClose={() => navigate(-1)}>
+              <MovieDetailPage />
+            </DetailOverlay>
+          }
+        />
+        <Route
+          path="/tv/:id"
+          element={
+            <DetailOverlay onClose={() => navigate(-1)}>
+              <TvDetailPage />
+            </DetailOverlay>
+          }
+        />
         <Route path="/trending" element={movieGridContent} />
         <Route path="/popular" element={movieGridContent} />
         <Route path="/" element={movieGridContent} />
