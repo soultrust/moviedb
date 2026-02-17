@@ -46,7 +46,7 @@ function App() {
   }, [location.pathname, listId]);
 
   useEffect(() => {
-    if (location.pathname === "/" && searchMode) return;
+    if (searchMode) return;
     if (location.pathname !== "/" && location.pathname !== "/trending" && location.pathname !== "/popular" && !listId) return;
     if (listId) {
       loadListData(parseInt(listId, 10));
@@ -111,8 +111,8 @@ function App() {
   };
 
   const handleSearch = async (query: string) => {
-    navigate("/");
     setSearchMode(true);
+    navigate("/");
     setLoading(true);
     setPage(1);
     try {
