@@ -17,6 +17,16 @@ import "./App.css";
 
 type Tab = "trending" | "popular" | "search" | "list";
 
+/** Sort so items with a poster/thumbnail appear first. */
+function sortWithPosterFirst<T extends { poster_path?: string | null }>(items: T[]): T[] {
+  return [...items].sort((a, b) => {
+    const aHas = Boolean(a.poster_path);
+    const bHas = Boolean(b.poster_path);
+    if (aHas === bHas) return 0;
+    return aHas ? -1 : 1;
+  });
+}
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,24 +40,30 @@ function App() {
   const listMatch = location.pathname.match(/^\/lists\/(\d+)$/);
   const listId = listMatch ? listMatch[1] : null;
 
-  const activeTab: Tab =
-    listId
-      ? "list"
-      : location.pathname === "/popular"
-        ? "popular"
-        : location.pathname === "/trending"
-          ? "trending"
-          : location.pathname === "/" && searchMode
-            ? "search"
-            : "trending";
+  const activeTab: Tab = listId
+    ? "list"
+    : location.pathname === "/popular"
+      ? "popular"
+      : location.pathname === "/trending"
+        ? "trending"
+        : location.pathname === "/" && searchMode
+          ? "search"
+          : "trending";
 
   useEffect(() => {
-    if (location.pathname === "/trending" || location.pathname === "/popular" || listId) setSearchMode(false);
+    if (location.pathname === "/trending" || location.pathname === "/popular" || listId)
+      setSearchMode(false);
   }, [location.pathname, listId]);
 
   useEffect(() => {
     if (searchMode) return;
-    if (location.pathname !== "/" && location.pathname !== "/trending" && location.pathname !== "/popular" && !listId) return;
+    if (
+      location.pathname !== "/" &&
+      location.pathname !== "/trending" &&
+      location.pathname !== "/popular" &&
+      !listId
+    )
+      return;
     if (listId) {
       loadListData(parseInt(listId, 10));
       return;
@@ -65,13 +81,12 @@ function App() {
     setPage(1);
     try {
       const data = await fetchListItems(id);
-      setMovies(
-        data.map((item) => ({
-          ...item,
-          title: item.title ?? undefined,
-          name: item.name ?? undefined,
-        }))
-      );
+      const mapped = data.map((item) => ({
+        ...item,
+        title: item.title ?? undefined,
+        name: item.name ?? undefined,
+      }));
+      setMovies(sortWithPosterFirst(mapped));
       setHasMore(false);
     } catch (error) {
       console.error("Failed to load list:", error);
@@ -99,7 +114,7 @@ function App() {
       }
 
       if (data) {
-        setMovies(data.results ?? []);
+        setMovies(sortWithPosterFirst(data.results ?? []));
         setHasMore(data.page < data.total_pages);
       }
     } catch (error) {
@@ -117,7 +132,7 @@ function App() {
     setPage(1);
     try {
       const data = await search(query, 1);
-      setMovies(data.results ?? []);
+      setMovies(sortWithPosterFirst(data.results ?? []));
       setHasMore(data.page < data.total_pages);
     } catch (error) {
       console.error("Search failed:", error);
@@ -153,7 +168,7 @@ function App() {
       }
 
       if (data) {
-        setMovies((prev) => [...prev, ...(data.results ?? [])]);
+        setMovies((prev) => sortWithPosterFirst([...prev, ...(data.results ?? [])]));
         setPage(nextPage);
         setHasMore(data.page < data.total_pages);
       }
@@ -171,12 +186,7 @@ function App() {
 
         {hasMore && movies.length > 0 && (
           <div className="load-more-container">
-            <button
-              type="button"
-              onClick={loadMore}
-              disabled={loading}
-              className="load-more-btn"
-            >
+            <button type="button" onClick={loadMore} disabled={loading} className="load-more-btn">
               {loading ? "Loading..." : "Load More"}
             </button>
           </div>
@@ -191,7 +201,6 @@ function App() {
         <div className="header-inner">
           <div className="header-brand">
             <h1>Soultrust Movie DB</h1>
-            <p className="subtitle">Discover movies and TV shows</p>
           </div>
           <div className="header-auth">
             {user ? (
@@ -225,7 +234,7 @@ function App() {
           </div>
           <Link
             to="/trending"
-            className={`header-link ${(location.pathname === "/trending" || (location.pathname === "/" && !searchMode)) ? "active" : ""}`}
+            className={`header-link ${location.pathname === "/trending" || (location.pathname === "/" && !searchMode) ? "active" : ""}`}
           >
             Trending
           </Link>

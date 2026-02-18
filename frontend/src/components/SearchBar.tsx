@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent } from "react";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -6,7 +6,7 @@ interface SearchBarProps {
 }
 
 function SearchBar({ onSearch, loading }: SearchBarProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,9 +24,6 @@ function SearchBar({ onSearch, loading }: SearchBarProps) {
         onChange={(e) => setQuery(e.target.value)}
         disabled={loading}
       />
-      <button type="submit" disabled={loading || !query.trim()}>
-        {loading ? 'Searching...' : 'Search'}
-      </button>
     </form>
   );
 }
