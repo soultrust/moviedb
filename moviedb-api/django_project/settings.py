@@ -25,8 +25,10 @@ SECRET_KEY = env("SECRET_KEY", default="dummy-key-for-build-only-replace-in-prod
 DEBUG = env("DEBUG")
 
 # Allow Render/Railway domain and localhost for development
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
-
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=["localhost", "127.0.0.1", "moviedb-api-production.up.railway.app"],
+)
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -103,7 +105,9 @@ DATABASES = {
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
