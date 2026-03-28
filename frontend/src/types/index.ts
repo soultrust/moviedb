@@ -63,6 +63,11 @@ export interface TMDBMovieDetails extends TMDBMovieListItem {
       character: string;
       profile_path: string | null;
     }>;
+    crew?: Array<{
+      id: number;
+      name: string;
+      job: string;
+    }>;
   };
   videos?: {
     results?: Array<{
@@ -102,6 +107,11 @@ export interface TMDBTvDetails {
       name: string;
       character: string;
       profile_path: string | null;
+    }>;
+    crew?: Array<{
+      id: number;
+      name: string;
+      job: string;
     }>;
   };
   videos?: {

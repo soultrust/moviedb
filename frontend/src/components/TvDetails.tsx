@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AddToListModal from './AddToListModal';
 import type { TMDBTvDetails } from '../types';
+import { sortCrewWithDirectorsFirst } from '../utils/crew';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
@@ -23,6 +24,12 @@ function TvDetails({ show }: TvDetailsProps) {
   const posterUrl = show.poster_path
     ? `${IMAGE_BASE_URL}${show.poster_path}`
     : null;
+
+  const sortedCrew = useMemo(
+    () =>
+      show.credits?.crew?.length ? sortCrewWithDirectorsFirst(show.credits.crew) : [],
+    [show.credits?.crew],
+  );
 
   return (
     <>
@@ -55,7 +62,7 @@ function TvDetails({ show }: TvDetailsProps) {
           )}
 
           <div className="movie-details-info">
-            <h1>{show.name}</h1>
+            <h1 className="movie-detail-title">{show.name}</h1>
 
             <div className="movie-meta">
               {show.first_air_date && (
@@ -81,14 +88,14 @@ function TvDetails({ show }: TvDetailsProps) {
 
             {show.overview && (
               <div className="overview">
-                <h3>Overview</h3>
+                <h3 className="movie-detail-section-title">Overview</h3>
                 <p>{show.overview}</p>
               </div>
             )}
 
             {show.credits?.cast && show.credits.cast.length > 0 && (
               <div className="cast">
-                <h3>Cast</h3>
+                <h3 className="movie-detail-section-title">Cast</h3>
                 <div className="cast-list">
                   {show.credits.cast.slice(0, 10).map((actor) => (
                     <Link
@@ -113,9 +120,29 @@ function TvDetails({ show }: TvDetailsProps) {
               </div>
             )}
 
+            {sortedCrew.length > 0 && (
+              <div className="crew">
+                <h3 className="movie-detail-section-title">Crew</h3>
+                <table className="movie-crew-table">
+                  <tbody>
+                    {sortedCrew.map((member, index) => (
+                      <tr key={`${member.id}-${member.job}-${index}`}>
+                        <td>{member.job}</td>
+                        <td>
+                          <Link to={`/person/${member.id}`} replace>
+                            {member.name}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
             {show.videos?.results && show.videos.results.length > 0 && (
               <div className="videos">
-                <h3>Trailers</h3>
+                <h3 className="movie-detail-section-title">Trailers</h3>
                 <div className="video-list">
                   {show.videos.results
                     .filter(
