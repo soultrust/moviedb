@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { getTrending, getPopularMovies, search } from "./api/tmdb";
 import { fetchListItems } from "./api/lists";
@@ -13,6 +13,7 @@ import PersonDetailPage from "./pages/PersonDetailPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import TvDetailPage from "./pages/TvDetailPage";
 import type { TMDBMovieListItem } from "./types";
+import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
 import "./App.css";
 
 type Tab = "trending" | "popular" | "search" | "list";
@@ -36,6 +37,9 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const loadMoreInFlightRef = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const listMatch = location.pathname.match(/^\/lists\/(\d+)$/);
   const listId = listMatch ? listMatch[1] : null;
@@ -77,6 +81,7 @@ function App() {
       setLoading(false);
       return;
     }
+    setMovies([]);
     setLoading(true);
     setPage(1);
     try {
@@ -103,6 +108,8 @@ function App() {
         : location.pathname === "/trending"
           ? "trending"
           : "trending";
+    setMovies([]);
+    setSearchQuery("");
     setLoading(true);
     setPage(1);
     try {
@@ -127,7 +134,9 @@ function App() {
 
   const handleSearch = async (query: string) => {
     setSearchMode(true);
+    setSearchQuery(query);
     navigate("/");
+    setMovies([]);
     setLoading(true);
     setPage(1);
     try {
@@ -152,9 +161,13 @@ function App() {
     navigate(path);
   };
 
-  const loadMore = async () => {
-    if (loading || !hasMore || activeTab === "list" || activeTab === "search") return;
+  const loadMore = useCallback(async () => {
+    if (loadMoreInFlightRef.current || loading || !hasMore) return;
+    if (activeTab === "list") return;
+    if (activeTab !== "trending" && activeTab !== "popular" && activeTab !== "search") return;
+    if (activeTab === "search" && !searchQuery.trim()) return;
 
+    loadMoreInFlightRef.current = true;
     setLoading(true);
     const nextPage = page + 1;
     try {
@@ -164,7 +177,7 @@ function App() {
       } else if (activeTab === "popular") {
         data = await getPopularMovies(nextPage);
       } else {
-        return;
+        data = await search(searchQuery.trim(), nextPage);
       }
 
       if (data) {
@@ -176,20 +189,42 @@ function App() {
       console.error("Failed to load more:", error);
     } finally {
       setLoading(false);
+      loadMoreInFlightRef.current = false;
     }
-  };
+  }, [loading, hasMore, activeTab, page, searchQuery]);
+
+  const canInfiniteScroll =
+    (activeTab === "trending" || activeTab === "popular" || activeTab === "search") &&
+    hasMore &&
+    movies.length > 0;
+
+  useInfiniteScroll(sentinelRef, loadMore, {
+    enabled: canInfiniteScroll,
+    hasMore,
+    loading,
+  });
+
+  const loadingInitial = loading && movies.length === 0;
+  const loadingMore = loading && movies.length > 0;
 
   const movieGridContent = (
     <>
       <main className="app-main">
-        <MovieGrid movies={movies} onMovieClick={handleMovieClick} loading={loading} />
+        <MovieGrid
+          movies={movies}
+          onMovieClick={handleMovieClick}
+          loadingInitial={loadingInitial}
+        />
 
-        {hasMore && movies.length > 0 && (
-          <div className="load-more-container">
-            <button type="button" onClick={loadMore} disabled={loading} className="load-more-btn">
-              {loading ? "Loading..." : "Load More"}
-            </button>
-          </div>
+        {canInfiniteScroll && (
+          <>
+            <div ref={sentinelRef} className="load-more-sentinel" aria-hidden />
+            {loadingMore && (
+              <div className="load-more-inline">
+                <div className="spinner spinner-inline" />
+              </div>
+            )}
+          </>
         )}
       </main>
     </>

@@ -4,11 +4,12 @@ import type { TMDBMovieListItem } from '../types';
 interface MovieGridProps {
   movies: TMDBMovieListItem[];
   onMovieClick?: (movie: TMDBMovieListItem) => void;
-  loading: boolean;
+  /** Full-page spinner only for the first load (no items yet). */
+  loadingInitial: boolean;
 }
 
-function MovieGrid({ movies, onMovieClick, loading }: MovieGridProps) {
-  if (loading) {
+function MovieGrid({ movies, onMovieClick, loadingInitial }: MovieGridProps) {
+  if (loadingInitial) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
