@@ -99,10 +99,12 @@ body {
   transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
+  text-transform: uppercase;
 }
 
 .header-nav .header-link,
-.header-logout {
+.header-logout,
+.load-more-btn {
   font-family: "Roboto Condensed", sans-serif;
 }
 
@@ -117,7 +119,7 @@ body {
 .header-link.active {
   background: white;
   border-color: white;
-  color: var(--primary-color);
+  color: #000;
 }
 
 .header-logout:hover {
@@ -172,7 +174,7 @@ body {
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
   background: white;
-  color: var(--primary-color);
+  color: #000;
   border: 1px solid white;
   border-radius: 6px;
 }
@@ -333,7 +335,7 @@ body {
 }
 
 .auth-message {
-  color: var(--primary-color);
+  color: var(--text-primary);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -345,7 +347,7 @@ body {
 }
 
 .auth-switch a {
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -526,6 +528,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+  text-transform: uppercase;
 }
 
 .load-more-btn:hover:not(:disabled) {
@@ -677,7 +680,7 @@ body {
 }
 
 .consumed-login-hint a {
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -825,7 +828,7 @@ body {
 .add-to-list-create-link {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: var(--text-primary);
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0;
@@ -1040,7 +1043,7 @@ body {
 }
 
 .video-item a {
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-decoration: none;
   padding: 0.5rem;
   display: block;
@@ -1114,14 +1117,14 @@ body {
 .consumed-back-link {
   display: inline-block;
   margin-top: 2rem;
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .consumed-back-link:hover {
-  color: var(--primary-dark);
+  color: var(--text-primary);
 }
 
 /* Person / Actor detail page */
@@ -1140,13 +1143,13 @@ body {
 .person-detail-back {
   display: inline-block;
   margin-bottom: 1.5rem;
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
 }
 
 .person-detail-back:hover {
-  color: var(--primary-dark);
+  color: var(--text-primary);
 }
 
 .person-detail-header {
