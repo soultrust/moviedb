@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type RefObject } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { getTrending, getPopularMovies, search } from "./api/tmdb";
 import { fetchListItems } from "./api/lists";
@@ -18,6 +18,22 @@ import "./App.css";
 
 type Tab = "trending" | "popular" | "search" | "list";
 
+interface BrowseSlotState {
+  movies: TMDBMovieListItem[];
+  page: number;
+  hasMore: boolean;
+  loading: boolean;
+}
+
+function emptySlot(): BrowseSlotState {
+  return {
+    movies: [],
+    page: 1,
+    hasMore: false,
+    loading: false,
+  };
+}
+
 /** Sort so items with a poster/thumbnail appear first. */
 function sortWithPosterFirst<T extends { poster_path?: string | null }>(items: T[]): T[] {
   return [...items].sort((a, b) => {
@@ -32,19 +48,24 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [movies, setMovies] = useState<TMDBMovieListItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
+
+  const [trending, setTrending] = useState<BrowseSlotState>(emptySlot);
+  const [popular, setPopular] = useState<BrowseSlotState>(emptySlot);
+  const [searchSlot, setSearchSlot] = useState<BrowseSlotState & { query: string }>({
+    ...emptySlot(),
+    query: "",
+  });
+  const [listSlots, setListSlots] = useState<Record<number, BrowseSlotState>>({});
+
   const [searchMode, setSearchMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const loadMoreInFlightRef = useRef(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  /** Avoid refetching list items when returning to a list already loaded this session. */
-  const listItemsCacheRef = useRef<Map<number, TMDBMovieListItem[]>>(new Map());
+  const trendingSentinelRef = useRef<HTMLDivElement>(null);
+  const popularSentinelRef = useRef<HTMLDivElement>(null);
+  const searchSentinelRef = useRef<HTMLDivElement>(null);
 
   const listMatch = location.pathname.match(/^\/lists\/(\d+)$/);
   const listId = listMatch ? listMatch[1] : null;
+  const listIdNum = listId ? parseInt(listId, 10) : null;
 
   const activeTab: Tab = listId
     ? "list"
@@ -56,16 +77,81 @@ function App() {
           ? "search"
           : "trending";
 
+  const listSlot = listIdNum != null ? (listSlots[listIdNum] ?? emptySlot()) : emptySlot();
+
   useEffect(() => {
     if (location.pathname === "/trending" || location.pathname === "/popular" || listId)
       setSearchMode(false);
   }, [location.pathname, listId]);
 
-  useEffect(() => {
-    if (!user) {
-      listItemsCacheRef.current.clear();
+  const loadTrending = useCallback(async () => {
+    setTrending((s) => ({ ...s, loading: true, movies: [] }));
+    try {
+      const data = await getTrending("movie", "week", 1);
+      if (data) {
+        setTrending({
+          movies: sortWithPosterFirst(data.results ?? []),
+          page: 1,
+          hasMore: data.page < data.total_pages,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load movies:", error);
+      setTrending(emptySlot());
     }
-  }, [user]);
+  }, []);
+
+  const loadPopular = useCallback(async () => {
+    setPopular((s) => ({ ...s, loading: true, movies: [] }));
+    try {
+      const data = await getPopularMovies(1);
+      if (data) {
+        setPopular({
+          movies: sortWithPosterFirst(data.results ?? []),
+          page: 1,
+          hasMore: data.page < data.total_pages,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load movies:", error);
+      setPopular(emptySlot());
+    }
+  }, []);
+
+  const loadListData = useCallback(
+    async (id: number) => {
+      if (!user) {
+        setListSlots((prev) => ({ ...prev, [id]: emptySlot() }));
+        return;
+      }
+      setListSlots((prev) => ({
+        ...prev,
+        [id]: { ...emptySlot(), loading: true, movies: [] },
+      }));
+      try {
+        const data = await fetchListItems(id);
+        const mapped = data.map((item) => ({
+          ...item,
+          title: item.title ?? undefined,
+          name: item.name ?? undefined,
+        }));
+        const sorted = sortWithPosterFirst(mapped);
+        setListSlots((prev) => ({
+          ...prev,
+          [id]: { movies: sorted, page: 1, hasMore: false, loading: false },
+        }));
+      } catch (error) {
+        console.error("Failed to load list:", error);
+        setListSlots((prev) => ({
+          ...prev,
+          [id]: emptySlot(),
+        }));
+      }
+    },
+    [user],
+  );
 
   useEffect(() => {
     if (searchMode) return;
@@ -76,98 +162,56 @@ function App() {
       !listId
     )
       return;
-    if (listId) {
-      loadListData(parseInt(listId, 10));
-      return;
-    }
-    loadInitialData();
-  }, [location.pathname, searchMode, listId]);
 
-  const loadListData = async (id: number) => {
-    if (!user) {
-      setMovies([]);
-      setLoading(false);
+    if (listId && listIdNum != null) {
+      const slot = listSlots[listIdNum];
+      if (slot?.loading) return;
+      if (slot && slot.movies.length > 0) return;
+      void loadListData(listIdNum);
       return;
     }
 
-    const cached = listItemsCacheRef.current.get(id);
-    if (cached) {
-      setMovies(cached);
-      setHasMore(false);
-      setPage(1);
-      setLoading(false);
+    if (location.pathname === "/popular") {
+      if (popular.loading) return;
+      if (popular.movies.length > 0) return;
+      void loadPopular();
       return;
     }
 
-    setMovies([]);
-    setLoading(true);
-    setPage(1);
-    try {
-      const data = await fetchListItems(id);
-      const mapped = data.map((item) => ({
-        ...item,
-        title: item.title ?? undefined,
-        name: item.name ?? undefined,
-      }));
-      const sorted = sortWithPosterFirst(mapped);
-      listItemsCacheRef.current.set(id, sorted);
-      setMovies(sorted);
-      setHasMore(false);
-    } catch (error) {
-      console.error("Failed to load list:", error);
-      setMovies([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadInitialData = async () => {
-    const mode: Tab =
-      location.pathname === "/popular"
-        ? "popular"
-        : location.pathname === "/trending"
-          ? "trending"
-          : "trending";
-    setMovies([]);
-    setSearchQuery("");
-    setLoading(true);
-    setPage(1);
-    try {
-      let data;
-      if (mode === "trending") {
-        data = await getTrending("movie", "week", 1);
-      } else if (mode === "popular") {
-        data = await getPopularMovies(1);
-      }
-
-      if (data) {
-        setMovies(sortWithPosterFirst(data.results ?? []));
-        setHasMore(data.page < data.total_pages);
-      }
-    } catch (error) {
-      console.error("Failed to load movies:", error);
-      setMovies([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (trending.loading) return;
+    if (trending.movies.length > 0) return;
+    void loadTrending();
+  }, [
+    location.pathname,
+    searchMode,
+    listId,
+    listIdNum,
+    loadListData,
+    loadPopular,
+    loadTrending,
+    popular.loading,
+    popular.movies.length,
+    trending.loading,
+    trending.movies.length,
+    listSlots,
+  ]);
 
   const handleSearch = async (query: string) => {
     setSearchMode(true);
-    setSearchQuery(query);
     navigate("/");
-    setMovies([]);
-    setLoading(true);
-    setPage(1);
+    setSearchSlot({ ...emptySlot(), query, loading: true, movies: [] });
     try {
       const data = await search(query, 1);
-      setMovies(sortWithPosterFirst(data.results ?? []));
-      setHasMore(data.page < data.total_pages);
+      setSearchSlot({
+        query,
+        movies: sortWithPosterFirst(data.results ?? []),
+        page: 1,
+        hasMore: data.page < data.total_pages,
+        loading: false,
+      });
     } catch (error) {
       console.error("Search failed:", error);
-      setMovies([]);
-    } finally {
-      setLoading(false);
+      setSearchSlot({ ...emptySlot(), query, loading: false });
     }
   };
 
@@ -181,72 +225,185 @@ function App() {
     navigate(path);
   };
 
-  const loadMore = useCallback(async () => {
-    if (loadMoreInFlightRef.current || loading || !hasMore) return;
-    if (activeTab === "list") return;
-    if (activeTab !== "trending" && activeTab !== "popular" && activeTab !== "search") return;
-    if (activeTab === "search" && !searchQuery.trim()) return;
-
+  const loadMoreTrending = useCallback(async () => {
+    if (loadMoreInFlightRef.current || trending.loading || !trending.hasMore) return;
     loadMoreInFlightRef.current = true;
-    setLoading(true);
-    const nextPage = page + 1;
+    setTrending((s) => ({ ...s, loading: true }));
+    const nextPage = trending.page + 1;
     try {
-      let data;
-      if (activeTab === "trending") {
-        data = await getTrending("movie", "week", nextPage);
-      } else if (activeTab === "popular") {
-        data = await getPopularMovies(nextPage);
-      } else {
-        data = await search(searchQuery.trim(), nextPage);
-      }
-
+      const data = await getTrending("movie", "week", nextPage);
       if (data) {
-        setMovies((prev) => sortWithPosterFirst([...prev, ...(data.results ?? [])]));
-        setPage(nextPage);
-        setHasMore(data.page < data.total_pages);
+        setTrending((s) => ({
+          ...s,
+          movies: sortWithPosterFirst([...s.movies, ...(data.results ?? [])]),
+          page: nextPage,
+          hasMore: data.page < data.total_pages,
+          loading: false,
+        }));
       }
     } catch (error) {
       console.error("Failed to load more:", error);
+      setTrending((s) => ({ ...s, loading: false }));
     } finally {
-      setLoading(false);
       loadMoreInFlightRef.current = false;
     }
-  }, [loading, hasMore, activeTab, page, searchQuery]);
+  }, [trending.loading, trending.hasMore, trending.page]);
 
-  const canInfiniteScroll =
-    (activeTab === "trending" || activeTab === "popular" || activeTab === "search") &&
-    hasMore &&
-    movies.length > 0;
+  const loadMorePopular = useCallback(async () => {
+    if (loadMoreInFlightRef.current || popular.loading || !popular.hasMore) return;
+    loadMoreInFlightRef.current = true;
+    setPopular((s) => ({ ...s, loading: true }));
+    const nextPage = popular.page + 1;
+    try {
+      const data = await getPopularMovies(nextPage);
+      if (data) {
+        setPopular((s) => ({
+          ...s,
+          movies: sortWithPosterFirst([...s.movies, ...(data.results ?? [])]),
+          page: nextPage,
+          hasMore: data.page < data.total_pages,
+          loading: false,
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to load more:", error);
+      setPopular((s) => ({ ...s, loading: false }));
+    } finally {
+      loadMoreInFlightRef.current = false;
+    }
+  }, [popular.loading, popular.hasMore, popular.page]);
 
-  useInfiniteScroll(sentinelRef, loadMore, {
-    enabled: canInfiniteScroll,
-    hasMore,
-    loading,
+  const loadMoreSearch = useCallback(async () => {
+    if (loadMoreInFlightRef.current || searchSlot.loading || !searchSlot.hasMore || !searchSlot.query.trim())
+      return;
+    loadMoreInFlightRef.current = true;
+    setSearchSlot((s) => ({ ...s, loading: true }));
+    const nextPage = searchSlot.page + 1;
+    try {
+      const data = await search(searchSlot.query.trim(), nextPage);
+      if (data) {
+        setSearchSlot((s) => ({
+          ...s,
+          movies: sortWithPosterFirst([...s.movies, ...(data.results ?? [])]),
+          page: nextPage,
+          hasMore: data.page < data.total_pages,
+          loading: false,
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to load more:", error);
+      setSearchSlot((s) => ({ ...s, loading: false }));
+    } finally {
+      loadMoreInFlightRef.current = false;
+    }
+  }, [searchSlot.loading, searchSlot.hasMore, searchSlot.page, searchSlot.query]);
+
+  const canTrendingScroll = activeTab === "trending" && trending.hasMore && trending.movies.length > 0;
+  const canPopularScroll = activeTab === "popular" && popular.hasMore && popular.movies.length > 0;
+  const canSearchScroll =
+    activeTab === "search" && searchSlot.hasMore && searchSlot.movies.length > 0;
+
+  useInfiniteScroll(trendingSentinelRef, loadMoreTrending, {
+    enabled: canTrendingScroll,
+    hasMore: trending.hasMore,
+    loading: trending.loading,
   });
 
-  const loadingInitial = loading && movies.length === 0;
-  const loadingMore = loading && movies.length > 0;
+  useInfiniteScroll(popularSentinelRef, loadMorePopular, {
+    enabled: canPopularScroll,
+    hasMore: popular.hasMore,
+    loading: popular.loading,
+  });
+
+  useInfiniteScroll(searchSentinelRef, loadMoreSearch, {
+    enabled: canSearchScroll,
+    hasMore: searchSlot.hasMore,
+    loading: searchSlot.loading,
+  });
+
+  const headerLoading =
+    activeTab === "trending"
+      ? trending.loading
+      : activeTab === "popular"
+        ? popular.loading
+        : activeTab === "search"
+          ? searchSlot.loading
+          : activeTab === "list" && listIdNum != null
+            ? listSlot.loading
+            : false;
+
+  function renderBrowsePanel(
+    tab: Tab,
+    slot: BrowseSlotState,
+    sentinelRef: RefObject<HTMLDivElement | null>,
+    showInfinite: boolean,
+  ) {
+    const loadingInitial = slot.loading && slot.movies.length === 0;
+    const loadingMore = slot.loading && slot.movies.length > 0;
+    const active = activeTab === tab;
+
+    return (
+      <div
+        className="browse-panel"
+        style={{ display: active ? "block" : "none" }}
+        aria-hidden={!active}
+      >
+        <main className="app-main">
+          <MovieGrid
+            movies={slot.movies}
+            onMovieClick={handleMovieClick}
+            loadingInitial={loadingInitial}
+          />
+          {showInfinite && (
+            <>
+              <div ref={sentinelRef} className="load-more-sentinel" aria-hidden />
+              {loadingMore && (
+                <div className="load-more-inline">
+                  <div className="spinner spinner-inline" />
+                </div>
+              )}
+            </>
+          )}
+        </main>
+      </div>
+    );
+  }
 
   const movieGridContent = (
     <>
-      <main className="app-main">
-        <MovieGrid
-          movies={movies}
-          onMovieClick={handleMovieClick}
-          loadingInitial={loadingInitial}
-        />
-
-        {canInfiniteScroll && (
-          <>
-            <div ref={sentinelRef} className="load-more-sentinel" aria-hidden />
-            {loadingMore && (
-              <div className="load-more-inline">
-                <div className="spinner spinner-inline" />
-              </div>
-            )}
-          </>
-        )}
-      </main>
+      {renderBrowsePanel(
+        "trending",
+        trending,
+        trendingSentinelRef,
+        trending.hasMore && trending.movies.length > 0,
+      )}
+      {renderBrowsePanel(
+        "popular",
+        popular,
+        popularSentinelRef,
+        popular.hasMore && popular.movies.length > 0,
+      )}
+      {renderBrowsePanel(
+        "search",
+        searchSlot,
+        searchSentinelRef,
+        searchSlot.hasMore && searchSlot.movies.length > 0,
+      )}
+      {listIdNum != null && (
+        <div
+          className="browse-panel"
+          style={{ display: activeTab === "list" ? "block" : "none" }}
+          aria-hidden={activeTab !== "list"}
+        >
+          <main className="app-main">
+            <MovieGrid
+              movies={listSlot.movies}
+              onMovieClick={handleMovieClick}
+              loadingInitial={listSlot.loading && listSlot.movies.length === 0}
+            />
+          </main>
+        </div>
+      )}
     </>
   );
 
@@ -285,7 +442,7 @@ function App() {
         </div>
         <nav className="header-nav">
           <div className="header-search">
-            <SearchBar onSearch={handleSearch} loading={loading} />
+            <SearchBar onSearch={handleSearch} loading={headerLoading} />
           </div>
           <Link
             to="/trending"
