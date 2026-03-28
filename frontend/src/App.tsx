@@ -40,6 +40,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const loadMoreInFlightRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  /** Avoid refetching list items when returning to a list already loaded this session. */
+  const listItemsCacheRef = useRef<Map<number, TMDBMovieListItem[]>>(new Map());
 
   const listMatch = location.pathname.match(/^\/lists\/(\d+)$/);
   const listId = listMatch ? listMatch[1] : null;
@@ -58,6 +60,12 @@ function App() {
     if (location.pathname === "/trending" || location.pathname === "/popular" || listId)
       setSearchMode(false);
   }, [location.pathname, listId]);
+
+  useEffect(() => {
+    if (!user) {
+      listItemsCacheRef.current.clear();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (searchMode) return;
@@ -81,6 +89,16 @@ function App() {
       setLoading(false);
       return;
     }
+
+    const cached = listItemsCacheRef.current.get(id);
+    if (cached) {
+      setMovies(cached);
+      setHasMore(false);
+      setPage(1);
+      setLoading(false);
+      return;
+    }
+
     setMovies([]);
     setLoading(true);
     setPage(1);
@@ -91,7 +109,9 @@ function App() {
         title: item.title ?? undefined,
         name: item.name ?? undefined,
       }));
-      setMovies(sortWithPosterFirst(mapped));
+      const sorted = sortWithPosterFirst(mapped);
+      listItemsCacheRef.current.set(id, sorted);
+      setMovies(sorted);
       setHasMore(false);
     } catch (error) {
       console.error("Failed to load list:", error);
