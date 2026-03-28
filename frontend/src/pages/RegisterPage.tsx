@@ -29,7 +29,7 @@ function RegisterPage() {
 
   return (
     <div className="auth-page">
-      <h2>Sign up</h2>
+      <h2 className="auth-page-title">Sign up</h2>
       <form onSubmit={handleSubmit} className="auth-form">
         {error && <p className="auth-error">{error}</p>}
         <input
@@ -56,7 +56,7 @@ function RegisterPage() {
           minLength={8}
           autoComplete="new-password"
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="auth-form-submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Sign up'}
         </button>
       </form>

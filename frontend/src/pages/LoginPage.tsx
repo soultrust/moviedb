@@ -28,7 +28,7 @@ function LoginPage() {
 
   return (
     <div className="auth-page">
-      <h2 className="auth-page-title-login">Log in</h2>
+      <h2 className="auth-page-title">Log in</h2>
       <form onSubmit={handleSubmit} className="auth-form">
         {error && <p className="auth-error">{error}</p>}
         <input
@@ -47,7 +47,7 @@ function LoginPage() {
           required
           autoComplete="current-password"
         />
-        <button type="submit" className="auth-submit-login" disabled={loading}>
+        <button type="submit" className="auth-form-submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Log in'}
         </button>
       </form>

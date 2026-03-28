@@ -56,21 +56,6 @@ function PersonDetails({ personId }: PersonDetailsProps) {
 
   return (
     <div className="person-details-body">
-          <div className="movie-details-content-header person-details-content-header">
-            {user ? (
-              <button
-                type="button"
-                className="add-to-list-btn"
-                onClick={() => setShowAddToListModal(true)}
-              >
-                Add to Lists
-              </button>
-            ) : (
-              <span className="consumed-login-hint">
-                <Link to="/login">Log in</Link> to add to lists
-              </span>
-            )}
-          </div>
           <div className="person-detail-header">
             {profileUrl ? (
               <div className="person-detail-profile">
@@ -82,7 +67,24 @@ function PersonDetails({ personId }: PersonDetailsProps) {
               </div>
             )}
             <div className="person-detail-meta">
-              <h1 className="person-detail-name">{person.name}</h1>
+              <div className="person-detail-name-row">
+                <h1 className="person-detail-name">{person.name}</h1>
+                <div className="person-detail-actions">
+                  {user ? (
+                    <button
+                      type="button"
+                      className="add-to-list-btn"
+                      onClick={() => setShowAddToListModal(true)}
+                    >
+                      Add to Lists
+                    </button>
+                  ) : (
+                    <span className="consumed-login-hint">
+                      <Link to="/login">Log in</Link> to add to lists
+                    </span>
+                  )}
+                </div>
+              </div>
               {person.known_for_department && (
                 <p className="person-detail-dept">{person.known_for_department}</p>
               )}
