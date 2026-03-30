@@ -35,11 +35,23 @@ export function clearAuth(): void {
   localStorage.removeItem(USER_KEY);
 }
 
-export function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
+/** Set from `AuthProvider` so 401 responses clear React state (not just storage). */
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  unauthorizedHandler = handler;
+}
+
+export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const access = getAccessToken();
   const headers = { ...options.headers } as Record<string, string>;
   if (access) headers.Authorization = `Bearer ${access}`;
-  return fetch(url, { ...options, headers });
+  const res = await fetch(url, { ...options, headers });
+  if (res.status === 401 && access) {
+    clearAuth();
+    unauthorizedHandler?.();
+  }
+  return res;
 }
 
 interface RegisterError {

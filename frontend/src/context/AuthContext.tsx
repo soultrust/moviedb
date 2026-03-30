@@ -24,6 +24,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
+    authApi.setUnauthorizedHandler(logout);
+    return () => authApi.setUnauthorizedHandler(null);
+  }, [logout]);
+
+  useEffect(() => {
     const token = authApi.getAccessToken();
     if (!token) {
       setLoading(false);
