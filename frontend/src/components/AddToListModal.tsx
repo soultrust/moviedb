@@ -20,7 +20,6 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListTitle, setNewListTitle] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
-  const [togglingId, setTogglingId] = useState<number | null>(null);
   /** Per-list ADDED!/REMOVED flash: solid 2.5s, fade 0.5s (3s total). */
   const [listFeedback, setListFeedback] = useState<
     Record<number, { kind: 'added' | 'removed'; phase: 'solid' | 'fade' }>
@@ -28,6 +27,8 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
   const listFeedbackTimersRef = useRef<Map<number, { fadeAt: number; clearAt: number }>>(
     new Map(),
   );
+  /** Prevents overlapping toggles for the same list while a request is in flight. */
+  const toggleInFlightRef = useRef<Set<number>>(new Set());
 
   const itemMediaType = item.mediaType;
   const itemId = item.id;
@@ -87,8 +88,14 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
   }, []);
 
   const handleCheckboxChange = async (list: MovieList, checked: boolean) => {
-    if (togglingId !== null) return;
-    setTogglingId(list.id);
+    if (toggleInFlightRef.current.has(list.id)) return;
+    const previousChecked = list.contains_movie;
+    toggleInFlightRef.current.add(list.id);
+    setLists((prev) =>
+      prev.map((l) =>
+        l.id === list.id ? { ...l, contains_movie: checked } : l,
+      ),
+    );
     try {
       await toggleListMembership(
         list.id,
@@ -98,18 +105,17 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
           title: itemTitle,
           poster_path: itemImagePath ?? null,
         },
-        checked
-      );
-      setLists((prev) =>
-        prev.map((l) =>
-          l.id === list.id ? { ...l, contains_movie: checked } : l
-        )
+        checked,
       );
       showListFeedback(list.id, checked ? 'added' : 'removed');
     } catch {
-      // Revert on error
+      setLists((prev) =>
+        prev.map((l) =>
+          l.id === list.id ? { ...l, contains_movie: previousChecked } : l,
+        ),
+      );
     } finally {
-      setTogglingId(null);
+      toggleInFlightRef.current.delete(list.id);
     }
   };
 
@@ -181,7 +187,6 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
                         onChange={(e) =>
                           handleCheckboxChange(list, e.target.checked)
                         }
-                        disabled={togglingId === list.id}
                         className="add-to-list-checkbox"
                       />
                       <span className="add-to-list-checkbox-box" />
