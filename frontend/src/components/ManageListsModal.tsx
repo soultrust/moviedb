@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef, type KeyboardEvent } from 'react';
-import { fetchAllLists, deleteList, updateListTitle } from '../api/lists';
+import { useState, useEffect, useCallback, useRef, type FormEvent, type KeyboardEvent } from 'react';
+import { fetchAllLists, deleteList, updateListTitle, createList } from '../api/lists';
 import type { ListWithType } from '../api/lists';
 
 interface ManageListsModalProps {
@@ -18,6 +18,10 @@ function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageList
   const [editDraft, setEditDraft] = useState('');
   const [savingId, setSavingId] = useState<number | null>(null);
   const [deleteFeedback, setDeleteFeedback] = useState<Record<number, 'solid' | 'fade'>>({});
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newListTitle, setNewListTitle] = useState('');
+  const [createListType, setCreateListType] = useState<'media' | 'person'>('media');
+  const [createLoading, setCreateLoading] = useState(false);
   const deleteFeedbackTimersRef = useRef<Map<number, { fadeAt: number; clearAt: number }>>(
     new Map(),
   );
@@ -140,6 +144,33 @@ function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageList
     }
   };
 
+  const handleCreateList = async (e: FormEvent) => {
+    e.preventDefault();
+    const title = newListTitle.trim();
+    if (!title || createLoading) return;
+    setCreateLoading(true);
+    try {
+      const created = await createList(title, createListType);
+      const mediaType = created.media_type === 'person' ? ('person' as const) : ('media' as const);
+      setLists((prev) => [
+        ...prev,
+        {
+          id: created.id,
+          title: created.title,
+          media_type: mediaType,
+          contains_movie: false,
+        },
+      ]);
+      onListsChanged?.();
+      setNewListTitle('');
+      setShowCreateForm(false);
+    } catch {
+      // createList throws with message
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   const renderRow = (list: ListWithType) => {
     const fb = deleteFeedback[list.id];
     const isEditing = editingId === list.id;
@@ -227,19 +258,83 @@ function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageList
             <div className="spinner" />
             <p>Loading lists…</p>
           </div>
-        ) : lists.length === 0 ? (
-          <p className="manage-lists-empty">No lists yet</p>
         ) : (
-          <ul className="manage-lists-list">
-            {mediaLists.length > 0 && (
-              <li className="lists-dropdown-section-header">Movies & TV</li>
-            )}
-            {mediaLists.map((list) => renderRow(list))}
-            {personLists.length > 0 && (
-              <li className="lists-dropdown-section-header">People</li>
-            )}
-            {personLists.map((list) => renderRow(list))}
-          </ul>
+          <>
+            <div className="manage-lists-body">
+              {lists.length === 0 ? (
+                <p className="manage-lists-empty">No lists yet</p>
+              ) : (
+                <ul className="manage-lists-list">
+                  {mediaLists.length > 0 && (
+                    <li className="lists-dropdown-section-header">Movies & TV</li>
+                  )}
+                  {mediaLists.map((list) => renderRow(list))}
+                  {personLists.length > 0 && (
+                    <li className="lists-dropdown-section-header">People</li>
+                  )}
+                  {personLists.map((list) => renderRow(list))}
+                </ul>
+              )}
+            </div>
+
+            <div className="add-to-list-footer manage-lists-create-footer">
+              <button
+                type="button"
+                className="add-to-list-create-link"
+                onClick={() => setShowCreateForm((v) => !v)}
+              >
+                Create a new list
+              </button>
+
+              {showCreateForm && (
+                <form
+                  className="add-to-list-create-form manage-lists-create-form"
+                  onSubmit={handleCreateList}
+                >
+                  <div className="manage-lists-create-type" role="group" aria-label="List type">
+                    <label className="manage-lists-create-type-option">
+                      <input
+                        type="radio"
+                        name="manage-new-list-type"
+                        checked={createListType === 'media'}
+                        onChange={() => setCreateListType('media')}
+                        disabled={createLoading}
+                      />
+                      Movies &amp; TV
+                    </label>
+                    <label className="manage-lists-create-type-option">
+                      <input
+                        type="radio"
+                        name="manage-new-list-type"
+                        checked={createListType === 'person'}
+                        onChange={() => setCreateListType('person')}
+                        disabled={createLoading}
+                      />
+                      People
+                    </label>
+                  </div>
+                  <div className="manage-lists-create-row">
+                    <input
+                      type="text"
+                      value={newListTitle}
+                      onChange={(e) => setNewListTitle(e.target.value)}
+                      placeholder="List title"
+                      className="add-to-list-create-input"
+                      autoFocus
+                      disabled={createLoading}
+                    />
+                    <button
+                      type="submit"
+                      className="add-to-list-create-btn"
+                      disabled={!newListTitle.trim() || createLoading}
+                    >
+                      {createLoading ? 'Creating…' : 'Create'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>
