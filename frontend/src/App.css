@@ -937,8 +937,11 @@ body {
 }
 
 .add-to-list-modal-title {
+  font-family: "Roboto Condensed", sans-serif;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   margin-bottom: 1.25rem;
   color: var(--text-primary);
 }
