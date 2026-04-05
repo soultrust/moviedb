@@ -62,55 +62,57 @@ function ListsDropdown({
       </button>
       {open && (
         <div className="lists-dropdown-content">
-          {loading ? (
-            <div className="lists-dropdown-loading">
-              <div className="spinner" />
-              <span>Loading lists…</span>
-            </div>
-          ) : lists.length === 0 ? (
-            <div className="lists-dropdown-empty">No lists yet</div>
-          ) : (
-            <ul className="lists-dropdown-list">
-              {lists.some((l) => l.media_type === 'media') && (
-                <li className="lists-dropdown-section-header">Movies & TV</li>
-              )}
-              {lists
-                .filter((l) => l.media_type === 'media')
-                .map((list) => (
-                  <li key={list.id}>
-                    <button
-                      type="button"
-                      className="lists-dropdown-item"
-                      onClick={() => {
-                        onSelectList(list.id);
-                        setOpen(false);
-                      }}
-                    >
-                      {list.title}
-                    </button>
-                  </li>
-                ))}
-              {lists.some((l) => l.media_type === 'person') && (
-                <li className="lists-dropdown-section-header">People</li>
-              )}
-              {lists
-                .filter((l) => l.media_type === 'person')
-                .map((list) => (
-                  <li key={list.id}>
-                    <button
-                      type="button"
-                      className="lists-dropdown-item"
-                      onClick={() => {
-                        onSelectList(list.id);
-                        setOpen(false);
-                      }}
-                    >
-                      {list.title}
-                    </button>
-                  </li>
-                ))}
-            </ul>
-          )}
+          <div className="lists-dropdown-scroll">
+            {loading ? (
+              <div className="lists-dropdown-loading">
+                <div className="spinner" />
+                <span>Loading lists…</span>
+              </div>
+            ) : lists.length === 0 ? (
+              <div className="lists-dropdown-empty">No lists yet</div>
+            ) : (
+              <ul className="lists-dropdown-list">
+                {lists.some((l) => l.media_type === 'media') && (
+                  <li className="lists-dropdown-section-header">Movies & TV</li>
+                )}
+                {lists
+                  .filter((l) => l.media_type === 'media')
+                  .map((list) => (
+                    <li key={list.id}>
+                      <button
+                        type="button"
+                        className="lists-dropdown-item"
+                        onClick={() => {
+                          onSelectList(list.id);
+                          setOpen(false);
+                        }}
+                      >
+                        {list.title}
+                      </button>
+                    </li>
+                  ))}
+                {lists.some((l) => l.media_type === 'person') && (
+                  <li className="lists-dropdown-section-header">People</li>
+                )}
+                {lists
+                  .filter((l) => l.media_type === 'person')
+                  .map((list) => (
+                    <li key={list.id}>
+                      <button
+                        type="button"
+                        className="lists-dropdown-item"
+                        onClick={() => {
+                          onSelectList(list.id);
+                          setOpen(false);
+                        }}
+                      >
+                        {list.title}
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
           <div className="lists-dropdown-manage">
             <button
               type="button"
@@ -132,6 +134,9 @@ function ListsDropdown({
             if (activeListId != null && listId === activeListId) {
               onDeletedActiveList?.();
             }
+            fetchAllLists().then(setLists).catch(() => setLists([]));
+          }}
+          onListsChanged={() => {
             fetchAllLists().then(setLists).catch(() => setLists([]));
           }}
         />

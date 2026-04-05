@@ -1,21 +1,27 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchAllLists, deleteList } from '../api/lists';
+import { useState, useEffect, useCallback, useRef, type KeyboardEvent } from 'react';
+import { fetchAllLists, deleteList, updateListTitle } from '../api/lists';
 import type { ListWithType } from '../api/lists';
 
 interface ManageListsModalProps {
   onClose: () => void;
   /** Called after the list is successfully deleted on the server (e.g. navigate away if it was the active list). */
   onListDeleted?: (listId: number) => void;
+  /** Called after a list is renamed so parent can refresh cached list data. */
+  onListsChanged?: () => void;
 }
 
-function ManageListsModal({ onClose, onListDeleted }: ManageListsModalProps) {
+function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageListsModalProps) {
   const [lists, setLists] = useState<ListWithType[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState('');
+  const [savingId, setSavingId] = useState<number | null>(null);
   const [deleteFeedback, setDeleteFeedback] = useState<Record<number, 'solid' | 'fade'>>({});
   const deleteFeedbackTimersRef = useRef<Map<number, { fadeAt: number; clearAt: number }>>(
     new Map(),
   );
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const loadLists = useCallback(() => {
     setLoading(true);
@@ -38,6 +44,15 @@ function ManageListsModal({ onClose, onListDeleted }: ManageListsModalProps) {
       deleteFeedbackTimersRef.current.clear();
     };
   }, []);
+
+  useEffect(() => {
+    if (editingId == null) return;
+    const el = titleInputRef.current;
+    if (el) {
+      el.focus();
+      el.select();
+    }
+  }, [editingId]);
 
   const showDeletedFeedback = useCallback((listId: number) => {
     const prevTimers = deleteFeedbackTimersRef.current.get(listId);
@@ -63,8 +78,14 @@ function ManageListsModal({ onClose, onListDeleted }: ManageListsModalProps) {
     deleteFeedbackTimersRef.current.set(listId, { fadeAt, clearAt });
   }, []);
 
+  const cancelEdit = useCallback(() => {
+    setEditingId(null);
+    setEditDraft('');
+  }, []);
+
   const handleDelete = async (list: ListWithType) => {
     if (deletingId !== null || deleteFeedback[list.id]) return;
+    if (editingId === list.id) cancelEdit();
     setDeletingId(list.id);
     try {
       await deleteList(list.id);
@@ -77,13 +98,79 @@ function ManageListsModal({ onClose, onListDeleted }: ManageListsModalProps) {
     }
   };
 
+  const beginEdit = (list: ListWithType) => {
+    if (deleteFeedback[list.id] || savingId === list.id) return;
+    setEditingId(list.id);
+    setEditDraft(list.title);
+  };
+
+  const commitTitleEdit = async (list: ListWithType) => {
+    const next = editDraft.trim();
+    if (!next) {
+      setEditDraft(list.title);
+      cancelEdit();
+      return;
+    }
+    if (next === list.title) {
+      cancelEdit();
+      return;
+    }
+    setSavingId(list.id);
+    try {
+      const updated = await updateListTitle(list.id, next);
+      setLists((prev) =>
+        prev.map((l) => (l.id === list.id ? { ...l, title: updated.title } : l)),
+      );
+      onListsChanged?.();
+      cancelEdit();
+    } catch {
+      // stay in edit mode
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const handleTitleKeyDown = (e: KeyboardEvent<HTMLInputElement>, list: ListWithType) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      void commitTitleEdit(list);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
+    }
+  };
+
   const renderRow = (list: ListWithType) => {
     const fb = deleteFeedback[list.id];
+    const isEditing = editingId === list.id;
+    const busy = savingId === list.id || Boolean(deleteFeedback[list.id]);
+
     return (
       <li key={list.id} className="manage-lists-item">
         <div className="manage-lists-row">
           <div className="manage-lists-row-text">
-            <span className="manage-lists-row-title">{list.title}</span>
+            {isEditing ? (
+              <input
+                ref={titleInputRef}
+                type="text"
+                className="manage-lists-title-input"
+                value={editDraft}
+                onChange={(e) => setEditDraft(e.target.value)}
+                onBlur={() => void commitTitleEdit(list)}
+                onKeyDown={(e) => handleTitleKeyDown(e, list)}
+                disabled={savingId === list.id}
+                aria-label="List title"
+              />
+            ) : (
+              <button
+                type="button"
+                className="manage-lists-title-btn"
+                onClick={() => beginEdit(list)}
+                disabled={busy}
+              >
+                {list.title}
+              </button>
+            )}
             {fb && (
               <span
                 className={
@@ -101,7 +188,7 @@ function ManageListsModal({ onClose, onListDeleted }: ManageListsModalProps) {
             type="button"
             className="manage-lists-delete-btn"
             onClick={() => handleDelete(list)}
-            disabled={deletingId === list.id || Boolean(deleteFeedback[list.id])}
+            disabled={deletingId === list.id || Boolean(deleteFeedback[list.id]) || isEditing}
             aria-label={`Delete list ${list.title}`}
           >
             ×

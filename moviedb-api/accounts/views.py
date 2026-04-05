@@ -91,10 +91,10 @@ def lists_list(request):
     )
 
 
-@api_view(["GET", "DELETE"])
+@api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([IsAuthenticated])
 def list_items(request, list_id):
-    """GET: items in a list. DELETE: remove the list (and its items)."""
+    """GET: items in a list. PATCH: rename list. DELETE: remove the list (and its items)."""
     lst = List.objects.filter(user=request.user, pk=list_id).first()
     if not lst:
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -102,6 +102,19 @@ def list_items(request, list_id):
     if request.method == "DELETE":
         lst.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    if request.method == "PATCH":
+        title = request.data.get("title", "").strip()
+        if not title:
+            return Response(
+                {"detail": "Title is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        lst.title = title
+        lst.save()
+        return Response(
+            {"id": lst.id, "title": lst.title, "media_type": lst.media_type}
+        )
 
     items = lst.items.all().order_by("-id")
     data = [

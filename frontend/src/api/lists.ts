@@ -108,6 +108,27 @@ export interface ListItemDisplay {
 }
 
 /**
+ * Rename a list (must belong to the current user).
+ */
+export async function updateListTitle(
+  listId: number,
+  title: string,
+): Promise<{ id: number; title: string; media_type: string }> {
+  const res = await authFetch(`${LISTS_API}/${listId}/`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: title.trim() }),
+  });
+  if (res.status === 401) throw new Error('Unauthorized');
+  if (res.status === 404) throw new Error('List not found');
+  if (!res.ok) {
+    const data = (await res.json().catch(() => ({}))) as { detail?: string };
+    throw new Error(data.detail ?? 'Failed to rename list');
+  }
+  return res.json() as Promise<{ id: number; title: string; media_type: string }>;
+}
+
+/**
  * Delete a list (must belong to the current user).
  */
 export async function deleteList(listId: number): Promise<void> {

@@ -203,16 +203,24 @@ body {
   position: absolute;
   top: calc(100% + 0.5rem);
   left: 0;
+  display: flex;
+  flex-direction: column;
   min-width: 220px;
   max-width: 320px;
-  max-height: 320px;
-  overflow-y: auto;
+  max-height: min(520px, calc(100vh - 5rem));
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 10px 38px -10px rgba(0, 0, 0, 0.35);
   z-index: 100;
   padding: 0.25rem;
+}
+
+.lists-dropdown-scroll {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .lists-dropdown-loading,
@@ -275,6 +283,7 @@ body {
 }
 
 .lists-dropdown-manage {
+  flex-shrink: 0;
   margin-top: 0.25rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--border-color);
@@ -283,21 +292,25 @@ body {
 .lists-dropdown-manage-btn {
   display: block;
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: none;
+  padding: 0.2rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 6px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.2);
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: white;
+  text-transform: uppercase;
   text-align: center;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .lists-dropdown-manage-btn:hover {
-  background: var(--surface-light);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: white;
+  color: white;
 }
 
 /* Manage Lists modal */
@@ -343,9 +356,51 @@ body {
   gap: 0.35rem;
 }
 
-.manage-lists-row-title {
-  color: var(--text-primary);
+.manage-lists-title-btn {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.15rem 0.25rem;
+  margin: -0.15rem -0.25rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font: inherit;
   font-size: 0.95rem;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manage-lists-title-btn:hover:not(:disabled) {
+  background: var(--surface-light);
+}
+
+.manage-lists-title-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.manage-lists-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.15rem 0.35rem;
+  margin: -0.15rem 0;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background: var(--surface-light);
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.manage-lists-title-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
 }
 
 .manage-lists-delete-btn {
