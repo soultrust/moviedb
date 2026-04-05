@@ -460,6 +460,8 @@ function App() {
             isAuthenticated={!!user}
             onSelectList={(id) => navigate(`/lists/${id}`)}
             isListActive={!!listId}
+            activeListId={listIdNum}
+            onDeletedActiveList={() => navigate("/trending")}
           />
         </nav>
       </header>

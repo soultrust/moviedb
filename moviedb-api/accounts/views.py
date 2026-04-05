@@ -91,13 +91,18 @@ def lists_list(request):
     )
 
 
-@api_view(["GET"])
+@api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def list_items(request, list_id):
-    """Get items in a list (movies, TV shows, or persons)."""
+    """GET: items in a list. DELETE: remove the list (and its items)."""
     lst = List.objects.filter(user=request.user, pk=list_id).first()
     if not lst:
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "DELETE":
+        lst.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     items = lst.items.all().order_by("-id")
     data = [
         {

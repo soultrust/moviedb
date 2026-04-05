@@ -108,6 +108,19 @@ export interface ListItemDisplay {
 }
 
 /**
+ * Delete a list (must belong to the current user).
+ */
+export async function deleteList(listId: number): Promise<void> {
+  const res = await authFetch(`${LISTS_API}/${listId}/`, { method: 'DELETE' });
+  if (res.status === 401) throw new Error('Unauthorized');
+  if (res.status === 404) throw new Error('List not found');
+  if (!res.ok) {
+    const data = (await res.json().catch(() => ({}))) as { detail?: string };
+    throw new Error(data.detail ?? 'Failed to delete list');
+  }
+}
+
+/**
  * Fetch items in a list.
  */
 export async function fetchListItems(listId: number): Promise<ListItemDisplay[]> {

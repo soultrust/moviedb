@@ -274,6 +274,107 @@ body {
   color: var(--text-muted);
 }
 
+.lists-dropdown-manage {
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.lists-dropdown-manage-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  text-align: center;
+  cursor: pointer;
+}
+
+.lists-dropdown-manage-btn:hover {
+  background: var(--surface-light);
+}
+
+/* Manage Lists modal */
+.manage-lists-modal .add-to-list-modal-title {
+  margin-bottom: 1rem;
+}
+
+.manage-lists-empty {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.manage-lists-list {
+  list-style: none;
+  margin: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.manage-lists-item {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.manage-lists-item:last-child {
+  border-bottom: none;
+}
+
+.manage-lists-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.manage-lists-row-text {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.manage-lists-row-title {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.manage-lists-delete-btn {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manage-lists-delete-btn:hover:not(:disabled) {
+  background: rgba(220, 80, 80, 0.2);
+  color: #ff6b6b;
+}
+
+.manage-lists-delete-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 /* Auth pages */
 .auth-page {
   max-width: 400px;

@@ -1,15 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchAllLists } from '../api/lists';
 import type { ListWithType } from '../api/lists';
+import ManageListsModal from './ManageListsModal';
 
 interface ListsDropdownProps {
   isAuthenticated: boolean;
   onSelectList: (listId: number) => void;
   isListActive?: boolean;
+  /** When set, deleting this list id will invoke this (e.g. leave `/lists/:id`). */
+  activeListId?: number | null;
+  onDeletedActiveList?: () => void;
 }
 
-function ListsDropdown({ isAuthenticated, onSelectList, isListActive }: ListsDropdownProps) {
+function ListsDropdown({
+  isAuthenticated,
+  onSelectList,
+  isListActive,
+  activeListId,
+  onDeletedActiveList,
+}: ListsDropdownProps) {
   const [open, setOpen] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
   const [lists, setLists] = useState<ListWithType[]>([]);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,7 +111,30 @@ function ListsDropdown({ isAuthenticated, onSelectList, isListActive }: ListsDro
                 ))}
             </ul>
           )}
+          <div className="lists-dropdown-manage">
+            <button
+              type="button"
+              className="lists-dropdown-manage-btn"
+              onClick={() => {
+                setManageOpen(true);
+                setOpen(false);
+              }}
+            >
+              MANAGE LISTS
+            </button>
+          </div>
         </div>
+      )}
+      {manageOpen && (
+        <ManageListsModal
+          onClose={() => setManageOpen(false)}
+          onListDeleted={(listId) => {
+            if (activeListId != null && listId === activeListId) {
+              onDeletedActiveList?.();
+            }
+            fetchAllLists().then(setLists).catch(() => setLists([]));
+          }}
+        />
       )}
     </div>
   );
