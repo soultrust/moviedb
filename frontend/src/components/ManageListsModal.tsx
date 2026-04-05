@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, type FormEvent, type KeyboardEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchAllLists, deleteList, updateListTitle, createList } from '../api/lists';
 import type { ListWithType } from '../api/lists';
 
@@ -179,6 +180,15 @@ function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageList
     return (
       <li key={list.id} className="manage-lists-item">
         <div className="manage-lists-row">
+          <button
+            type="button"
+            className="manage-lists-delete-btn"
+            onClick={() => handleDelete(list)}
+            disabled={deletingId === list.id || Boolean(deleteFeedback[list.id]) || isEditing}
+            aria-label={`Delete list ${list.title}`}
+          >
+            ×
+          </button>
           <div className="manage-lists-row-text">
             {isEditing ? (
               <input
@@ -215,15 +225,21 @@ function ManageListsModal({ onClose, onListDeleted, onListsChanged }: ManageList
               </span>
             )}
           </div>
-          <button
-            type="button"
-            className="manage-lists-delete-btn"
-            onClick={() => handleDelete(list)}
-            disabled={deletingId === list.id || Boolean(deleteFeedback[list.id]) || isEditing}
-            aria-label={`Delete list ${list.title}`}
+          <Link
+            to={`/lists/${list.id}`}
+            className="add-to-list-row-nav"
+            onClick={() => onClose()}
+            aria-label={`Open list: ${list.title}`}
           >
-            ×
-          </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden
+            >
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+          </Link>
         </div>
       </li>
     );

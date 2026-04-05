@@ -5,6 +5,8 @@
 }
 
 :root {
+  /** Scrollable list regions: grow with content; scrollbar only past this cap. */
+  --list-scroll-max-height: 75vh;
   --primary-color: #6366f1;
   --primary-dark: #4f46e5;
   --secondary-color: #8b5cf6;
@@ -221,6 +223,7 @@ body {
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
+  max-height: var(--list-scroll-max-height);
 }
 
 .lists-dropdown-loading,
@@ -330,6 +333,8 @@ body {
 .manage-lists-body {
   flex: 0 1 auto;
   min-height: 0;
+  max-height: var(--list-scroll-max-height);
+  overflow-y: auto;
 }
 
 .manage-lists-empty {
@@ -402,7 +407,7 @@ body {
   flex: 1;
   min-width: 0;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.35rem;
 }
@@ -975,7 +980,7 @@ body {
 .add-to-list-list {
   list-style: none;
   margin-bottom: 1rem;
-  max-height: 240px;
+  max-height: var(--list-scroll-max-height);
   overflow-y: auto;
 }
 
