@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchLists, createList, toggleListMembership } from '../api/lists';
 import type { MovieList } from '../types';
 
@@ -22,7 +23,7 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListTitle, setNewListTitle] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
-  /** Per-list ADDED!/REMOVED flash: solid 2.5s, fade 0.5s (3s total). */
+  /** Per-list added (checkmark) / REMOVED flash: solid 3s, fade 0.5s. */
   const [listFeedback, setListFeedback] = useState<
     Record<number, { kind: 'added' | 'removed'; phase: 'solid' | 'fade' }>
   >({});
@@ -77,7 +78,7 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
           ? { ...s, [listId]: { ...cur, phase: 'fade' } }
           : s;
       });
-    }, 2500);
+    }, 3000);
     const clearAt = window.setTimeout(() => {
       setListFeedback((s) => {
         const next = { ...s };
@@ -85,7 +86,7 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
         return next;
       });
       listFeedbackTimersRef.current.delete(listId);
-    }, 3000);
+    }, 3500);
     listFeedbackTimersRef.current.set(listId, { fadeAt, clearAt });
   }, []);
 
@@ -182,32 +183,70 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
                 const fb = listFeedback[list.id];
                 return (
                   <li key={list.id} className="add-to-list-item">
-                    <label className="add-to-list-checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={list.contains_movie}
-                        onChange={(e) =>
-                          handleCheckboxChange(list, e.target.checked)
-                        }
-                        className="add-to-list-checkbox"
-                      />
-                      <span className="add-to-list-checkbox-box" />
-                      <span className="add-to-list-checkbox-text">
-                        {list.title}
-                        {fb && (
-                          <span
-                            className={
-                              fb.phase === 'fade'
-                                ? 'add-to-list-feedback-badge add-to-list-feedback-badge--exiting'
-                                : 'add-to-list-feedback-badge'
-                            }
-                            aria-live="polite"
-                          >
-                            {fb.kind === 'added' ? 'ADDED!' : 'REMOVED'}
-                          </span>
-                        )}
-                      </span>
-                    </label>
+                    <div className="add-to-list-row">
+                      <label className="add-to-list-checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={list.contains_movie}
+                          onChange={(e) =>
+                            handleCheckboxChange(list, e.target.checked)
+                          }
+                          className="add-to-list-checkbox"
+                        />
+                        <span className="add-to-list-checkbox-box" />
+                        <span className="add-to-list-checkbox-text">
+                          {list.title}
+                          {fb &&
+                            (fb.kind === 'added' ? (
+                              <span
+                                className={
+                                  fb.phase === 'fade'
+                                    ? 'add-to-list-feedback-check add-to-list-feedback-check--exiting'
+                                    : 'add-to-list-feedback-check'
+                                }
+                                role="img"
+                                aria-label="Added to list"
+                                aria-live="polite"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  aria-hidden
+                                >
+                                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19l12-12l-1.41-1.41z" />
+                                </svg>
+                              </span>
+                            ) : (
+                              <span
+                                className={
+                                  fb.phase === 'fade'
+                                    ? 'add-to-list-feedback-badge add-to-list-feedback-badge--exiting'
+                                    : 'add-to-list-feedback-badge'
+                                }
+                                aria-live="polite"
+                              >
+                                REMOVED
+                              </span>
+                            ))}
+                        </span>
+                      </label>
+                      <Link
+                        to={`/lists/${list.id}`}
+                        className="add-to-list-row-nav"
+                        onClick={() => onClose()}
+                        aria-label={`Open list: ${list.title}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden
+                        >
+                          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg>
+                      </Link>
+                    </div>
                   </li>
                 );
               })}
