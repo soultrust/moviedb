@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getPersonDetails } from '../api/tmdb';
 import AddToListModal from './AddToListModal';
+import ManageListsModal from './ManageListsModal';
 import type { TMDBPersonDetails } from '../types';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -14,6 +15,7 @@ interface PersonDetailsProps {
 function PersonDetails({ personId }: PersonDetailsProps) {
   const { user } = useAuth();
   const [showAddToListModal, setShowAddToListModal] = useState(false);
+  const [showManageListsModal, setShowManageListsModal] = useState(false);
   const [person, setPerson] = useState<TMDBPersonDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -155,7 +157,14 @@ function PersonDetails({ personId }: PersonDetailsProps) {
           }}
           listMediaType="person"
           onClose={() => setShowAddToListModal(false)}
+          onManageLists={() => {
+            setShowAddToListModal(false);
+            setShowManageListsModal(true);
+          }}
         />
+      )}
+      {showManageListsModal && user && (
+        <ManageListsModal onClose={() => setShowManageListsModal(false)} />
       )}
     </div>
   );

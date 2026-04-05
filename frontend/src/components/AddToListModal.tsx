@@ -12,9 +12,11 @@ interface AddToListModalProps {
   item: AddToListItem;
   listMediaType: ListMediaType;
   onClose: () => void;
+  /** Opens the Manage Lists flow; typically close this modal first in the handler. */
+  onManageLists?: () => void;
 }
 
-function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
+function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToListModalProps) {
   const [lists, setLists] = useState<MovieList[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -242,6 +244,16 @@ function AddToListModal({ item, listMediaType, onClose }: AddToListModalProps) {
                     {createLoading ? 'Creating…' : 'Create'}
                   </button>
                 </form>
+              )}
+
+              {onManageLists && (
+                <button
+                  type="button"
+                  className="add-to-list-manage-link"
+                  onClick={() => onManageLists()}
+                >
+                  Manage Lists
+                </button>
               )}
             </div>
           </>

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AddToListModal from './AddToListModal';
+import ManageListsModal from './ManageListsModal';
 import type { TMDBMovieDetails as TMDBMovieDetailsType } from '../types';
 import { sortCrewWithDirectorsFirst } from '../utils/crew';
 
@@ -15,6 +16,7 @@ interface MovieDetailsProps {
 function MovieDetails({ movie }: MovieDetailsProps) {
   const { user } = useAuth();
   const [showAddToListModal, setShowAddToListModal] = useState(false);
+  const [showManageListsModal, setShowManageListsModal] = useState(false);
 
   if (!movie) return null;
 
@@ -180,7 +182,14 @@ function MovieDetails({ movie }: MovieDetailsProps) {
           }}
           listMediaType="media"
           onClose={() => setShowAddToListModal(false)}
+          onManageLists={() => {
+            setShowAddToListModal(false);
+            setShowManageListsModal(true);
+          }}
         />
+      )}
+      {showManageListsModal && user && (
+        <ManageListsModal onClose={() => setShowManageListsModal(false)} />
       )}
     </>
   );

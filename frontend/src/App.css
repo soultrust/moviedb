@@ -1081,6 +1081,24 @@ body {
   text-decoration: underline;
 }
 
+.add-to-list-manage-link {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 0 0;
+  border: none;
+  border-top: 1px solid var(--border-color);
+  background: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.add-to-list-manage-link:hover {
+  text-decoration: underline;
+}
+
 .add-to-list-create-form {
   margin-top: 1rem;
   display: flex;
