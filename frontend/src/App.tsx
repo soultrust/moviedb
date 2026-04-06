@@ -435,7 +435,7 @@ function App() {
       <header className="app-header">
         <div className="header-inner">
           <div className="header-brand">
-            <h1>Soultrust Movie DB</h1>
+            <h1>SOULTRUST TMDB BROWSER</h1>
           </div>
           <div className="header-auth">
             {user ? (
