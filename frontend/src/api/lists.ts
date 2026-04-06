@@ -107,6 +107,14 @@ export interface ListItemDisplay {
   poster_path: string | null;
 }
 
+/** GET /lists/:id/ — list metadata plus items. */
+export interface ListWithItemsResponse {
+  id: number;
+  title: string;
+  media_type: string;
+  items: ListItemDisplay[];
+}
+
 /**
  * Rename a list (must belong to the current user).
  */
@@ -142,11 +150,13 @@ export async function deleteList(listId: number): Promise<void> {
 }
 
 /**
- * Fetch items in a list.
+ * Fetch list metadata and items.
  */
-export async function fetchListItems(listId: number): Promise<ListItemDisplay[]> {
+export async function fetchListItems(listId: number): Promise<ListWithItemsResponse> {
   const res = await authFetch(`${LISTS_API}/${listId}/`);
-  if (res.status === 401) return [];
+  if (res.status === 401) {
+    return { id: listId, title: '', media_type: 'media', items: [] };
+  }
   if (!res.ok) throw new Error('Failed to load list items');
-  return res.json() as Promise<ListItemDisplay[]>;
+  return res.json() as Promise<ListWithItemsResponse>;
 }

@@ -25,6 +25,12 @@ interface BrowseSlotState {
   loading: boolean;
 }
 
+/** Browse state for `/lists/:id` including the list name from the API. */
+interface ListBrowseSlot extends BrowseSlotState {
+  /** `null` = not loaded yet or failed; string = loaded (use `''` when logged out / no title). */
+  listTitle: string | null;
+}
+
 function emptySlot(): BrowseSlotState {
   return {
     movies: [],
@@ -32,6 +38,10 @@ function emptySlot(): BrowseSlotState {
     hasMore: false,
     loading: false,
   };
+}
+
+function emptyListSlot(): ListBrowseSlot {
+  return { ...emptySlot(), listTitle: null };
 }
 
 /** Sort so items with a poster/thumbnail appear first. */
@@ -55,7 +65,7 @@ function App() {
     ...emptySlot(),
     query: "",
   });
-  const [listSlots, setListSlots] = useState<Record<number, BrowseSlotState>>({});
+  const [listSlots, setListSlots] = useState<Record<number, ListBrowseSlot>>({});
 
   const [searchMode, setSearchMode] = useState(false);
   const loadMoreInFlightRef = useRef(false);
@@ -77,7 +87,8 @@ function App() {
           ? "search"
           : "trending";
 
-  const listSlot = listIdNum != null ? (listSlots[listIdNum] ?? emptySlot()) : emptySlot();
+  const listSlot: ListBrowseSlot =
+    listIdNum != null ? (listSlots[listIdNum] ?? emptyListSlot()) : emptyListSlot();
 
   useEffect(() => {
     if (location.pathname === "/trending" || location.pathname === "/popular" || listId)
@@ -123,16 +134,19 @@ function App() {
   const loadListData = useCallback(
     async (id: number) => {
       if (!user) {
-        setListSlots((prev) => ({ ...prev, [id]: emptySlot() }));
+        setListSlots((prev) => ({
+          ...prev,
+          [id]: { ...emptyListSlot(), listTitle: "" },
+        }));
         return;
       }
       setListSlots((prev) => ({
         ...prev,
-        [id]: { ...emptySlot(), loading: true, movies: [] },
+        [id]: { ...emptyListSlot(), loading: true, movies: [] },
       }));
       try {
         const data = await fetchListItems(id);
-        const mapped = data.map((item) => ({
+        const mapped = data.items.map((item) => ({
           ...item,
           title: item.title ?? undefined,
           name: item.name ?? undefined,
@@ -140,13 +154,19 @@ function App() {
         const sorted = sortWithPosterFirst(mapped);
         setListSlots((prev) => ({
           ...prev,
-          [id]: { movies: sorted, page: 1, hasMore: false, loading: false },
+          [id]: {
+            movies: sorted,
+            page: 1,
+            hasMore: false,
+            loading: false,
+            listTitle: data.title,
+          },
         }));
       } catch (error) {
         console.error("Failed to load list:", error);
         setListSlots((prev) => ({
           ...prev,
-          [id]: emptySlot(),
+          [id]: emptyListSlot(),
         }));
       }
     },
@@ -166,7 +186,7 @@ function App() {
     if (listId && listIdNum != null) {
       const slot = listSlots[listIdNum];
       if (slot?.loading) return;
-      if (slot && slot.movies.length > 0) return;
+      if (slot && slot.listTitle !== null) return;
       void loadListData(listIdNum);
       return;
     }
@@ -396,6 +416,9 @@ function App() {
           aria-hidden={activeTab !== "list"}
         >
           <main className="app-main">
+            {listSlot.listTitle ? (
+              <h2 className="list-browse-title">{listSlot.listTitle}</h2>
+            ) : null}
             <MovieGrid
               movies={listSlot.movies}
               onMovieClick={handleMovieClick}

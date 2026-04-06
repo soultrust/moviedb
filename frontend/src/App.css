@@ -645,6 +645,17 @@ body {
   width: 100%;
 }
 
+.list-browse-title {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  text-align: left;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1095,27 +1106,6 @@ body {
   gap: 0.35rem;
 }
 
-.add-to-list-feedback-check {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #22ff88;
-  filter: drop-shadow(0 0 8px rgba(34, 255, 136, 0.45));
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-
-.add-to-list-feedback-check svg {
-  width: 1.2em;
-  height: 1.2em;
-  display: block;
-  vertical-align: middle;
-}
-
-.add-to-list-feedback-check--exiting {
-  opacity: 0;
-}
-
 .add-to-list-feedback-badge {
   font-family: "Roboto Condensed", sans-serif;
   font-weight: 700;
@@ -1125,6 +1115,11 @@ body {
   text-shadow: 0 0 12px rgba(34, 255, 136, 0.45);
   opacity: 1;
   transition: opacity 0.5s ease;
+}
+
+.add-to-list-feedback-badge--added {
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
 }
 
 .add-to-list-feedback-badge--exiting {

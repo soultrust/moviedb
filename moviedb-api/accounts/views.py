@@ -127,7 +127,14 @@ def list_items(request, list_id):
         }
         for item in items
     ]
-    return Response(data)
+    return Response(
+        {
+            "id": lst.id,
+            "title": lst.title,
+            "media_type": lst.media_type,
+            "items": data,
+        }
+    )
 
 
 @api_view(["POST", "DELETE"])

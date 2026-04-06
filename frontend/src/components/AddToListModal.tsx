@@ -201,21 +201,12 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
                               <span
                                 className={
                                   fb.phase === 'fade'
-                                    ? 'add-to-list-feedback-check add-to-list-feedback-check--exiting'
-                                    : 'add-to-list-feedback-check'
+                                    ? 'add-to-list-feedback-badge add-to-list-feedback-badge--added add-to-list-feedback-badge--exiting'
+                                    : 'add-to-list-feedback-badge add-to-list-feedback-badge--added'
                                 }
-                                role="img"
-                                aria-label="Added to list"
                                 aria-live="polite"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  aria-hidden
-                                >
-                                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19l12-12l-1.41-1.41z" />
-                                </svg>
+                                Added!
                               </span>
                             ) : (
                               <span
