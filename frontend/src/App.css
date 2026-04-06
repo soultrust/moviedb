@@ -398,7 +398,7 @@ body {
 
 .manage-lists-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.5rem;
   min-height: 2rem;
 }
@@ -407,7 +407,7 @@ body {
   flex: 1;
   min-width: 0;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
   gap: 0.35rem;
 }
@@ -1006,14 +1006,14 @@ body {
 
 .add-to-list-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.35rem;
   min-width: 0;
 }
 
 .add-to-list-checkbox-label {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.75rem;
   flex: 1;
   min-width: 0;
@@ -1024,8 +1024,9 @@ body {
 .add-to-list-row-nav {
   flex-shrink: 0;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
+  align-self: baseline;
   width: 2rem;
   height: 2rem;
   margin-left: auto;
@@ -1101,7 +1102,7 @@ body {
 .add-to-list-checkbox-text {
   color: var(--text-primary);
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
   gap: 0.35rem;
 }
