@@ -1119,6 +1119,7 @@ body {
 
 .add-to-list-feedback-badge--added {
   font-size: 0.65rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
 }
 

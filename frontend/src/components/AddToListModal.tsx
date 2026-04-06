@@ -206,7 +206,7 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
                                 }
                                 aria-live="polite"
                               >
-                                Added!
+                                ADDED!
                               </span>
                             ) : (
                               <span
