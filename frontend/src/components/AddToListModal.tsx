@@ -201,8 +201,8 @@ function AddToListModal({ item, listMediaType, onClose, onManageLists }: AddToLi
                               <span
                                 className={
                                   fb.phase === 'fade'
-                                    ? 'add-to-list-feedback-badge add-to-list-feedback-badge--added add-to-list-feedback-badge--exiting'
-                                    : 'add-to-list-feedback-badge add-to-list-feedback-badge--added'
+                                    ? 'add-to-list-feedback-badge add-to-list-feedback-badge--exiting'
+                                    : 'add-to-list-feedback-badge'
                                 }
                                 aria-live="polite"
                               >
