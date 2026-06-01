@@ -3,13 +3,23 @@ import MovieGrid from './MovieGrid';
 import { fetchListRecommendations } from '../api/lists';
 import type { TMDBMovieListItem } from '../types';
 
-const SHOW_BY_DEFAULT_KEY = 'moviedb_list_recommendations_show_default';
+function showByDefaultStorageKey(listId: number): string {
+  return `moviedb_list_recommendations_show_default_${listId}`;
+}
 
-function readShowByDefault(): boolean {
+function readShowByDefaultForList(listId: number): boolean {
   try {
-    return localStorage.getItem(SHOW_BY_DEFAULT_KEY) === '1';
+    return localStorage.getItem(showByDefaultStorageKey(listId)) === '1';
   } catch {
     return false;
+  }
+}
+
+function writeShowByDefaultForList(listId: number, enabled: boolean): void {
+  try {
+    localStorage.setItem(showByDefaultStorageKey(listId), enabled ? '1' : '0');
+  } catch {
+    /* ignore */
   }
 }
 
@@ -29,7 +39,9 @@ export default function ListRecommendationsSection({
   const canRecommend = listMovies.some(
     (m) => m.media_type === 'movie' || m.media_type === 'tv',
   );
-  const [showByDefault, setShowByDefault] = useState(readShowByDefault);
+  const [showByDefault, setShowByDefault] = useState(() =>
+    readShowByDefaultForList(listId),
+  );
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovieListItem[]>([]);
@@ -42,6 +54,7 @@ export default function ListRecommendationsSection({
     setError(null);
     setLoading(false);
     fetchedForListRef.current = null;
+    setShowByDefault(readShowByDefaultForList(listId));
   }, [listId]);
 
   const loadRecommendations = useCallback(async () => {
@@ -79,11 +92,7 @@ export default function ListRecommendationsSection({
   const handleDefaultChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setShowByDefault(checked);
-    try {
-      localStorage.setItem(SHOW_BY_DEFAULT_KEY, checked ? '1' : '0');
-    } catch {
-      /* ignore */
-    }
+    writeShowByDefaultForList(listId, checked);
   };
 
   if (!listLoaded || !canRecommend) return null;
