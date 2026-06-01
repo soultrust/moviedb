@@ -4,6 +4,7 @@ import { getTrending, getPopularMovies, search } from "./api/tmdb";
 import { fetchListItems } from "./api/lists";
 import { useAuth } from "./context/AuthContext";
 import MovieGrid from "./components/MovieGrid";
+import ListRecommendationsSection from "./components/ListRecommendationsSection";
 import SearchBar from "./components/SearchBar";
 import ListsDropdown from "./components/ListsDropdown";
 import LoginPage from "./pages/LoginPage";
@@ -424,6 +425,14 @@ function App() {
               onMovieClick={handleMovieClick}
               loadingInitial={listSlot.loading && listSlot.movies.length === 0}
             />
+            {user && listSlot.listTitle !== null && !listSlot.loading ? (
+              <ListRecommendationsSection
+                listId={listIdNum}
+                listMovies={listSlot.movies}
+                listLoaded
+                onMovieClick={handleMovieClick}
+              />
+            ) : null}
           </main>
         </div>
       )}

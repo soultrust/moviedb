@@ -656,6 +656,73 @@ body {
   color: var(--text-primary);
 }
 
+.list-recommendations-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.5rem;
+}
+
+.list-recommendations-show-btn {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.55rem 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.list-recommendations-show-btn:hover:not(:disabled) {
+  border-color: var(--text-primary);
+  background: var(--bg-secondary, var(--surface));
+}
+
+.list-recommendations-show-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.list-recommendations-default-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.list-recommendations-section {
+  margin-top: 0.5rem;
+}
+
+.list-recommendations-heading {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  text-align: left;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.list-recommendations-error {
+  margin: 0 0 1rem;
+  color: #e57373;
+  font-size: 0.95rem;
+}
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

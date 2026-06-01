@@ -1,9 +1,13 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from services.tmdb_client import TMDBClient
 
 from .models import List, ListItem
 from .serializers import (
@@ -135,6 +139,75 @@ def list_items(request, list_id):
             "items": data,
         }
     )
+
+
+MAX_REC_SEEDS = 15
+MAX_REC_RESULTS = 24
+
+
+def _normalize_rec_item(raw, fallback_media_type):
+    mt = raw.get("media_type") or fallback_media_type
+    if mt not in ("movie", "tv"):
+        return None
+    return {
+        "id": raw["id"],
+        "media_type": mt,
+        "title": raw.get("title"),
+        "name": raw.get("name"),
+        "poster_path": raw.get("poster_path"),
+        "release_date": raw.get("release_date"),
+        "vote_average": raw.get("vote_average"),
+    }
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def list_recommendations(request, list_id):
+    """Aggregate TMDB recommendations across list items (movies/TV only)."""
+    lst = List.objects.filter(user=request.user, pk=list_id).first()
+    if not lst:
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if lst.media_type == "person":
+        return Response({"results": []})
+
+    all_items = list(lst.items.all())
+    in_list = {(i.media_type, i.tmdb_id) for i in all_items}
+    seeds = [i for i in all_items if i.media_type in ("movie", "tv")][:MAX_REC_SEEDS]
+
+    if not seeds:
+        return Response({"results": []})
+
+    client = TMDBClient()
+    scores = {}
+
+    def fetch_for_seed(seed):
+        try:
+            return seed, client.get_recommendations(seed.media_type, seed.tmdb_id)
+        except Exception:
+            return seed, {"results": []}
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(fetch_for_seed, s) for s in seeds]
+        for fut in as_completed(futures):
+            seed, data = fut.result()
+            for raw in (data.get("results") or [])[:12]:
+                norm = _normalize_rec_item(raw, seed.media_type)
+                if not norm:
+                    continue
+                key = (norm["media_type"], norm["id"])
+                if key in in_list:
+                    continue
+                if key not in scores:
+                    scores[key] = {"item": norm, "count": 0}
+                scores[key]["count"] += 1
+
+    ranked = sorted(
+        scores.values(),
+        key=lambda x: (-x["count"], -(x["item"].get("vote_average") or 0)),
+    )
+    results = [x["item"] for x in ranked[:MAX_REC_RESULTS]]
+    return Response({"results": results})
 
 
 @api_view(["POST", "DELETE"])

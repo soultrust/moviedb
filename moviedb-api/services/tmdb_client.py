@@ -93,3 +93,11 @@ class TMDBClient:
             cache_ttl=86400,
             append_to_response="movie_credits",
         )
+
+    def get_recommendations(self, media_type, tmdb_id, page=1):
+        """TMDB recommendations for a single movie or TV show."""
+        return self._get(
+            f"{media_type}/{tmdb_id}/recommendations",
+            cache_ttl=86400,
+            page=page,
+        )

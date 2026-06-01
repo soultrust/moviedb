@@ -1,5 +1,5 @@
 import { authFetch } from './auth';
-import type { MovieList } from '../types';
+import type { MovieList, TMDBMovieListItem } from '../types';
 import { API_URLS } from '../config';
 
 const LISTS_API = API_URLS.LISTS;
@@ -159,4 +159,17 @@ export async function fetchListItems(listId: number): Promise<ListWithItemsRespo
   }
   if (!res.ok) throw new Error('Failed to load list items');
   return res.json() as Promise<ListWithItemsResponse>;
+}
+
+/**
+ * Aggregated TMDB recommendations for a list (excludes items already on the list).
+ */
+export async function fetchListRecommendations(
+  listId: number,
+): Promise<TMDBMovieListItem[]> {
+  const res = await authFetch(`${LISTS_API}/${listId}/recommendations/`);
+  if (res.status === 401) return [];
+  if (!res.ok) throw new Error('Failed to load recommendations');
+  const data = (await res.json()) as { results: TMDBMovieListItem[] };
+  return data.results ?? [];
 }

@@ -9,5 +9,6 @@ urlpatterns = [
     path("me/", views.me),
     path("lists/", views.lists_list),
     path("lists/<int:list_id>/", views.list_items),
+    path("lists/<int:list_id>/recommendations/", views.list_recommendations),
     path("lists/<int:list_id>/toggle/", views.list_toggle_item),
 ]
